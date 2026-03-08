@@ -16,7 +16,7 @@ Decision DNA is an enterprise-grade AI governance platform that secures and moni
 
 ## 🏛️ System Architecture
 
-![Architecture Diagram](screenshots/architecture.jpeg)
+![Architecture Diagram](Screenshots/architecture.jpeg)
 
 > **Flow:** User → API Layer → Model Monitoring (PSI Drift Detection) → Security Layer (Fingerprinting + Tamper Detection) → Alert System → Logs. The NLP Explanation Layer (Gemini API) provides human-readable audit logic for every decision.
 
@@ -53,7 +53,7 @@ Decision DNA is an enterprise-grade AI governance platform that secures and moni
 
 ```
 decision-dna/
-├── screenshots/                  # App screenshots & architecture diagram
+├── Screenshots/                  # App Screenshots & architecture diagram
 ├── pages/                        # Full-page React views
 │   ├── Dashboard.tsx
 │   ├── ModelManagement.tsx
