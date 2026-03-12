@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Decision DNA | AI Security Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     body {
@@ -26,26 +25,9 @@
       animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react-dom": "https://esm.sh/react-dom@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.564.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
-    "recharts": "https://esm.sh/recharts@^3.7.0",
-    "dexie": "https://esm.sh/dexie@^4.0.1",
-    "vite": "https://esm.sh/vite@^7.3.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4"
-  }
-}
-</script>
 </head>
 <body>
   <div id="root"></div>
-  <!-- Explicitly load the entry point as a module -->
-  <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/src/index.tsx"></script>
 </body>
 </html>
