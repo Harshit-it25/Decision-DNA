@@ -1,42 +1,37 @@
 # Dependencies
 node_modules/
-
-# Environment variables — NEVER commit these!
+ 
+# Environment variables - NEVER commit these
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+.env.development
+.env.production
+ 
 # Build output
 dist/
 build/
-
+ 
+# Model artifacts (can be large)
+models/
+*.pkl
+*.bin
+ 
 # Logs
-logs/
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Vite cache
-.vite/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE
+ 
+# Editor
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# Test coverage
-coverage/
-
-# Dataset (large data files — add to git only if small & necessary)
-dataset.csv
+ 
+# OS
+.DS_Store
+Thumbs.db
+ 
+# TypeScript cache
+*.tsbuildinfo
+ 
+# Vite cache
+.vite/
