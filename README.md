@@ -133,9 +133,9 @@ decision-dna/
 │
 ├── src/
 │   ├── index.tsx                  # React entry point
-│   ├── App.tsx                    # Root component
+│   ├── App.tsx                    # Root application component
 │   │
-│   ├── components/
+│   ├── components/                # UI components
 │   │   ├── Dashboard.tsx
 │   │   ├── ModelMonitor.tsx
 │   │   ├── SecurityPanel.tsx
@@ -143,14 +143,24 @@ decision-dna/
 │   │   ├── AuditLogs.tsx
 │   │   └── RebootRecovery.tsx
 │   │
+│   ├── services/                  # Backend communication + ML logic
+│   │   ├── apiClient.ts
+│   │   ├── monitoringService.ts
+│   │   └── modelService.ts
+│   │
 │   └── types/
-│       └── index.ts
+│       └── index.ts               # TypeScript interfaces
 │
-├── models/                       
-├── logs/                          
+├── models/                        # Generated trained models (gitignored)
 │
-├── server.ts
-├── dataset.csv
+├── logs/                          # System + prediction logs (gitignored)
+│
+├── server.ts                      # Express backend server
+├── dataset.csv                    # Credit risk training dataset
+│
+├── config/                        # Configuration files
+│   └── metadata.json
+│
 ├── index.html
 ├── package.json
 ├── package-lock.json
@@ -158,10 +168,10 @@ decision-dna/
 ├── vite.config.ts
 ├── tailwind.config.js
 ├── postcss.config.js
-├── metadata.json
+│
 ├── README.md
-├── .env.example
-├── .env.local                    
+├── .env.example                   # Example environment variables
+├── .env.local                     # Local secrets (never commit)
 └── .gitignore
 ---
 
