@@ -1,37 +1,44 @@
 # Dependencies
 node_modules/
+.npm
  
 # Environment variables - NEVER commit these
 .env
 .env.local
-.env.development
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
  
 # Build output
 dist/
 build/
  
-# Model artifacts (can be large)
-models/
-*.pkl
-*.bin
+# Vite cache
+.vite/
  
-# Logs
-*.log
-npm-debug.log*
+# TypeScript
+*.tsbuildinfo
  
-# Editor
+# OS files
+.DS_Store
+Thumbs.db
+ 
+# Editor directories
 .vscode/
 .idea/
 *.swp
 *.swo
  
-# OS
-.DS_Store
-Thumbs.db
+# Logs
+logs/
+*.log
+npm-debug.log*
  
-# TypeScript cache
-*.tsbuildinfo
+# Runtime data
+pids/
+*.pid
+*.seed
  
-# Vite cache
-.vite/
+# Optional: if you don't want to commit the dataset
+# dataset.csv
+ 
