@@ -129,36 +129,40 @@ Backend protections include:
 
 # 📁 Project Structure
 
-```
-Decision-DNA
+decision-dna/
 │
-├── Screenshots/            # UI screenshots & architecture diagram
+├── src/
+│   ├── index.tsx                  # React entry point
+│   ├── App.tsx                    # Root component
+│   │
+│   ├── components/
+│   │   ├── Dashboard.tsx
+│   │   ├── ModelMonitor.tsx
+│   │   ├── SecurityPanel.tsx
+│   │   ├── RiskPredictor.tsx
+│   │   ├── AuditLogs.tsx
+│   │   └── RebootRecovery.tsx
+│   │
+│   └── types/
+│       └── index.ts
 │
-├── pages/                  # Full-page React views
-│   ├── Dashboard.tsx
-│   ├── ModelManagement.tsx
-│   ├── MonitoringCenter.tsx
-│   ├── SecurityCenter.tsx
-│   ├── Explainability.tsx
-│   └── AuditTimeline.tsx
+├── models/                       
+├── logs/                          
 │
-├── components/             # Reusable UI components
-├── api/                    # Frontend API client
-├── services/               # DB, monitoring & ML logic
-├── drift/                  # Drift detection algorithms
-├── security/               # Tamper & adversarial detection
-│
-├── models/                 # Generated model artifacts
-├── logs/                   # Audit logs
-│
-├── server.ts               # Express backend
-├── dataset.csv             # Training dataset
-│
-├── index.tsx
-├── App.tsx
-└── package.json
-```
-
+├── server.ts
+├── dataset.csv
+├── index.html
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── vite.config.ts
+├── tailwind.config.js
+├── postcss.config.js
+├── metadata.json
+├── README.md
+├── .env.example
+├── .env.local                    
+└── .gitignore
 ---
 
 # 📊 Dataset
