@@ -9,13 +9,13 @@
 
 Decision DNA is an **AI governance and monitoring platform** designed to supervise machine learning models used in credit risk decision systems.
 
-The system monitors **model performance, detects data drift, tracks security threats, and maintains audit logs** to ensure that automated financial decisions remain transparent, stable, and trustworthy.
+The system helps detect **model drift, operational risks, and security threats**, while maintaining transparent and auditable AI decision pipelines.
 
 ---
 
 # 🏛️ System Architecture
 
-```
+```text
 User
   ↓
 React Governance Dashboard
@@ -26,12 +26,12 @@ Model Monitoring Engine
   ↓
 Drift Detection (PSI / KL Divergence)
   ↓
-Security Layer (Tamper Detection)
+Security Layer
   ↓
 Audit Logging System
 ```
 
-The platform provides **real-time insights into model behavior, security status, and prediction monitoring**.
+Decision DNA provides **real-time insights into model behavior, prediction monitoring, and governance alerts**.
 
 ---
 
@@ -50,38 +50,42 @@ Real-time monitoring of:
 
 ### 🔍 Model Drift Detection
 
-Detects changes in data distribution using:
+Detects distribution shifts using statistical techniques:
 
-* **Population Stability Index (PSI)**
-* **KL Divergence**
+* Population Stability Index (PSI)
+* KL Divergence
 
-This helps identify when production data deviates from training data.
+This helps identify when **production data deviates from training data**.
 
 ---
 
-### 🛡️ Model Security Monitoring
+### 🛡️ Security Monitoring
 
-Monitors the integrity and operational state of deployed models.
+Provides monitoring mechanisms to detect:
 
-Provides alerts for potential system or model anomalies.
+* abnormal model behavior
+* suspicious system activity
+* operational failures
+
+Security events are logged for auditing.
 
 ---
 
 ### 🤖 Risk Prediction Interface
 
-Interactive UI to test credit risk predictions using trained models.
+Interactive interface to test credit risk predictions using trained models.
 
 ---
 
 ### 📋 Audit Logging
 
-All governance actions and model events are recorded in **timestamped logs** for traceability.
+All governance events and system activities are stored as **timestamped audit logs**.
 
 ---
 
-### 🔄 System Recovery
+### 🔄 Recovery & Reboot System
 
-Built-in recovery module allows administrators to **restart or recover model services** if system anomalies occur.
+Administrative tools allow safe restart or recovery of model services when anomalies occur.
 
 ---
 
@@ -90,39 +94,40 @@ Built-in recovery module allows administrators to **restart or recover model ser
 | Layer      | Technology                        |
 | ---------- | --------------------------------- |
 | Frontend   | React + TypeScript + Tailwind CSS |
-| Backend    | Express                           |
+| Backend    | Node.js + Express                 |
 | Build Tool | Vite                              |
-| AI / ML    | scikit-learn                      |
+| ML         | Python + scikit-learn             |
 | Validation | Zod                               |
-| Storage    | IndexedDB / local logging         |
+| Storage    | IndexedDB / local logs            |
 
 ---
 
 # 📁 Project Structure
 
-```
-decision-dna/
+```text
+Decision-DNA/
+│
+├── screenshots/          # UI screenshots for README
 │
 ├── src/
-│   ├── index.tsx
+│   ├── api/              # API client layer
+│   ├── config/           # configuration files
+│   ├── drift/            # drift detection logic
+│   ├── pages/            # React UI pages
+│   ├── services/         # backend services
+│
 │   ├── App.tsx
-│   │
-│   ├── components/
-│   │   ├── Dashboard.tsx
-│   │   ├── ModelMonitor.tsx
-│   │   ├── SecurityPanel.tsx
-│   │   ├── RiskPredictor.tsx
-│   │   ├── AuditLogs.tsx
-│   │   └── RebootRecovery.tsx
-│   │
-│   └── types/
-│       └── index.ts
+│   ├── ai_report.ts
+│   ├── constants.tsx
+│   ├── index.css
+│   └── index.tsx
 │
-├── models/            # generated model artifacts (gitignored)
-├── logs/              # system logs (gitignored)
+├── ml/                   # ML training pipeline
+├── scripts/              # automation scripts
+├── security/             # security monitoring modules
+├── tests/                # testing files
 │
-├── server.ts          # Express backend
-├── dataset.csv        # training dataset
+├── server.ts             # Express backend server
 │
 ├── index.html
 ├── package.json
@@ -131,26 +136,27 @@ decision-dna/
 ├── tailwind.config.js
 ├── postcss.config.js
 │
-├── metadata.json
-├── README.md
-├── .env.example
-├── .env.local         # not committed
-└── .gitignore
+├── .env.example          # environment variables template
+├── .gitignore
+├── SECURITY.md
+└── README.md
 ```
 
 ---
 
 # 📊 Dataset
 
-`dataset.csv` contains **synthetic credit applicant records** used for model training and experimentation.
+The system uses a **synthetic credit risk dataset** for training and demonstration.
+
+Example features:
 
 | Feature     | Description                  |
 | ----------- | ---------------------------- |
-| creditScore | Credit score between 300–850 |
-| income      | Annual income                |
+| creditScore | Credit score range (300–850) |
+| income      | Annual applicant income      |
 | debtRatio   | Debt-to-income ratio         |
 | loanAmount  | Requested loan amount        |
-| decision    | Loan approval decision       |
+| decision    | Loan approval outcome        |
 
 ---
 
@@ -175,10 +181,10 @@ npm install
 
 ### 3️⃣ Configure environment variables
 
-Create `.env.local` in the project root.
+Create `.env.local`:
 
-```
-API_KEY=your_secure_api_key
+```env
+API_KEY=your_api_key
 ```
 
 ---
@@ -189,10 +195,10 @@ API_KEY=your_secure_api_key
 npm run dev
 ```
 
-This will start:
+This launches:
 
 * Express backend
-* React dashboard (Vite)
+* React dashboard
 
 ---
 
@@ -211,42 +217,38 @@ http://localhost:5173
 | npm run dev     | Start development server |
 | npm run build   | Build production bundle  |
 | npm run preview | Preview production build |
-| npm run lint    | TypeScript validation    |
+| npm run lint    | Type checking            |
 
 ---
 
-# 🔐 Security Architecture
+# 🔐 Security Policy
 
-The platform includes several safety mechanisms:
+Security guidelines and reporting instructions are available in:
 
-* API key authentication
-* input validation
-* monitoring of model operations
-* system audit logging
-* operational recovery mechanisms
+```
+SECURITY.md
+```
 
 ---
 
 # 📈 Future Improvements
 
-Potential extensions include:
+Possible enhancements include:
 
 * automated model retraining
 * real-time drift alerts
-* explainable AI modules
 * anomaly detection
+* explainable AI modules
 * cloud deployment
 
 ---
 
 # 👨‍💻 Author
 
-**Harshit**
+**Harshit Ranbhare**
 
 AI / Machine Learning Student
 Btech IT Student 
-GitHub:
-[https://github.com/Harshit-it25](https://github.com/Harshit-it25)
 
 ---
 
