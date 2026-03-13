@@ -1,4 +1,3 @@
-
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
@@ -90,7 +89,7 @@ const limiter = rateLimit({
 // 2. API Key Middleware
 const apiKeyMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const apiKey = req.headers['x-api-key'];
-  const validApiKey = process.env.API_KEY || 'decision_dna_secret_key_2024';
+  const validApiKey = process.env.API_KEY;
 
   if (!apiKey || apiKey !== validApiKey) {
     return res.status(401).json({ status: "error", message: "Unauthorized: Invalid or missing API key." });
