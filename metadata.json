@@ -1,0 +1,5 @@
+{
+  "name": "Decision DNA: AI Credit Risk Security",
+  "description": "A comprehensive AI system for credit risk monitoring, drift detection, and security audit, featuring model stability tracking, attack simulations, and an automated reboot recovery system.",
+  "requestFramePermissions": []
+}
