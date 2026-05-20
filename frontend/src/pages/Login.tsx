@@ -105,12 +105,12 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
           <div className="mt-8 pt-6 border-t border-slate-800/50">
             <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-              <Sparkles size={12} className="text-amber-400" /> System Access Levels
+              <Sparkles size={12} className="text-amber-400" /> System Access Levels (Demo Credentials)
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="px-2 py-1 bg-slate-800/50 border border-slate-700 rounded text-[9px] text-slate-400">ADMIN</span>
-              <span className="px-2 py-1 bg-slate-800/50 border border-slate-700 rounded text-[9px] text-slate-400">OFFICER</span>
-              <span className="px-2 py-1 bg-slate-800/50 border border-slate-700 rounded text-[9px] text-slate-400">AUDITOR</span>
+              <span className="px-2 py-1 bg-slate-800/50 border border-slate-700 rounded text-[9px] text-slate-400">admin / decision_dna_2024</span>
+              <span className="px-2 py-1 bg-slate-800/50 border border-slate-700 rounded text-[9px] text-slate-400">officer / officer_pass_2024</span>
+              <span className="px-2 py-1 bg-slate-800/50 border border-slate-700 rounded text-[9px] text-slate-400">auditor / auditor_pass_2024</span>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { Applicant, ModelMetadata, ModelType, Counterfactual } from '../types';
 import { predictRisk } from '../api/modelApi';
 
-export const predictApplicant = async (applicant: Applicant, model: ModelMetadata): Promise<{ riskProbability: number, decision: 'Approve' | 'Reject', reason?: string }> => {
+export const predictApplicant = async (applicant: Applicant, model: ModelMetadata): Promise<{ riskProbability: number, decision: 'Approve' | 'Reject', reason?: string, emailSent?: boolean }> => {
   try {
     const result = await predictRisk(applicant, model.id);
     if (result.status === 'error') {
@@ -11,7 +11,8 @@ export const predictApplicant = async (applicant: Applicant, model: ModelMetadat
     return {
       riskProbability: result.riskProbability,
       decision: result.decision,
-      reason: result.reason
+      reason: result.reason,
+      emailSent: result.emailSent
     };
   } catch (error) {
     console.error("Failed to connect to backend for prediction", error);
@@ -19,7 +20,7 @@ export const predictApplicant = async (applicant: Applicant, model: ModelMetadat
   }
 };
 
-export const simulatePrediction = (applicant: Applicant, model: ModelMetadata): { riskProbability: number, decision: 'Approve' | 'Reject', reason?: string } => {
+export const simulatePrediction = (applicant: Applicant, model: ModelMetadata): { riskProbability: number, decision: 'Approve' | 'Reject', reason?: string, emailSent?: boolean } => {
   const baseScore = (applicant.creditScore - 300) / 550 * 0.6 + (1 - applicant.debtRatio) * 0.4;
   let noise = (Math.random() - 0.5) * 0.05;
   if (model.type === ModelType.RANDOM_FOREST) noise += 0.02;

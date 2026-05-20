@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import secrets
 import json
 import logging
 from datetime import datetime, timedelta
@@ -18,6 +19,9 @@ import hashlib
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 import shap
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configure basic logging for audit and traceability
 class InMemoryLogHandler(logging.Handler):
@@ -53,7 +57,7 @@ try:
     from explainability_engine import ExplainabilityEngine
     # Optional module
     try:
-        from encryption_layer import PQCSimulator
+        from app.encryption_layer import PQCSimulator
     except ImportError:
         PQCSimulator = None
         logging.warning("Encryption layer (PQCSimulator) not found. Security features will be limited.")
@@ -62,18 +66,14 @@ except ImportError as e:
     print("Warning: Essential ML modules not found in path. Ensure CWD is correct.")
 
 # --- Security Configuration ---
-SECRET_KEY = "SUPER_SECRET_KEY_FOR_PROTOTYPE" 
+SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_urlsafe(32)) 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # OAuth2 scheme point to our token endpoint
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 
-def get_password_hash(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def verify_password(plain_password, hashed_password):
-    return get_password_hash(plain_password) == hashed_password
+from app.auth_db import init_db, get_user, verify_password
 
 # Role Definitions
 ROLES = {
@@ -82,34 +82,12 @@ ROLES = {
     "AUDITOR": ["monitor"]
 }
 
-# Mock User Database with Roles
-FAKE_USERS_DB = {
-    "admin": {
-        "username": "admin",
-        "hashed_password": get_password_hash("decision_dna_2024"),
-        "role": "SECURITY_ADMIN",
-        "disabled": False,
-    },
-    "officer": {
-        "username": "officer",
-        "hashed_password": get_password_hash("officer_pass_2024"),
-        "role": "MORTGAGE_OFFICER",
-        "disabled": False,
-    },
-    "auditor": {
-        "username": "auditor",
-        "hashed_password": get_password_hash("auditor_pass_2024"),
-        "role": "AUDITOR",
-        "disabled": False,
-    }
-}
-
 app = FastAPI(title="Decision DNA Consolidated API", version="3.0.0")
 
 # CORS middleware for development flexibility
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8007", "http://127.0.0.1:8007", "http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -145,9 +123,9 @@ threat_state = {
 mitigation_state = {
     "active": False,
     "group_thresholds": {
-        "standard": 0.5,
-        "Female": 0.5,
-        "18-25": 0.5
+        "Male": 0.65,
+        "Female": 0.62,
+        "Age 18-25": 0.60
     },
     "last_audit_di": 1.0,
     "mitigation_history": []
@@ -160,10 +138,12 @@ security_state = {
     "is_watermarked": False,
     "watermark_confidence": 0.0
 }
+is_background_task_running = False
 
 @app.on_event("startup")
 def startup_event():
     global models, processor, baseline_stats, explainer
+    init_db()
     try:
         print("Startup: Loading production models...")
         if not os.path.exists(MODELS_DIR):
@@ -211,7 +191,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         username: str = payload.get("sub")
         if username is None: raise credentials_exception
     except JWTError: raise credentials_exception
-    user = FAKE_USERS_DB.get(username)
+    user = get_user(username)
     if user is None: raise credentials_exception
     return user
 
@@ -260,6 +240,7 @@ api_router = APIRouter(prefix="/api")
 class ApplicantDetails(BaseModel):
     id: Optional[str] = "LENDING-NEW"
     name: Optional[str] = "Anonymous"
+    email: Optional[str] = None
     nationality: Optional[str] = "Unknown"
     income: float = Field(..., gt=0, description="Applicant income, must be positive")
     debtRatio: float = Field(0.3, ge=0, le=1)
@@ -286,6 +267,7 @@ class PredictionResponse(BaseModel):
     reason: Optional[str] = None
     modelId: str
     mitigation_context: Optional[dict] = None
+    emailSent: Optional[bool] = False
 
 class AttackRequest(BaseModel):
     type: str
@@ -295,12 +277,38 @@ class TrainRequest(BaseModel):
     epochs: int = 10
     learningRate: float = 0.001
 
+login_attempts = {}
+
 @api_router.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = FAKE_USERS_DB.get(form_data.username)
+async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+    client_ip = request.client.host
+    now = datetime.now()
+    
+    # Brute Force Protection (Rate Limiting)
+    if client_ip in login_attempts:
+        attempts, last_attempt = login_attempts[client_ip]
+        if attempts >= 5 and (now - last_attempt).total_seconds() < 300:
+            raise HTTPException(status_code=429, detail="Too many failed attempts. Account locked for 5 minutes.")
+        elif (now - last_attempt).total_seconds() >= 300:
+            del login_attempts[client_ip]
+
+    # Algorithmic DoS Protection
+    if len(form_data.password) > 128:
+        raise HTTPException(status_code=400, detail="Password exceeds maximum length")
+
+    user = get_user(form_data.username)
     if not user or not verify_password(form_data.password, user["hashed_password"]):
+        if client_ip not in login_attempts:
+            login_attempts[client_ip] = [1, now]
+        else:
+            login_attempts[client_ip][0] += 1
+            login_attempts[client_ip][1] = now
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     
+    # Reset attempts on success
+    if client_ip in login_attempts:
+        del login_attempts[client_ip]
+        
     access_token = create_access_token(data={"sub": user["username"]})
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -316,7 +324,7 @@ def health():
     return {"status": "ok", "timestamp": int(datetime.utcnow().timestamp() * 1000)}
 
 @api_router.get("/system/logs")
-def get_system_logs():
+def get_system_logs(_ = Depends(require_permissions("monitor"))):
     return {
         "status": "success",
         "logs": log_handler.logs
@@ -326,7 +334,7 @@ class TerminalCommandRequest(BaseModel):
     command: str
 
 @api_router.get("/system/metrics")
-def get_system_metrics():
+def get_system_metrics(_ = Depends(require_permissions("monitor"))):
     try:
         import psutil
         cpu = psutil.cpu_percent(interval=None)
@@ -342,30 +350,34 @@ def get_system_metrics():
     }
 
 @api_router.post("/system/command")
-async def execute_system_command(req: TerminalCommandRequest, background_tasks: BackgroundTasks):
+async def execute_system_command(req: TerminalCommandRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+    global is_background_task_running
     cmd = req.command.strip().lower()
     
     if cmd == "status":
         return {"status": "success", "message": "System Status: SECURE | Kernel: v4.2.0-dna | All checks passed."}
-    elif cmd == "train":
-        # Trigger same logic as /api/train-model
-        def run_retrain():
-            import subprocess, sys
-            logging.info("Terminal triggered retraining...")
-            subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
-        background_tasks.add_task(run_retrain)
-        return {"status": "success", "message": "Retraining job queued in background."}
-    elif cmd == "harden":
-        def run_harden():
-            import subprocess, sys
-            logging.info("Terminal triggered hardening...")
-            subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
-        background_tasks.add_task(run_harden)
-        return {"status": "success", "message": "Adversarial hardening cycle initiated."}
+    elif cmd in ["train", "harden"]:
+        if is_background_task_running:
+            raise HTTPException(status_code=429, detail="A background task is already running. Please try again later.")
+        is_background_task_running = True
+        
+        def run_task():
+            global is_background_task_running
+            try:
+                import subprocess, sys
+                logging.info(f"Terminal triggered {cmd}...")
+                subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
+                if cmd == "harden":
+                    startup_event()
+            finally:
+                is_background_task_running = False
+                
+        background_tasks.add_task(run_task)
+        return {"status": "success", "message": f"{cmd.capitalize()} cycle initiated in background."}
     else:
         return {"status": "error", "message": f"Command not found: {cmd}"}
 @api_router.get("/model-metrics")
-def get_model_metrics():
+def get_model_metrics(_ = Depends(require_permissions("monitor"))):
     if os.path.exists(METRICS_PATH):
         with open(METRICS_PATH, 'r') as f:
             return json.load(f)
@@ -376,7 +388,7 @@ def get_model_metrics():
     }
 
 @api_router.get("/model-metadata")
-def get_model_metadata():
+def get_model_metadata(_ = Depends(require_permissions("monitor"))):
     return {
         "version": "1.1.0",
         "production_model": "random_forest",
@@ -384,7 +396,7 @@ def get_model_metadata():
     }
 
 @api_router.get("/models")
-def get_models():
+def get_models(_ = Depends(require_permissions("monitor"))):
     return {
         "status": "success",
         "data": [
@@ -394,7 +406,7 @@ def get_models():
     }
 
 @api_router.post("/predict", response_model=PredictionResponse, tags=["Model Governance"], description="Analyzes an applicant profile to produce a credit risk decision and SHAP feature explanations.")
-async def predict_risk(req: PredictRequest, _ = Depends(require_permissions("predict"))):
+async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("predict"))):
     if 'production' not in models:
         raise HTTPException(status_code=503, detail="Models not loaded")
     
@@ -423,7 +435,7 @@ async def predict_risk(req: PredictRequest, _ = Depends(require_permissions("pre
         global pqc_simulator
         if pqc_simulator is None:
             try:
-                from encryption_layer import PQCSimulator
+                from app.encryption_layer import PQCSimulator
                 pqc_simulator = PQCSimulator(secret_key="api_secured_vault_key_2024")
             except ImportError:
                 pqc_simulator = None
@@ -486,9 +498,7 @@ async def predict_risk(req: PredictRequest, _ = Depends(require_permissions("pre
                         if hasattr(val, 'item'): val = val.item()
                         explanations[feat] = round(float(val), 4)
             except Exception as e:
-                logging.error(f"SHAP Error: {e}")
-                import traceback
-                logging.error(traceback.format_exc())
+                logging.error(f"SHAP Error: {e}", exc_info=True)
 
         # Log for distribution monitoring
         log_entry = input_dict.copy()
@@ -531,6 +541,12 @@ async def predict_risk(req: PredictRequest, _ = Depends(require_permissions("pre
         # Generate Reason
         reason = generate_decision_reason(decision, explanations)
         
+        email_sent = False
+        if decision == "Reject" and input_dict.get("email"):
+            from app.email_service import send_rejection_email_task
+            background_tasks.add_task(send_rejection_email_task, input_dict["email"], input_dict.get("name", "Applicant"), reason)
+            email_sent = True
+        
         return PredictionResponse(
             riskProbability=round(float(risk_score), 4), 
             decision=str(decision),
@@ -541,12 +557,12 @@ async def predict_risk(req: PredictRequest, _ = Depends(require_permissions("pre
             mitigation_context={
                 "active": bool(mitigation_state["active"]),
                 "applied_threshold": float(threshold)
-            }
+            },
+            emailSent=email_sent
         )
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        logging.error(f"Prediction failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="An internal error occurred during prediction.")
 
 @api_router.get("/monitoring-drift", tags=["Model Governance"], description="Checks logical data drift between recently processed data and the trained baseline.")
 async def get_drift(_ = Depends(require_permissions("monitor"))):
@@ -650,7 +666,13 @@ async def verify_watermark(_ = Depends(require_permissions("audit"))):
 
 @api_router.post("/security/red-team", tags=["Security"], description="Triggers an automated adversarial red-team audit.")
 async def trigger_red_team(background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+    global is_background_task_running
+    if is_background_task_running:
+        raise HTTPException(status_code=429, detail="A background task is already running.")
+    is_background_task_running = True
+
     def run_audit():
+        global is_background_task_running
         try:
             tester = AdversarialTester()
             audit_results = tester.run_red_team_audit(sample_size=15)
@@ -675,13 +697,21 @@ async def trigger_red_team(background_tasks: BackgroundTasks, _ = Depends(requir
                 
         except Exception as e:
             logging.error(f"Red-team audit failed: {e}")
+        finally:
+            is_background_task_running = False
 
     background_tasks.add_task(run_audit)
     return {"status": "success", "message": "Red-team audit initiated in background"}
 
 @api_router.post("/security/harden", tags=["Security"], description="Triggers an adversarial hardening cycle.")
 async def harden_model(background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+    global is_background_task_running
+    if is_background_task_running:
+        raise HTTPException(status_code=429, detail="A background task is already running.")
+    is_background_task_running = True
+    
     def run_hardening():
+        global is_background_task_running
         try:
             trainer = RobustTrainer()
             # This would typically involve generating adversarial examples and retraining
@@ -691,6 +721,8 @@ async def harden_model(background_tasks: BackgroundTasks, _ = Depends(require_pe
             startup_event()
         except Exception as e:
             logging.error(f"Hardening failed: {e}")
+        finally:
+            is_background_task_running = False
 
     background_tasks.add_task(run_hardening)
     return {"status": "success", "message": "Hardening cycle started"}
@@ -703,16 +735,50 @@ async def get_fairness(_ = Depends(require_permissions("monitor"))):
             model=models.get('production'),
             processor=processor
         )
+        if "error" not in results:
+            if "recommended_thresholds" in results:
+                mitigation_state["group_thresholds"] = results["recommended_thresholds"]
+            results["mitigation"] = mitigation_state
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/audit/explain/{applicant_id}", tags=["Governance"], description="Returns SHAP-style feature contributions for a specific decision.")
 async def explain_decision(applicant_id: str, _ = Depends(require_permissions("monitor"))):
-    # In a real app, we'd fetch the applicant from the DB
-    # For now, we simulate finding the applicant
-    # (Since we don't have a persistence layer for individuals yet, we return a 404 or a demo)
-    return {"error": "Persistence layer integration pending. Use live data stream for explanations."}
+    try:
+        import os
+        import pandas as pd
+        dataset_path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
+        if not os.path.exists(dataset_path):
+            raise HTTPException(status_code=404, detail="Dataset persistence layer not found.")
+            
+        df = pd.read_csv(dataset_path, on_bad_lines='skip')
+        applicant = df[df['id'] == applicant_id]
+        
+        if applicant.empty:
+            raise HTTPException(status_code=404, detail="Applicant not found in persistence layer.")
+            
+        # Convert row to dict
+        data = applicant.iloc[0].to_dict()
+        
+        # Run explainability
+        engine = ExplainabilityEngine()
+        contributions = engine.get_feature_contributions(data)
+        counterfactuals = engine.generate_counterfactuals(data)
+        
+        decision = str(data.get('decision', 'Reject')).capitalize()
+        reason = generate_decision_reason(decision, contributions)
+        
+        return {
+            "applicant": data,
+            "contributions": contributions,
+            "counterfactuals": counterfactuals,
+            "reason": reason
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/audit/explain", tags=["Governance"], description="Returns SHAP-style feature contributions for provided applicant data.")
 async def explain_data(data: dict, _ = Depends(require_permissions("monitor"))):
@@ -740,12 +806,21 @@ async def explain_data(data: dict, _ = Depends(require_permissions("monitor"))):
 
 @api_router.post("/train-model", tags=["Model Operations"], description="Synchronously train backend models with integrated SMOTE handlers.")
 async def train_model(req: TrainRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+    global is_background_task_running
+    if is_background_task_running:
+        raise HTTPException(status_code=429, detail="A background task is already running.")
+    is_background_task_running = True
+    
     def run_retrain():
-        import subprocess
-        print("Retraining models via background task...")
-        subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
-        startup_event()
-        print("Models reloaded after retraining.")
+        global is_background_task_running
+        try:
+            import subprocess
+            print("Retraining models via background task...")
+            subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
+            startup_event()
+            print("Models reloaded after retraining.")
+        finally:
+            is_background_task_running = False
 
     background_tasks.add_task(run_retrain)
     
@@ -768,7 +843,7 @@ app.include_router(api_router)
 
 # --- Serve Data & Static Files ---
 @app.get("/dataset.csv")
-async def get_dataset():
+async def get_dataset(_ = Depends(require_permissions("monitor"))):
     path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
     if os.path.exists(path):
         return FileResponse(path)
@@ -794,5 +869,6 @@ if __name__ == "__main__":
     # When running as a script, we typically use the app object directly or the module path
     # If running from inside 'app' folder: uvicorn main:app
     # If running from repo root: uvicorn app.main:app
-    print(f"Starting consolidated FastAPI server on port 8000...")
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    print(f"Starting consolidated FastAPI server on port 8008...")
+    uvicorn.run(app, host="127.0.0.1", port=8008)
+    # Reload trigger

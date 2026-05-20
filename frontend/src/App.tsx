@@ -25,7 +25,8 @@ import {
   getMonitoringDrift as apiGetMonitoringDrift,
   rebootSystem as apiRebootSystem,
   logout as apiLogout,
-  getCurrentUserInfo
+  getCurrentUserInfo,
+  verifyWatermark
 } from './api/modelApi';
 import Login from './pages/Login';
 
@@ -45,6 +46,8 @@ import { recordAuditAction } from './logs/auditLogs';
 import { detectDrift } from './drift/driftDetector';
 import { monitoringService } from './services/monitoringService';
 import { ReportModal } from './components/ReportModal';
+import { NavItem } from './components/NavItem';
+import { CreateApplicantModal } from './components/CreateApplicantModal';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<{ username: string, role: string } | null>(null);
@@ -147,7 +150,15 @@ const App: React.FC = () => {
         
         // Increased limit to 100000 to handle even larger applicant pools
         const dbApplicants = await db.applicants.reverse().limit(100000).toArray();
-        const dbModels = await db.models.toArray();
+        let dbModels = await db.models.toArray();
+        
+        // Auto-sync local cache with updated INITIAL_MODELS precision
+        if (dbModels.length > 0 && dbModels[0].metrics.accuracy === 0.92) {
+          await db.models.clear();
+          await db.models.bulkAdd(INITIAL_MODELS);
+          dbModels = INITIAL_MODELS;
+        }
+        
         const dbLogs = await db.auditLogs.reverse().limit(50).toArray();
         
         setApplicants(dbApplicants.length >= 100000 ? dbApplicants : MOCK_APPLICANTS);
@@ -178,6 +189,22 @@ const App: React.FC = () => {
     initData();
     return () => monitoringService.stop();
   }, [isAuthenticated]);
+
+  const handleRunIntegrityTest = async (modelId: string) => {
+    try {
+      const results = await verifyWatermark();
+      if (results.is_watermarked) {
+        addNotification(`Integrity Verified: Watermark matched (Confidence: ${(results.confidence * 100).toFixed(1)}%)`, 'warning');
+      } else {
+        addNotification(`Integrity Warning: No valid cryptographic watermark detected. Model may be compromised.`, 'error');
+      }
+      return results;
+    } catch (error) {
+      console.error("Test failed:", error);
+      addNotification(`Failed to run integrity test. Check backend logs.`, 'error');
+      return { success: false };
+    }
+  };
 
   const handleReScore = async (model: ModelMetadata) => {
     const allApplicants = await db.applicants.toArray();
@@ -502,7 +529,7 @@ const App: React.FC = () => {
 
   const handleAddApplicant = async (newApp: Applicant) => {
     // Predict using active model
-    const { riskProbability, decision, reason } = await predictApplicant(newApp, activeModel);
+    const { riskProbability, decision, reason, emailSent } = await predictApplicant(newApp, activeModel);
     const scoredApp = { ...newApp, riskProbability, decision, reason, timestamp: Date.now() };
     
     await db.applicants.add(scoredApp);
@@ -520,6 +547,11 @@ const App: React.FC = () => {
     setApplicants(updatedApps);
     setAuditLogs(updatedLogs);
     setIsModalOpen(false);
+    
+    if (emailSent) {
+      addNotification(`Rejection email dispatched to ${newApp.email} with automated reasoning.`, 'error');
+    }
+    
     setCurrentPage('explainability');
   };
 
@@ -618,7 +650,7 @@ const App: React.FC = () => {
   const renderPage = () => {
     switch (currentPage) {
       case 'overview': return <Dashboard activeModel={activeModel} metrics={metrics} security={security} auditLogs={auditLogs} insight={aiInsight} aiTier={aiTier} applicants={applicants} />;
-      case 'models': return <ModelManagement models={models} setModels={setModels} activeModelId={activeModelId} setActiveModelId={handleActivateModel} onTrain={handleTrainModel} onTrainAll={handleTrainAllModels} onLoadRealData={handleLoadRealDataset} onRunTest={apiRunTest} />;
+      case 'models': return <ModelManagement models={models} setModels={setModels} activeModelId={activeModelId} setActiveModelId={handleActivateModel} onTrain={handleTrainModel} onTrainAll={handleTrainAllModels} onLoadRealData={handleLoadRealDataset} onRunTest={handleRunIntegrityTest} />;
       case 'monitoring': return <MonitoringCenter metrics={metrics} security={security} applicants={applicants} />;
       case 'security': return <SecurityCenter security={security} onAttack={handleAttack} onReboot={handleReboot} logs={auditLogs.filter(l => l.category === 'ATTACK' || l.category === 'SECURITY')} />;
       case 'explainability': return <Explainability activeModel={activeModel} applicants={applicants} aiTier={aiTier} onAddApplicant={() => setIsModalOpen(true)} onTrain={handleTrainModel} />;
@@ -791,195 +823,6 @@ const App: React.FC = () => {
   );
 };
 
-const NavItem: React.FC<{icon: any, label: string, active?: boolean, onClick: () => void, alert?: 'WARNING' | 'CRITICAL'}> = ({ icon, label, active, onClick, alert }) => (
-  <button onClick={onClick} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all ${active ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-sm' : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'}`}>
-    <div className="flex items-center gap-3">
-      {icon}
-      <span className="text-sm font-medium">{label}</span>
-    </div>
-    {alert && (
-      <div className={`w-2 h-2 rounded-full ${alert === 'CRITICAL' ? 'bg-rose-500 animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]'}`} />
-    )}
-  </button>
-);
 
-interface CreateApplicantModalProps { onClose: () => void; onSubmit: (app: Applicant) => void; }
-
-const InputField = ({ label, icon, name, type = 'text', errors, ...props }: any) => (
-  <div className="space-y-1.5 flex flex-col">
-    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-      {icon} {label}
-    </label>
-    <input 
-      {...props}
-      type={type}
-      name={name}
-      className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-white outline-none transition-all ${
-        errors[name] ? 'border-rose-500 bg-rose-500/5 shadow-[0_0_10px_rgba(244,63,94,0.1)]' : 'border-slate-800 focus:border-indigo-500/50'
-      }`}
-    />
-    {errors[name] && <span className="text-[10px] text-rose-500 font-bold ml-1 animate-in fade-in slide-in-from-left-2">{errors[name]}</span>}
-  </div>
-);
-
-const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onClose, onSubmit }) => {
-  const [formData, setFormData] = useState({ 
-    name: '', 
-    nationality: 'United States', 
-    income: 50000, 
-    debtRatio: 0.3, 
-    creditScore: 700, 
-    loanAmount: 150000,
-    gender: 'Male' as 'Male' | 'Female' | 'Other',
-    age: 30
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const countries = ['United States', 'United Kingdom', 'Canada', 'Germany', 'France', 'Japan', 'India', 'Brazil', 'Australia', 'Singapore', 'Netherlands', 'Sweden', 'Switzerland', 'Spain', 'Italy', 'South Korea', 'Mexico', 'United Arab Emirates', 'Norway', 'Denmark'];
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) newErrors.name = 'Full name is required';
-    else if (formData.name.length < 3) newErrors.name = 'Name must be at least 3 characters';
-    
-    if (formData.income <= 0) newErrors.income = 'Income must be a positive number';
-    
-    if (formData.creditScore < 300 || formData.creditScore > 850) newErrors.creditScore = 'Credit score must be between 300 and 850';
-    
-    if (formData.debtRatio < 0 || formData.debtRatio > 1) newErrors.debtRatio = 'Debt ratio must be between 0.0 and 1.0';
-    
-    if (formData.loanAmount <= 0) newErrors.loanAmount = 'Loan amount must be positive';
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      const normalizedScore = (formData.creditScore - 300) / 550;
-      const normalizedDebt = 1 - formData.debtRatio;
-      const scoreFactor = (normalizedScore * 0.6) + (normalizedDebt * 0.4);
-      const newApp: Applicant = { 
-        ...formData, 
-        id: `app-user-${Date.now()}`, 
-        gender: formData.gender as 'Male' | 'Female' | 'Other',
-        age: formData.age,
-        riskProbability: Math.max(0, Math.min(1, 1 - scoreFactor)), 
-        decision: (formData.creditScore > 657 && formData.debtRatio < 0.41) || (formData.creditScore > 717 && formData.debtRatio < 0.51) ? 'Approve' : 'Reject' 
-      };
-      onSubmit(newApp);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-8 shadow-2xl scale-in-center overflow-y-auto max-h-[90vh]">
-        <div className="flex justify-between items-start mb-8">
-          <h3 className="text-2xl font-black text-white flex items-center gap-2"><PlusCircle className="text-indigo-400" /> Ingest Applicant</h3>
-          <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-500 hover:text-white"><X size={20} /></button>
-        </div>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2">
-            <InputField 
-              label="Full Name" 
-              icon={<Fingerprint size={12}/>} 
-              name="name" 
-              errors={errors}
-              value={formData.name} 
-              onChange={(e: any) => setFormData({...formData, name: e.target.value})} 
-            />
-          </div>
-          
-          <div className="space-y-1.5 flex flex-col">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-              <Globe size={12}/> Nationality
-            </label>
-            <select 
-              value={formData.nationality} 
-              onChange={(e: any) => setFormData({...formData, nationality: e.target.value})}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500/50"
-            >
-              {countries.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-
-          <InputField 
-            label="Annual Income ($)" 
-            icon={<DollarSign size={12}/>} 
-            name="income" 
-            errors={errors}
-            type="number" 
-            value={formData.income} 
-            onChange={(e: any) => setFormData({...formData, income: Number(e.target.value)})} 
-          />
-
-          <InputField 
-            label="Credit Score (300-850)" 
-            icon={<Activity size={12}/>} 
-            name="creditScore" 
-            errors={errors}
-            type="number" 
-            value={formData.creditScore} 
-            onChange={(e: any) => setFormData({...formData, creditScore: Number(e.target.value)})} 
-          />
-
-          <InputField 
-            label="Debt-to-Income Ratio (0-1)" 
-            icon={<TrendingUp size={12}/>} 
-            name="debtRatio" 
-            errors={errors}
-            type="number" 
-            step="0.01"
-            value={formData.debtRatio} 
-            onChange={(e: any) => setFormData({...formData, debtRatio: Number(e.target.value)})} 
-          />
-
-          <InputField 
-            label="Loan Amount Requested ($)" 
-            icon={<Briefcase size={12}/>} 
-            name="loanAmount" 
-            errors={errors}
-            type="number" 
-            value={formData.loanAmount} 
-            onChange={(e: any) => setFormData({...formData, loanAmount: Number(e.target.value)})} 
-          />
-
-          <div className="space-y-1.5 flex flex-col">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-              <Users size={12}/> Gender
-            </label>
-            <select 
-              value={formData.gender} 
-              onChange={(e: any) => setFormData({...formData, gender: e.target.value as any})}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500/50"
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <InputField 
-            label="Age" 
-            icon={<Info size={12}/>} 
-            name="age" 
-            errors={errors}
-            type="number" 
-            value={formData.age} 
-            onChange={(e: any) => setFormData({...formData, age: Number(e.target.value)})} 
-          />
-
-          <div className="md:col-span-2">
-            <button type="submit" className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-900/20">
-              Ingest Application
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 export default App;

@@ -148,11 +148,11 @@ class AdversarialTester:
         """
         Performs a full red-team audit on a sample of rejected applicants.
         """
-        if not os.path.exists('dataset_large.csv'):
+        if not os.path.exists('dataset.csv'):
             return {"error": "Dataset not found for auditing"}
             
         # Sample candidates for red teaming
-        df_all = pd.read_csv('dataset_large.csv')
+        df_all = pd.read_csv('dataset.csv', on_bad_lines='skip')
         df = df_all.sample(min(1000, sample_size * 20))
         
         # Identify those the model REJECTS

@@ -1,16 +1,17 @@
 import pandas as pd
 import numpy as np
 import os
+from typing import Tuple, List
 
 class DataProcessor:
-    def __init__(self):
-        self.feature_cols = [
+    def __init__(self) -> None:
+        self.feature_cols: List[str] = [
             'income', 'loanAmount', 'creditScore', 
             'debt_to_income', 'credit_utilization', 
             'payment_history_score', 'loan_repayment_ratio'
         ]
 
-    def clean_data(self, df):
+    def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """Clean missing values and standardize formats."""
         df = df.copy()
         # Fill numeric missing with median
@@ -24,7 +25,7 @@ class DataProcessor:
             
         return df
 
-    def engineer_features(self, df):
+    def engineer_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """Create production-quality features."""
         df = df.copy()
         # 1. Debt-to-income ratio (DTI)
@@ -50,7 +51,7 @@ class DataProcessor:
         
         return df
 
-    def get_features(self, df):
+    def get_features(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Clean, engineer, and return only the unscaled feature matrix."""
         df_clean = self.clean_data(df)
         df_engineered = self.engineer_features(df_clean)

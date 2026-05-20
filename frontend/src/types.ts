@@ -79,6 +79,7 @@ export interface AuditEntry {
 export interface Applicant {
   id: string;
   name: string;
+  email?: string;
   nationality: string;
   income: number;
   debtRatio: number;

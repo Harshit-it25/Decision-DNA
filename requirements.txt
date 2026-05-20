@@ -17,7 +17,6 @@ scipy
 # Security & Governance
 PyJWT
 cryptography
-hashlib
 
 # Visualization
 matplotlib

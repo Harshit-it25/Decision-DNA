@@ -32,9 +32,14 @@ const TerminalConsole: React.FC = () => {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
+    const getHeaders = () => {
+      const token = localStorage.getItem('token');
+      return token ? { 'Authorization': `Bearer ${token}` } : {};
+    };
+
     const fetchLogs = async () => {
       try {
-        const response = await fetch('/api/system/logs');
+        const response = await fetch('/api/system/logs', { headers: getHeaders() });
         const data = await response.json();
         if (data.status === 'success') {
           setLogs(data.logs);
@@ -46,7 +51,7 @@ const TerminalConsole: React.FC = () => {
 
     const fetchMetrics = async () => {
       try {
-        const response = await fetch('/api/system/metrics');
+        const response = await fetch('/api/system/metrics', { headers: getHeaders() });
         const data = await response.json();
         if (data.status === 'success') {
           setCpu(data.cpu.toString());
@@ -92,9 +97,13 @@ const TerminalConsole: React.FC = () => {
     } else {
       // Remote execution
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch('/api/system/command', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
           body: JSON.stringify({ command: cmd })
         });
         const data = await response.json();
@@ -243,7 +252,7 @@ const TerminalConsole: React.FC = () => {
   );
 };
 
-const LogMetricCard = ({ icon, label, value, color }: any) => (
+const LogMetricCard = ({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color: string }) => (
   <div className={`bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 transition-all hover:border-${color}-500/30`}>
     <div className={`p-2 rounded-xl bg-${color}-500/10 text-${color}-400 border border-${color}-500/20`}>
       {icon}

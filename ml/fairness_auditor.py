@@ -50,14 +50,17 @@ def calculate_statistical_parity_difference(df, protected_attr, privileged_class
 
     return unpriv_rate - priv_rate
 
-def get_fairness_metrics(df_path='dataset_large.csv', model=None, processor=None, sample_size=100000):
+def get_fairness_metrics(df_path='dataset.csv', model=None, processor=None, sample_size=100000):
     """
     Loads data, predicts outcomes with the model, and calculates fairness metrics.
     """
     try:
-        df = pd.read_csv(df_path)
+        df = pd.read_csv(df_path, on_bad_lines='skip')
     except FileNotFoundError:
-        return {"error": "Dataset not found"}
+        try:
+            df = pd.read_csv('dataset_processed.csv', on_bad_lines='skip')
+        except FileNotFoundError:
+            return {"error": "Dataset not found"}
 
     # Use a sample for speed if dataset is huge
     if len(df) > sample_size:
@@ -80,6 +83,12 @@ def get_fairness_metrics(df_path='dataset_large.csv', model=None, processor=None
 
     metrics = {}
 
+    # Create age_group if it doesn't exist but age does
+    if 'age_group' not in df.columns and 'age' in df.columns:
+        bins = [0, 25, 40, 60, 150]
+        labels = ['18-25', '26-40', '41-60', '60+']
+        df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels, right=True)
+
     # 1. Gender Bias Analysis
     gender_di = calculate_disparate_impact(df, 'gender', 'Male', 'Female', target_col=target_col)
     gender_spd = calculate_statistical_parity_difference(df, 'gender', 'Male', 'Female', target_col=target_col)
@@ -93,9 +102,11 @@ def get_fairness_metrics(df_path='dataset_large.csv', model=None, processor=None
         rates = {}
         if attr in df.columns:
             for val in df[attr].unique():
+                if pd.isna(val):
+                    continue
                 total = len(df[df[attr] == val])
                 approved = len(df[(df[attr] == val) & (df[target_col] == 'Approve')])
-                rates[val] = round((approved / total) * 100, 2) if total > 0 else 0
+                rates[str(val)] = round((approved / total) * 100, 2) if total > 0 else 0
         return rates
 
     metrics['rates'] = {
@@ -115,6 +126,26 @@ def get_fairness_metrics(df_path='dataset_large.csv', model=None, processor=None
             'status': 'Biased' if age_di < 0.8 else 'Fair'
         }
     }
+
+    # Dynamically calculate "real" mitigation thresholds using Threshold Shifting
+    # Base threshold is 0.50. We adjust the threshold for the unprivileged group based on DI.
+    recommended_thresholds = {
+        'Male': 0.50,
+        'Female': 0.50,
+        'Age 18-25': 0.50
+    }
+    
+    # If Female is under-approved, lower their threshold. If over-approved, lower Male threshold.
+    if gender_di < 1.0 and gender_di > 0:
+        # e.g., DI = 0.8 -> threshold = 0.5 * 0.8 = 0.40
+        recommended_thresholds['Female'] = round(0.50 * gender_di, 2)
+    elif gender_di > 1.0:
+        recommended_thresholds['Male'] = round(0.50 / gender_di, 2)
+        
+    if age_di < 1.0 and age_di > 0:
+        recommended_thresholds['Age 18-25'] = round(0.50 * age_di, 2)
+
+    metrics['recommended_thresholds'] = recommended_thresholds
 
     return metrics
 

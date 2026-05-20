@@ -27,3 +27,10 @@ server.log
 # OS
 .DS_Store
 Thumbs.db
+
+# Databases
+*.db
+app/users.db
+
+# MinGit
+.mingit/

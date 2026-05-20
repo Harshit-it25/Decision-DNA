@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta,cyan\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev:backend": ".venv\\\\Scripts\\\\python -m uvicorn app.main:app --host 127.0.0.1 --port 8008 --reload",
     "build": "cd frontend && npm run build",
     "build:frontend": "cd frontend && npm run build",
+    "setup": "npm run install:backend && npm run install:frontend",
     "install:frontend": "cd frontend && npm install",
-    "start": "uvicorn app.main:app --host 127.0.0.1 --port 8000"
+    "install:backend": "python -m venv .venv && .venv\\\\Scripts\\\\python -m pip install --upgrade pip && .venv\\\\Scripts\\\\pip install -r requirements.txt",
+    "start": "npm run dev"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

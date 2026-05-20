@@ -7,7 +7,7 @@ import { ModelMetadata, ModelStatus, ModelType } from '../types';
 
 interface ModelManagementProps {
   models: ModelMetadata[];
-  setModels: any;
+  setModels: React.Dispatch<React.SetStateAction<ModelMetadata[]>>;
   activeModelId: string;
   setActiveModelId: (id: string) => void;
   onTrain: () => void;
@@ -59,9 +59,9 @@ const ModelManagement: React.FC<ModelManagementProps> = ({
                   </div>
                   <p className="text-xs text-slate-500 font-mono mb-4">{model.fingerprint}</p>
                   <div className="flex gap-8">
-                    <Metric label="Accuracy" value={`${(model.metrics.accuracy * 100).toFixed(1)}%`} />
-                    <Metric label="Precision" value={`${(model.metrics.precision * 100).toFixed(1)}%`} />
-                    <Metric label="Recall" value={`${(model.metrics.recall * 100).toFixed(1)}%`} />
+                    <Metric label="Accuracy" value={`${(model.metrics.accuracy * 100).toFixed(2)}%`} />
+                    <Metric label="Precision" value={`${(model.metrics.precision * 100).toFixed(2)}%`} />
+                    <Metric label="Recall" value={`${(model.metrics.recall * 100).toFixed(2)}%`} />
                   </div>
                 </div>
               </div>
@@ -88,7 +88,7 @@ const ModelManagement: React.FC<ModelManagementProps> = ({
   );
 };
 
-const Metric = ({ label, value }: any) => (
+const Metric = ({ label, value }: { label: string, value: string }) => (
   <div>
     <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">{label}</p>
     <p className="text-lg font-bold text-slate-200">{value}</p>

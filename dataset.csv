@@ -100164,3 +100164,829 @@ app-gen-1778245084809-732,"David Brown",Denmark,128733.0,0.1104,452,374652.0,Oth
 app-gen-1778245084809-733,"Jessica Hernandez",Switzerland,166853.0,0.1284,320,57359.0,Male,40,0.9900,Reject
 app-gen-1778245084813-1051,"Charles Rodriguez",Japan,44665.0,0.3935,611,330707.0,Male,58,0.9500,Reject
 app-gen-1778245084809-737,"William Perez",Norway,15351.0,0.6069,711,162788.0,Female,25,0.4700,Approve
+app-gen-1778245084807-0,"Lisa Brown",Japan,104448.0,0.3748,526,446994.0,Female,69,0.9300,Reject
+app-gen-1778245084807-101,"Alice Anderson",Australia,94121.0,0.0252,442,470623.0,Male,78,0.9600,Reject
+app-gen-1778245084807-102,"Alice Martinez",Switzerland,27517.0,0.6329,470,364051.0,Other,68,0.9400,Reject
+app-gen-1778245084807-1,"Brian Rodriguez",United Arab Emirates,100235.0,0.7369,369,55239.0,Female,31,0.9300,Reject
+app-gen-1778245084807-100,"William White",Sweden,40097.0,0.1049,479,300533.0,Male,61,0.9300,Reject
+app-gen-1778245084807-10,"Susan Taylor",Denmark,90733.0,0.5466,655,156035.0,Male,81,0.9400,Reject
+app-gen-1778245084807-107,"Julia Hernandez",France,70732.0,0.5511,488,436283.0,Female,31,0.9600,Reject
+app-gen-1778245084807-106,"Richard Allen",United Arab Emirates,151304.0,0.7962,614,381526.0,Female,80,0.9300,Reject
+app-gen-1778245084807-105,"Margaret Brown",Switzerland,51430.0,0.0731,745,82825.0,Male,49,0.2900,Approve
+app-gen-1778245084807-103,"Michael Davis",Germany,38437.0,0.4156,837,242049.0,Female,53,0.2300,Approve
+app-gen-1778245084807-104,"Jessica Allen",Mexico,149071.0,0.5640,423,185036.0,Male,19,0.9300,Reject
+app-gen-1778245084807-11,"Margaret Thomas",Australia,63959.0,0.5693,614,400206.0,Male,47,0.9600,Reject
+app-gen-1778245084807-110,"Robert Thompson",United Kingdom,22223.0,0.3156,463,233965.0,Other,70,0.9500,Reject
+app-gen-1778245084807-111,"Betty Johnson",Italy,75016.0,0.5969,300,51516.0,Male,25,0.9600,Reject
+app-gen-1778245084807-109,"Sandra Garcia",Netherlands,63307.0,0.6015,554,343607.0,Female,45,0.9600,Reject
+app-gen-1778245084807-108,"Betty Jones",Australia,171946.0,0.5260,693,364413.0,Other,35,0.4000,Approve
+app-gen-1778245084807-112,"James Wilson",Sweden,156436.0,0.0043,442,237723.0,Other,78,0.9300,Reject
+app-gen-1778245084807-118,"Julia Brown",United Arab Emirates,110370.0,0.5007,719,279341.0,Female,52,0.4000,Approve
+app-gen-1778245084807-117,"Paul Harris",United States,169422.0,0.4327,639,109455.0,Male,64,0.9200,Reject
+app-gen-1778245084807-115,"Jennifer Wright",Norway,164497.0,0.2477,354,482506.0,Female,80,0.9300,Reject
+app-gen-1778245084807-116,"William Wilson",Canada,68584.0,0.3303,781,346445.0,Other,59,0.2600,Approve
+app-gen-1778245084807-114,"Charles Johnson",Switzerland,42674.0,0.7521,788,176421.0,Female,82,0.2700,Approve
+app-gen-1778245084807-113,"David Clark",Spain,79868.0,0.0648,329,152586.0,Female,41,0.9600,Reject
+app-gen-1778245084807-121,"Elizabeth Clark",India,43671.0,0.1352,539,244150.0,Female,24,0.9400,Reject
+app-gen-1778245084807-122,"William Jackson",Japan,118828.0,0.2545,454,272583.0,Other,45,0.9400,Reject
+app-gen-1778245084807-12,"Michael Lee",India,117482.0,0.0869,788,358432.0,Other,66,0.2400,Approve
+app-gen-1778245084807-123,"Joseph Sanchez",Italy,106463.0,0.6527,452,332156.0,Female,62,0.9300,Reject
+app-gen-1778245084807-120,"Sandra Martinez",Germany,157174.0,0.0575,361,197565.0,Other,78,0.9300,Reject
+app-gen-1778245084807-119,"William Perez",Germany,57298.0,0.2768,806,350884.0,Male,40,0.2400,Approve
+app-gen-1778245084807-124,"Paul Sanchez",Netherlands,140379.0,0.6950,748,132647.0,Female,66,0.1900,Approve
+app-gen-1778245084807-129,"Susan Wilson",Germany,53479.0,0.2392,585,152528.0,Other,47,0.9500,Reject
+app-gen-1778245084807-127,"John Wilson",France,102442.0,0.0325,599,494002.0,Male,33,0.9300,Reject
+app-gen-1778245084807-125,"Thomas Jackson",Germany,59862.0,0.4446,748,163519.0,Other,71,0.2700,Approve
+app-gen-1778245084807-128,"Margaret Taylor",Singapore,168087.0,0.0198,510,430450.0,Male,39,0.9200,Reject
+app-gen-1778245084807-126,"Paul Taylor",United Kingdom,35665.0,0.6896,301,458866.0,Female,63,0.9300,Reject
+app-gen-1778245084807-133,"James Smith",South Korea,134151.0,0.5285,704,124989.0,Male,65,0.4200,Approve
+app-gen-1778245084807-141,"Thomas Harris",Brazil,27194.0,0.6082,361,334939.0,Female,65,0.9400,Reject
+app-gen-1778245084807-145,"Kevin Wright",South Korea,89460.0,0.4779,318,180308.0,Other,37,0.9600,Reject
+app-gen-1778245084807-130,"Brian Moore",Japan,104230.0,0.3405,510,119176.0,Male,28,0.9300,Reject
+app-gen-1778245084807-148,"Nancy Brown",Brazil,176550.0,0.5918,632,125695.0,Male,46,0.9300,Reject
+app-gen-1778245084807-137,"Sandra Allen",Mexico,19315.0,0.0358,800,96265.0,Other,28,0.3500,Approve
+app-gen-1778245084807-140,"Kevin Smith",Netherlands,30401.0,0.5001,846,121686.0,Female,32,0.2700,Approve
+app-gen-1778245084807-150,"David Thomas",South Korea,117574.0,0.4233,836,486636.0,Female,76,0.2300,Approve
+app-gen-1778245084807-187,"Jessica Brown",United Kingdom,66283.0,0.4272,367,304210.0,Female,79,0.9600,Reject
+app-gen-1778245084807-2,"Linda Miller",Sweden,60320.0,0.1657,370,490212.0,Female,50,0.9600,Reject
+app-gen-1778245084807-26,"George White",Denmark,54632.0,0.5015,466,222099.0,Female,38,0.9600,Reject
+app-gen-1778245084807-33,"Nancy Robinson",United Kingdom,80559.0,0.0540,504,254821.0,Female,24,0.9600,Reject
+app-gen-1778245084807-13,"Betty Jackson",Sweden,75546.0,0.3460,797,496446.0,Male,48,0.2700,Approve
+app-gen-1778245084807-38,"Kevin Garcia",Australia,96805.0,0.0853,553,209772.0,Other,64,0.9400,Reject
+app-gen-1778245084807-44,"Charles Martin",Brazil,118016.0,0.6637,590,355336.0,Male,26,0.9400,Reject
+app-gen-1778245084807-7,"Patricia Miller",United Kingdom,69672.0,0.6796,721,60972.0,Female,58,0.3800,Approve
+app-gen-1778245084807-75,"Elizabeth Davis",Singapore,22194.0,0.0154,626,75305.0,Male,45,0.9500,Reject
+app-gen-1778245084807-93,"Linda Jones",Sweden,115390.0,0.7314,840,137131.0,Male,63,0.2400,Approve
+app-gen-1778245084807-136,"David Clark",Brazil,73346.0,0.3824,810,265769.0,Other,52,0.2400,Approve
+app-gen-1778245084808-250,"Richard Clark",Denmark,146005.0,0.4745,765,130747.0,Female,57,0.1700,Approve
+app-gen-1778245084808-400,"Elizabeth Miller",Denmark,142055.0,0.4096,495,215364.0,Other,77,0.9300,Reject
+app-gen-1778245084808-506,"Jessica Young",Singapore,150772.0,0.3426,743,348173.0,Female,76,0.1800,Approve
+app-gen-1778245084809-954,"Robert Gonzales",United States,19254.0,0.2228,484,439715.0,Female,65,0.9500,Reject
+app-gen-1778245084813-1065,"Margaret Anderson",Italy,125580.0,0.0073,361,445147.0,Other,79,0.9400,Reject
+app-gen-1778245084814-1190,"Kevin Wright",Norway,140352.0,0.3404,447,208811.0,Other,23,0.9300,Reject
+app-gen-1778245084814-1210,"Alice Johnson",United Arab Emirates,95395.0,0.2831,516,481688.0,Male,55,0.9600,Reject
+app-gen-1778245084814-1302,"John Lewis",Netherlands,169998.0,0.7181,525,231653.0,Male,26,0.9200,Reject
+app-gen-1778245084807-134,"Grace Thompson",Brazil,54508.0,0.0936,372,450161.0,Other,57,0.9600,Reject
+app-gen-1778245084814-1322,"Michael Thompson",Japan,115032.0,0.0402,607,304296.0,Other,56,0.9400,Reject
+app-gen-1778245084820-4538,"David Miller",Australia,132327.0,0.2795,527,492808.0,Other,43,0.9400,Reject
+app-gen-1778245084807-156,"Joseph Smith",Singapore,49770.0,0.7263,595,171037.0,Other,75,0.9500,Reject
+app-gen-1778245084896-76935,"Jessica Jones",Netherlands,126211.0,0.5471,579,475100.0,Male,28,0.9400,Reject
+app-gen-1778245084807-131,"Margaret King",South Korea,157609.0,0.7544,329,226346.0,Male,61,0.9300,Reject
+app-gen-1778245084898-81632,"Susan White",Denmark,175587.0,0.3653,584,386101.0,Female,30,0.9200,Reject
+app-gen-1778245084807-155,"William Jackson",South Korea,135130.0,0.0555,331,171041.0,Female,20,0.9400,Reject
+app-gen-1778245084807-163,"Robert Miller",Mexico,64867.0,0.5091,648,184249.0,Other,46,0.9500,Reject
+app-gen-1778245084807-132,"Mark Jackson",Japan,78626.0,0.0698,438,259396.0,Other,21,0.9600,Reject
+app-gen-1778245084807-138,"Anthony Sanchez",Japan,65665.0,0.6704,503,363587.0,Female,59,0.9600,Reject
+app-gen-1778245084807-0,"Lisa Brown",Japan,104448.0,0.3748,526,446994.0,Female,69,0.9300,Reject
+app-gen-1778245084807-102,"Alice Martinez",Switzerland,27517.0,0.6329,470,364051.0,Other,68,0.9400,Reject
+app-gen-1778245084807-100,"William White",Sweden,40097.0,0.1049,479,300533.0,Male,61,0.9300,Reject
+app-gen-1778245084807-10,"Susan Taylor",Denmark,90733.0,0.5466,655,156035.0,Male,81,0.9400,Reject
+app-gen-1778245084807-101,"Alice Anderson",Australia,94121.0,0.0252,442,470623.0,Male,78,0.9600,Reject
+app-gen-1778245084807-1,"Brian Rodriguez",United Arab Emirates,100235.0,0.7369,369,55239.0,Female,31,0.9300,Reject
+app-gen-1778245084807-103,"Michael Davis",Germany,38437.0,0.4156,837,242049.0,Female,53,0.2300,Approve
+app-gen-1778245084807-106,"Richard Allen",United Arab Emirates,151304.0,0.7962,614,381526.0,Female,80,0.9300,Reject
+app-gen-1778245084807-104,"Jessica Allen",Mexico,149071.0,0.5640,423,185036.0,Male,19,0.9300,Reject
+app-gen-1778245084807-107,"Julia Hernandez",France,70732.0,0.5511,488,436283.0,Female,31,0.9600,Reject
+app-gen-1778245084807-105,"Margaret Brown",Switzerland,51430.0,0.0731,745,82825.0,Male,49,0.2900,Approve
+app-gen-1778245084807-108,"Betty Jones",Australia,171946.0,0.5260,693,364413.0,Other,35,0.4000,Approve
+app-gen-1778245084807-11,"Margaret Thomas",Australia,63959.0,0.5693,614,400206.0,Male,47,0.9600,Reject
+app-gen-1778245084807-111,"Betty Johnson",Italy,75016.0,0.5969,300,51516.0,Male,25,0.9600,Reject
+app-gen-1778245084807-112,"James Wilson",Sweden,156436.0,0.0043,442,237723.0,Other,78,0.9300,Reject
+app-gen-1778245084807-109,"Sandra Garcia",Netherlands,63307.0,0.6015,554,343607.0,Female,45,0.9600,Reject
+app-gen-1778245084807-110,"Robert Thompson",United Kingdom,22223.0,0.3156,463,233965.0,Other,70,0.9500,Reject
+app-gen-1778245084807-113,"David Clark",Spain,79868.0,0.0648,329,152586.0,Female,41,0.9600,Reject
+app-gen-1778245084807-116,"William Wilson",Canada,68584.0,0.3303,781,346445.0,Other,59,0.2600,Approve
+app-gen-1778245084807-115,"Jennifer Wright",Norway,164497.0,0.2477,354,482506.0,Female,80,0.9300,Reject
+app-gen-1778245084807-114,"Charles Johnson",Switzerland,42674.0,0.7521,788,176421.0,Female,82,0.2700,Approve
+app-gen-1778245084807-118,"Julia Brown",United Arab Emirates,110370.0,0.5007,719,279341.0,Female,52,0.4000,Approve
+app-gen-1778245084807-117,"Paul Harris",United States,169422.0,0.4327,639,109455.0,Male,64,0.9200,Reject
+app-gen-1778245084807-12,"Michael Lee",India,117482.0,0.0869,788,358432.0,Other,66,0.2400,Approve
+app-gen-1778245084807-123,"Joseph Sanchez",Italy,106463.0,0.6527,452,332156.0,Female,62,0.9300,Reject
+app-gen-1778245084807-121,"Elizabeth Clark",India,43671.0,0.1352,539,244150.0,Female,24,0.9400,Reject
+app-gen-1778245084807-120,"Sandra Martinez",Germany,157174.0,0.0575,361,197565.0,Other,78,0.9300,Reject
+app-gen-1778245084807-122,"William Jackson",Japan,118828.0,0.2545,454,272583.0,Other,45,0.9400,Reject
+app-gen-1778245084807-119,"William Perez",Germany,57298.0,0.2768,806,350884.0,Male,40,0.2400,Approve
+app-gen-1778245084807-127,"John Wilson",France,102442.0,0.0325,599,494002.0,Male,33,0.9300,Reject
+app-gen-1778245084807-128,"Margaret Taylor",Singapore,168087.0,0.0198,510,430450.0,Male,39,0.9200,Reject
+app-gen-1778245084807-125,"Thomas Jackson",Germany,59862.0,0.4446,748,163519.0,Other,71,0.2700,Approve
+app-gen-1778245084807-124,"Paul Sanchez",Netherlands,140379.0,0.6950,748,132647.0,Female,66,0.1900,Approve
+app-gen-1778245084807-126,"Paul Taylor",United Kingdom,35665.0,0.6896,301,458866.0,Female,63,0.9300,Reject
+app-gen-1778245084807-129,"Susan Wilson",Germany,53479.0,0.2392,585,152528.0,Other,47,0.9500,Reject
+app-gen-1778245084807-131,"Margaret King",South Korea,157609.0,0.7544,329,226346.0,Male,61,0.9300,Reject
+app-gen-1778245084807-13,"Betty Jackson",Sweden,75546.0,0.3460,797,496446.0,Male,48,0.2700,Approve
+app-gen-1778245084807-132,"Mark Jackson",Japan,78626.0,0.0698,438,259396.0,Other,21,0.9600,Reject
+app-gen-1778245084807-134,"Grace Thompson",Brazil,54508.0,0.0936,372,450161.0,Other,57,0.9600,Reject
+app-gen-1778245084807-130,"Brian Moore",Japan,104230.0,0.3405,510,119176.0,Male,28,0.9300,Reject
+app-gen-1778245084807-133,"James Smith",South Korea,134151.0,0.5285,704,124989.0,Male,65,0.4200,Approve
+app-gen-1778245084807-136,"David Clark",Brazil,73346.0,0.3824,810,265769.0,Other,52,0.2400,Approve
+app-gen-1778245084807-138,"Anthony Sanchez",Japan,65665.0,0.6704,503,363587.0,Female,59,0.9600,Reject
+app-gen-1778245084807-135,"Paul Perez",Singapore,91396.0,0.1022,518,294600.0,Other,35,0.9500,Reject
+app-gen-1778245084807-137,"Sandra Allen",Mexico,19315.0,0.0358,800,96265.0,Other,28,0.3500,Approve
+app-gen-1778245084807-139,"George Jackson",Australia,146892.0,0.5716,459,336036.0,Other,31,0.9300,Reject
+app-gen-1778245084807-14,"Thomas Scott",Brazil,45736.0,0.5667,585,77387.0,Male,54,0.9400,Reject
+app-gen-1778245084807-143,"Ashley Anderson",Brazil,77251.0,0.1121,512,466700.0,Female,70,0.9600,Reject
+app-gen-1778245084807-142,"Linda Walker",Canada,126329.0,0.4207,710,193764.0,Male,54,0.3500,Approve
+app-gen-1778245084807-140,"Kevin Smith",Netherlands,30401.0,0.5001,846,121686.0,Female,32,0.2700,Approve
+app-gen-1778245084807-144,"Margaret Sanchez",Netherlands,157615.0,0.1957,598,372360.0,Female,79,0.9300,Reject
+app-gen-1778245084807-141,"Thomas Harris",Brazil,27194.0,0.6082,361,334939.0,Female,65,0.9400,Reject
+app-gen-1778245084807-148,"Nancy Brown",Brazil,176550.0,0.5918,632,125695.0,Male,46,0.9300,Reject
+app-gen-1778245084807-147,"Elizabeth Williams",United Arab Emirates,109288.0,0.4176,421,223599.0,Male,78,0.9400,Reject
+app-gen-1778245084807-150,"David Thomas",South Korea,117574.0,0.4233,836,486636.0,Female,76,0.2300,Approve
+app-gen-1778245084807-145,"Kevin Wright",South Korea,89460.0,0.4779,318,180308.0,Other,37,0.9600,Reject
+app-gen-1778245084807-15,"Karen Ramirez",India,87514.0,0.1309,849,185601.0,Female,75,0.2600,Approve
+app-gen-1778245084807-149,"Grace Thomas",Japan,112753.0,0.1525,549,132803.0,Other,74,0.9400,Reject
+app-gen-1778245084807-146,"Michael Wright",Australia,86026.0,0.7561,437,217820.0,Female,80,0.9600,Reject
+app-gen-1778245084807-151,"Elizabeth Anderson",Singapore,153222.0,0.1229,347,392513.0,Other,55,0.9300,Reject
+app-gen-1778245084807-157,"Betty Wright",Brazil,55591.0,0.4251,413,114035.0,Male,61,0.9600,Reject
+app-gen-1778245084807-154,"Karen Martinez",Japan,46694.0,0.6999,426,252093.0,Other,60,0.9400,Reject
+app-gen-1778245084807-153,"Mark Miller",India,140401.0,0.5168,501,191213.0,Male,21,0.9300,Reject
+app-gen-1778245084807-163,"Robert Miller",Mexico,64867.0,0.5091,648,184249.0,Other,46,0.9500,Reject
+app-gen-1778245084807-161,"Robert Taylor",Singapore,38228.0,0.0653,398,338179.0,Male,80,0.9300,Reject
+app-gen-1778245084807-158,"Robert Martin",Australia,127187.0,0.5385,840,188769.0,Other,57,0.2300,Approve
+app-gen-1778245084807-159,"Joseph Harris",Spain,71383.0,0.5848,355,358262.0,Female,44,0.9600,Reject
+app-gen-1778245084807-167,"Susan Garcia",Sweden,112291.0,0.7302,305,441300.0,Male,64,0.9400,Reject
+app-gen-1778245084807-180,"Linda Young",Germany,158081.0,0.4227,835,82815.0,Other,23,0.2400,Approve
+app-gen-1778245084809-773,"Grace Robinson",Norway,114523.0,0.0635,448,303231.0,Male,18,0.9400,Reject
+app-gen-1778245084807-25,"Karen Davis",Denmark,154658.0,0.4986,481,265284.0,Other,47,0.9300,Reject
+app-gen-1778245084809-979,"Donald King",Mexico,146766.0,0.4473,584,389764.0,Male,23,0.9300,Reject
+app-gen-1778245084807-56,"Julia Ramirez",Italy,80774.0,0.2530,362,99408.0,Female,36,0.9600,Reject
+app-gen-1778245084807-178,"Mary White",France,18847.0,0.1378,308,389018.0,Other,47,0.9500,Reject
+app-gen-1778245084813-1022,"James Garcia",Denmark,19499.0,0.0117,642,335211.0,Male,57,0.9400,Reject
+app-gen-1778245084808-340,"Nancy Rodriguez",United Kingdom,123220.0,0.3159,648,73345.0,Male,44,0.9400,Reject
+app-gen-1778245084814-1275,"Mary Anderson",Brazil,136142.0,0.6841,704,124548.0,Other,57,0.4200,Approve
+app-gen-1778245084870-44943,"Paul Wright",Norway,129023.0,0.4599,690,105333.0,Other,39,0.3800,Approve
+app-gen-1778245084807-64,"John Allen",South Korea,122669.0,0.3561,716,127274.0,Male,60,0.3100,Approve
+app-gen-1778245084807-169,"Karen Sanchez",Canada,130098.0,0.2402,721,116859.0,Male,72,0.3700,Approve
+app-gen-1778245084807-41,"Sandra Davis",Netherlands,30860.0,0.7706,689,276947.0,Other,20,0.4500,Approve
+app-gen-1778245084809-583,"Kevin Davis",Denmark,132373.0,0.3329,496,172054.0,Male,39,0.9400,Reject
+app-gen-1778245084808-284,"Christopher Sanchez",India,25094.0,0.1146,476,121327.0,Other,27,0.9400,Reject
+app-gen-1778245084808-372,"Joseph Lee",Spain,94300.0,0.0556,713,489732.0,Male,33,0.3300,Approve
+app-gen-1778245084808-549,"Charles Miller",United Arab Emirates,88697.0,0.3776,633,123306.0,Other,71,0.9600,Reject
+app-gen-1778245084807-39,"George Jones",Italy,126402.0,0.2260,436,410931.0,Male,69,0.9400,Reject
+app-gen-1778245084808-271,"George King",United Kingdom,44833.0,0.2337,621,445977.0,Other,20,0.9500,Reject
+app-gen-1778245084808-446,"Matthew Sanchez",Canada,131716.0,0.3520,504,172973.0,Other,18,0.9400,Reject
+app-gen-1778245084808-317,"Donald Lopez",United Arab Emirates,20121.0,0.3636,820,140390.0,Male,19,0.3300,Approve
+app-gen-1778245084807-187,"Jessica Brown",United Kingdom,66283.0,0.4272,367,304210.0,Female,79,0.9600,Reject
+app-gen-1778245084807-176,"Karen Brown",India,58418.0,0.6364,520,94192.0,Other,46,0.9600,Reject
+LENDING-NEW,"John Doe",United States,20000.0,0.9000,300,1000000.0,Male,25,0.9500,Reject
+LENDING-10000,"Charles Williams",France,20298.0,0.3336,592,5000.0,Male,64,1.0000,Reject
+LENDING-100000,"Jessica Anderson",United Kingdom,44492.0,0.4796,724,11268.0,Other,21,0.1600,Approve
+LENDING-100003,"William Moore",Canada,71233.0,0.4196,692,10913.0,Other,74,0.2500,Approve
+LENDING-100004,"Richard Lopez",Australia,35446.0,0.1409,663,12980.0,Female,73,0.6000,Approve
+LENDING-100002,"Susan Lopez",Australia,170236.0,0.2674,704,47597.0,Female,42,0.1700,Approve
+LENDING-100001,"Susan Martin",United States,96885.0,0.2028,850,28650.0,Other,46,0.0100,Approve
+LENDING-100006,"Jessica Garcia",United Kingdom,69114.0,0.3113,624,20926.0,Female,75,1.0000,Reject
+LENDING-100005,"Barbara Williams",Canada,132892.0,0.3533,669,13457.0,Female,71,0.2300,Approve
+LENDING-100007,"William Jones",Australia,23630.0,0.4878,825,5224.0,Other,33,0.0900,Approve
+LENDING-100009,"John Brown",United States,112712.0,0.0315,711,51138.0,Other,64,0.0500,Approve
+LENDING-100008,"Linda Gonzalez",Canada,131951.0,0.1937,649,62071.0,Other,63,1.0000,Reject
+LENDING-100012,"David Hernandez",Japan,68730.0,0.4174,558,31484.0,Other,52,1.0000,Reject
+LENDING-100013,"Jessica Thomas",Japan,47807.0,0.2079,689,15268.0,Other,44,0.2600,Approve
+LENDING-100011,"Thomas Martinez",Singapore,24417.0,0.2658,771,5528.0,Other,40,0.0600,Approve
+LENDING-100010,"Charles Johnson",United States,86277.0,0.4774,775,36279.0,Male,55,0.0300,Approve
+LENDING-10001,"Sarah Hernandez",Australia,106082.0,0.1346,546,25939.0,Other,77,1.0000,Reject
+LENDING-100018,"Patricia Thomas",Singapore,177203.0,0.1102,706,71579.0,Other,71,0.1700,Approve
+LENDING-100017,"James Gonzalez",Canada,27215.0,0.1360,637,13425.0,Other,34,0.9900,Reject
+LENDING-100016,"Richard Gonzalez",Singapore,96354.0,0.2775,681,23962.0,Male,42,0.2300,Approve
+LENDING-100015,"John Thomas",Singapore,26846.0,0.1726,618,12759.0,Other,65,1.0000,Reject
+LENDING-100014,"Richard Martin",Canada,52340.0,0.1541,714,22501.0,Male,68,0.4200,Approve
+LENDING-100022,"Michael Garcia",France,82626.0,0.3812,707,37684.0,Female,50,0.2900,Approve
+LENDING-100021,"Jessica Jones",Japan,19811.0,0.5044,706,9860.0,Female,26,0.1900,Approve
+LENDING-10002,"Barbara Moore",United Kingdom,84195.0,0.1669,792,15644.0,Male,28,0.0600,Approve
+LENDING-100020,"David Hernandez",Singapore,39845.0,0.4003,679,18322.0,Female,19,0.0900,Approve
+LENDING-100019,"Linda Smith",Germany,17964.0,0.3097,535,5000.0,Female,25,1.0000,Reject
+LENDING-100023,"William Brown",Australia,88609.0,0.6197,682,42349.0,Male,26,0.1500,Approve
+LENDING-100026,"Karen Garcia",Germany,80364.0,0.3403,758,22490.0,Other,65,0.2300,Approve
+LENDING-100024,"David Garcia",Singapore,69783.0,0.4035,773,23253.0,Female,27,0.0600,Approve
+LENDING-100027,"Sarah Johnson",United Kingdom,17538.0,0.3646,712,7119.0,Other,24,0.4700,Approve
+LENDING-100025,"Thomas Rodriguez",Japan,27900.0,0.3172,850,13212.0,Female,48,0.0100,Approve
+LENDING-100029,"Thomas Rodriguez",Australia,65345.0,0.2879,789,7120.0,Male,27,0.1800,Approve
+LENDING-10003,"Susan Anderson",Japan,103567.0,0.2339,621,34646.0,Other,75,1.0000,Reject
+LENDING-100028,"Elizabeth Jackson",United States,89917.0,0.4014,651,14030.0,Male,41,0.9900,Reject
+LENDING-100030,"Patricia Anderson",United States,32143.0,0.2362,705,7623.0,Male,77,0.1800,Approve
+LENDING-100031,"Jennifer Johnson",Singapore,66261.0,0.1816,743,22830.0,Other,67,0.1100,Approve
+LENDING-100035,"Patricia Martin",United States,99606.0,0.4213,779,32613.0,Female,40,0.1100,Approve
+LENDING-100034,"Mary Garcia",Germany,53376.0,0.1926,702,24426.0,Other,72,0.1500,Approve
+LENDING-100036,"William Thomas",France,149052.0,0.1156,670,74058.0,Female,77,0.4900,Approve
+LENDING-100033,"Charles Jackson",Canada,155988.0,0.2249,634,66448.0,Female,66,1.0000,Reject
+LENDING-100032,"Elizabeth Wilson",United States,77695.0,0.1622,664,31181.0,Male,69,0.1200,Approve
+LENDING-100038,"Charles Taylor",Germany,142009.0,0.3523,835,33401.0,Other,69,0.1300,Approve
+LENDING-100037,"William Miller",France,164466.0,0.2938,535,38821.0,Female,31,1.0000,Reject
+LENDING-100039,"Sarah Wilson",Germany,16988.0,0.4055,690,5000.0,Other,59,0.3500,Approve
+LENDING-10004,"Sarah Thomas",Germany,76694.0,0.2935,712,10922.0,Female,18,0.1000,Approve
+LENDING-100040,"Jennifer Anderson",Japan,150886.0,0.3534,777,50860.0,Female,25,0.0500,Approve
+LENDING-100044,"Michael Wilson",Canada,107762.0,0.3468,634,42930.0,Other,50,1.0000,Reject
+LENDING-100042,"Linda Rodriguez",Singapore,76998.0,0.3385,736,21350.0,Female,27,0.2400,Approve
+LENDING-100045,"Linda Thomas",Japan,38671.0,0.4897,780,18506.0,Other,71,0.0100,Approve
+LENDING-100043,"Elizabeth Martin",Canada,101377.0,0.4647,632,47365.0,Other,46,1.0000,Reject
+LENDING-100041,"John Davis",United States,75482.0,0.1965,619,23249.0,Male,55,1.0000,Reject
+LENDING-100047,"Susan Moore",Australia,79124.0,0.2270,659,8234.0,Other,26,0.2000,Approve
+LENDING-100046,"Richard Jones",Japan,19947.0,0.2998,608,5281.0,Male,55,1.0000,Reject
+LENDING-100049,"Susan Jackson",Australia,36269.0,0.2740,748,10396.0,Female,54,0.0500,Approve
+LENDING-100048,"Thomas Taylor",United States,104319.0,0.0579,685,40637.0,Other,46,0.2900,Approve
+LENDING-10005,"David Martinez",Canada,169387.0,0.3649,714,46946.0,Female,75,0.3300,Approve
+LENDING-100054,"Jessica Rodriguez",Germany,137735.0,0.5118,564,68541.0,Other,54,0.9600,Reject
+LENDING-100053,"Patricia Thomas",United Kingdom,119355.0,0.4739,701,26566.0,Female,18,0.0600,Approve
+LENDING-100051,"Jessica Thomas",Australia,126252.0,0.3500,650,14248.0,Other,27,0.9800,Reject
+LENDING-100050,"William Moore",France,147685.0,0.2416,748,54191.0,Female,68,0.0200,Approve
+LENDING-100052,"David Jackson",United States,151066.0,0.1879,714,40296.0,Female,53,0.2700,Approve
+LENDING-100058,"William Williams",United States,28237.0,0.3999,739,13472.0,Other,41,0.0200,Approve
+LENDING-100055,"Susan Miller",Japan,69166.0,0.1760,671,27669.0,Other,76,0.1500,Approve
+LENDING-100057,"Robert Brown",Germany,173863.0,0.1901,540,30099.0,Other,50,0.9900,Reject
+LENDING-100059,"Jessica Davis",France,42313.0,0.0813,745,5000.0,Male,34,0.1200,Approve
+LENDING-100056,"John Davis",Canada,151929.0,0.4097,616,16467.0,Male,39,0.9600,Reject
+LENDING-100063,"Jessica Jackson",Germany,75976.0,0.2695,666,33168.0,Male,52,0.2000,Approve
+LENDING-100062,"Richard Thomas",Canada,37780.0,0.1118,590,8757.0,Male,60,1.0000,Reject
+LENDING-100061,"Richard Taylor",Canada,56387.0,0.0130,779,14089.0,Other,61,0.1100,Approve
+LENDING-10006,"William Anderson",Canada,23886.0,0.5642,836,9789.0,Other,35,0.0200,Approve
+LENDING-100060,"William Wilson",Singapore,61388.0,0.1637,612,29902.0,Other,61,1.0000,Reject
+LENDING-100066,"Mary Miller",United Kingdom,121030.0,0.3180,672,36795.0,Male,53,0.2100,Approve
+LENDING-100067,"Robert Smith",Japan,32892.0,0.1588,763,15436.0,Male,24,0.0700,Approve
+LENDING-100065,"Jessica Martin",Japan,56285.0,0.4027,687,5784.0,Other,51,0.2300,Approve
+LENDING-100064,"John Wilson",Japan,15147.0,0.0194,748,5000.0,Female,24,0.0500,Approve
+LENDING-100068,"Jennifer Williams",United States,98133.0,0.4758,753,34523.0,Other,44,0.0200,Approve
+LENDING-100069,"James Smith",Singapore,43978.0,0.5194,557,11738.0,Female,30,1.0000,Reject
+LENDING-100072,"Jennifer Williams",United States,110979.0,0.4500,666,39610.0,Other,57,0.0900,Approve
+LENDING-100071,"Jennifer Thomas",United States,28352.0,0.3189,768,9772.0,Other,77,0.0300,Approve
+LENDING-100070,"Mary Martinez",Canada,163731.0,0.1186,572,80842.0,Male,22,0.9800,Reject
+LENDING-10007,"Mary Smith",Australia,69366.0,0.2460,759,32055.0,Female,36,0.0400,Approve
+LENDING-100073,"Robert Thomas",France,91671.0,0.4058,730,34367.0,Male,58,0.0100,Approve
+LENDING-100077,"Thomas Davis",United States,151338.0,0.0951,573,23055.0,Other,28,0.9800,Reject
+LENDING-100076,"Barbara Gonzalez",United States,119251.0,0.4996,804,47534.0,Other,39,0.0800,Approve
+LENDING-100075,"Karen Hernandez",Singapore,148260.0,0.2795,777,33971.0,Other,33,0.0900,Approve
+LENDING-100074,"John Hernandez",United Kingdom,146999.0,0.0879,736,45914.0,Male,43,0.0200,Approve
+LENDING-100078,"Joseph Brown",Germany,75267.0,0.0151,645,9002.0,Female,57,0.9900,Reject
+LENDING-100081,"Thomas Garcia",Japan,45560.0,0.1666,669,19920.0,Female,44,0.1700,Approve
+LENDING-10008,"Robert Wilson",Australia,111852.0,0.2444,732,42399.0,Other,69,0.0500,Approve
+LENDING-100079,"Thomas Williams",Germany,143606.0,0.5587,583,23216.0,Other,35,0.9800,Reject
+LENDING-100080,"David Brown",Canada,160411.0,0.3546,794,52472.0,Other,54,0.3200,Approve
+LENDING-100082,"Joseph Martin",Germany,71969.0,0.4664,543,30949.0,Male,42,1.0000,Reject
+LENDING-100085,"Thomas Brown",Singapore,123441.0,0.0098,613,31665.0,Other,62,1.0000,Reject
+LENDING-100084,"Joseph Martinez",Singapore,61254.0,0.3240,760,6933.0,Male,29,0.1000,Approve
+LENDING-100083,"Mary Taylor",Canada,163726.0,0.7640,595,29988.0,Other,44,1.0000,Reject
+LENDING-100086,"Elizabeth Brown",United Kingdom,170951.0,0.3460,759,62364.0,Other,53,0.0800,Approve
+LENDING-100087,"Mary Williams",United Kingdom,160619.0,0.4747,590,68088.0,Other,43,1.0000,Reject
+LENDING-100090,"Richard Martinez",United States,136050.0,0.0532,754,23225.0,Other,63,0.1200,Approve
+LENDING-10009,"Karen Jones",France,119352.0,0.2350,654,18566.0,Female,25,1.0000,Reject
+LENDING-100089,"Sarah Lopez",Canada,50457.0,0.4513,645,21614.0,Female,19,1.0000,Reject
+LENDING-100088,"Karen Thomas",Australia,141759.0,0.1599,733,19504.0,Male,51,0.0700,Approve
+LENDING-100091,"Charles Lopez",Japan,93463.0,0.1140,592,27426.0,Male,21,1.0000,Reject
+LENDING-100096,"Charles Moore",United Kingdom,49953.0,0.5110,748,16386.0,Female,64,0.0100,Approve
+LENDING-100094,"Karen Miller",United Kingdom,164492.0,0.2910,739,66116.0,Other,70,0.0100,Approve
+LENDING-100095,"Robert Garcia",France,141625.0,0.0615,627,50157.0,Other,18,0.9900,Reject
+LENDING-100093,"Robert Miller",Australia,132063.0,0.0165,706,31214.0,Female,44,0.5800,Approve
+LENDING-100092,"David Johnson",United Kingdom,73320.0,0.5478,776,36436.0,Male,39,0.0600,Approve
+LENDING-100100,"John Anderson",France,171656.0,0.2234,665,68885.0,Male,31,0.2800,Approve
+LENDING-10010,"Linda Brown",France,15930.0,0.3658,801,5000.0,Male,73,0.0300,Approve
+LENDING-100099,"Jessica Moore",Australia,140175.0,0.2682,731,64510.0,Other,48,0.0300,Approve
+LENDING-100098,"James Wilson",Singapore,170383.0,0.3680,672,17044.0,Other,68,0.4500,Approve
+LENDING-100097,"Joseph Thomas",Japan,17597.0,0.1220,688,5000.0,Other,22,0.0100,Approve
+LENDING-100105,"Joseph Hernandez",Canada,147797.0,0.4208,689,29544.0,Male,61,0.1600,Approve
+LENDING-100102,"Elizabeth Gonzalez",Australia,127628.0,0.0377,673,55029.0,Female,58,0.0600,Approve
+LENDING-100101,"John Lopez",Canada,149602.0,0.4902,648,40816.0,Female,46,1.0000,Reject
+LENDING-100104,"Mary Brown",United States,58907.0,0.4708,697,16433.0,Other,68,0.1100,Approve
+LENDING-100103,"Robert Jackson",United Kingdom,44332.0,0.3533,619,17461.0,Other,23,1.0000,Reject
+LENDING-100106,"Karen Martinez",United Kingdom,112582.0,0.3365,723,15199.0,Other,76,0.1300,Approve
+LENDING-100107,"Elizabeth Brown",United States,84895.0,0.0009,789,41037.0,Male,67,0.0300,Approve
+LENDING-10011,"Linda Rodriguez",United Kingdom,112402.0,0.2347,710,12656.0,Female,50,0.0600,Approve
+LENDING-100109,"Thomas Hernandez",Australia,106470.0,0.0186,765,14096.0,Other,62,0.0300,Approve
+LENDING-100108,"David Brown",Canada,68608.0,0.2891,608,19651.0,Female,42,1.0000,Reject
+LENDING-100110,"John Hernandez",Japan,18103.0,0.0719,529,7671.0,Female,59,1.0000,Reject
+LENDING-100115,"William Johnson",Canada,22297.0,0.0690,716,5000.0,Other,49,0.0250,Approve
+LENDING-100114,"Linda Johnson",Germany,131616.0,0.2970,753,60865.0,Female,42,0.0000,Approve
+LENDING-100112,"Linda Smith",Canada,95274.0,0.2461,648,39627.0,Female,49,1.0000,Reject
+LENDING-100113,"Richard Williams",Germany,20005.0,0.1782,732,8130.0,Female,71,0.0700,Approve
+LENDING-100111,"Richard Brown",Australia,99049.0,0.1268,784,35893.0,Other,48,0.0200,Approve
+LENDING-10012,"David Jones",United Kingdom,176570.0,0.4231,716,19859.0,Female,43,0.3200,Approve
+LENDING-100117,"Mary Brown",France,167236.0,0.2439,694,33364.0,Male,76,0.1000,Approve
+LENDING-100119,"Mary Rodriguez",Canada,138419.0,0.2573,611,63107.0,Female,50,0.9900,Reject
+LENDING-100118,"James Davis",France,95543.0,0.4182,749,23914.0,Other,53,0.1200,Approve
+LENDING-100116,"Barbara Taylor",Japan,91091.0,0.0237,799,41437.0,Male,55,0.1100,Approve
+LENDING-100122,"Richard Johnson",Singapore,105673.0,0.3918,592,47288.0,Other,59,0.9900,Reject
+LENDING-100121,"Karen Johnson",Canada,79245.0,0.2230,745,37508.0,Male,76,0.0400,Approve
+LENDING-100123,"Michael Davis",Australia,25296.0,0.3224,592,10360.0,Other,28,1.0000,Reject
+LENDING-100124,"Sarah Hernandez",Japan,79599.0,0.5105,740,9625.0,Other,41,0.0200,Approve
+LENDING-100120,"Thomas Brown",Australia,135741.0,0.2754,791,43320.0,Other,19,0.1400,Approve
+LENDING-100126,"Elizabeth Williams",Australia,179531.0,0.3124,604,34878.0,Other,50,0.9900,Reject
+LENDING-100128,"Joseph Hernandez",Australia,107020.0,0.3607,569,29947.0,Male,39,1.0000,Reject
+LENDING-100129,"Richard Davis",Singapore,22839.0,0.1464,708,5000.0,Male,64,0.1700,Approve
+LENDING-100127,"Michael Anderson",Canada,132609.0,0.2955,688,56439.0,Female,76,0.5400,Approve
+LENDING-100125,"Jessica Garcia",Australia,54355.0,0.1412,733,27049.0,Male,20,0.0000,Approve
+LENDING-10013,"Jessica Smith",Germany,175019.0,0.2808,602,67433.0,Other,67,1.0000,Reject
+LENDING-100132,"Joseph Martinez",France,116450.0,0.2401,850,36209.0,Male,49,0.1400,Approve
+LENDING-100130,"Jessica Miller",Germany,85394.0,0.4076,762,36870.0,Male,63,0.1800,Approve
+LENDING-100133,"Jessica Martinez",Australia,160992.0,0.3945,677,71627.0,Other,46,0.1800,Approve
+LENDING-100131,"Michael Davis",Japan,46369.0,0.2211,805,5000.0,Male,36,0.2400,Approve
+LENDING-100134,"Joseph Hernandez",Japan,47769.0,0.5095,737,22214.0,Other,43,0.0600,Approve
+LENDING-100136,"Richard Brown",Canada,46485.0,0.4623,725,8511.0,Female,22,0.0800,Approve
+LENDING-100138,"Jessica Williams",France,124625.0,0.0329,718,24762.0,Other,65,0.0200,Approve
+LENDING-100135,"Mary Hernandez",France,143502.0,0.3277,657,60818.0,Male,58,0.9900,Reject
+LENDING-100137,"Sarah Anderson",Japan,94823.0,0.2635,809,29757.0,Male,31,0.0100,Approve
+LENDING-100139,"Mary Johnson",Australia,22119.0,0.5209,697,6488.0,Other,54,0.2300,Approve
+LENDING-100142,"Barbara Garcia",Japan,33137.0,0.1784,750,16222.0,Male,70,0.0600,Approve
+LENDING-100141,"Elizabeth Moore",Singapore,154537.0,0.0547,715,28465.0,Female,43,0.3100,Approve
+LENDING-100140,"Michael Rodriguez",France,60653.0,0.4425,587,6901.0,Other,65,1.0000,Reject
+LENDING-10014,"James Johnson",Germany,102371.0,0.4426,758,36917.0,Male,48,0.1500,Approve
+LENDING-100143,"Karen Thomas",Singapore,50668.0,0.2405,766,24494.0,Male,21,0.0600,Approve
+LENDING-100145,"Jessica Thomas",Germany,55653.0,0.0414,696,11826.0,Other,68,0.4900,Approve
+LENDING-100144,"James Moore",Australia,16854.0,0.4028,513,5892.0,Other,40,1.0000,Reject
+LENDING-100146,"Patricia Hernandez",United Kingdom,111224.0,0.1256,666,51489.0,Other,19,0.0400,Approve
+LENDING-100147,"John Jackson",France,105119.0,0.4538,661,14390.0,Female,49,0.0400,Approve
+LENDING-100148,"Richard Martinez",Germany,54373.0,0.3592,705,20562.0,Male,25,0.1200,Approve
+LENDING-100150,"Joseph Moore",Japan,112701.0,0.1377,697,30140.0,Female,46,0.2900,Approve
+LENDING-10015,"Jessica Johnson",Japan,133904.0,0.0995,667,46232.0,Other,27,0.1700,Approve
+LENDING-100151,"Jessica Brown",Japan,70689.0,0.4562,794,12101.0,Female,60,0.0700,Approve
+LENDING-100149,"Michael Anderson",Japan,152800.0,0.2341,643,29047.0,Other,57,1.0000,Reject
+LENDING-100152,"David Hernandez",United Kingdom,116220.0,0.1573,765,51148.0,Other,26,0.0600,Approve
+LENDING-100154,"Linda Lopez",France,17795.0,0.4455,570,5000.0,Other,24,1.0000,Reject
+LENDING-100156,"William Smith",Japan,120400.0,0.2258,700,16722.0,Male,46,0.0800,Approve
+LENDING-100153,"John Jones",Germany,139343.0,0.1759,721,34183.0,Other,75,0.0700,Approve
+LENDING-100155,"Mary Jones",United Kingdom,62380.0,0.1888,770,27269.0,Other,37,0.0500,Approve
+LENDING-100157,"John Smith",Germany,151677.0,0.4733,731,55994.0,Male,47,0.0200,Approve
+LENDING-100159,"Susan Hernandez",Germany,88786.0,0.3188,850,33895.0,Other,36,0.0800,Approve
+LENDING-10016,"Karen Johnson",Canada,24664.0,0.1705,819,10516.0,Female,75,0.0200,Approve
+LENDING-100160,"Richard Brown",Singapore,142524.0,0.3454,654,36105.0,Other,31,0.9900,Reject
+LENDING-100158,"John Hernandez",France,167477.0,0.2833,701,36630.0,Male,46,0.0900,Approve
+LENDING-100161,"Susan Jackson",Canada,60669.0,0.1512,562,24573.0,Other,54,1.0000,Reject
+LENDING-100164,"Karen Williams",United States,114192.0,0.4113,677,16098.0,Male,19,0.1500,Approve
+LENDING-100165,"Linda Martin",Australia,62889.0,0.3826,670,13405.0,Male,59,0.1200,Approve
+LENDING-100163,"Jessica Johnson",United Kingdom,61883.0,0.2429,559,30799.0,Male,30,0.9900,Reject
+LENDING-100166,"Linda Lopez",Singapore,164939.0,0.4034,751,30327.0,Female,59,0.2500,Approve
+LENDING-100162,"David Brown",Australia,22262.0,0.5207,787,6737.0,Male,73,0.0700,Approve
+LENDING-100167,"William Williams",Australia,138458.0,0.0782,597,16323.0,Female,56,0.9900,Reject
+LENDING-100170,"Michael Davis",Singapore,100948.0,0.3402,610,10754.0,Other,30,1.0000,Reject
+LENDING-100169,"James Martinez",Japan,52636.0,0.3362,830,22316.0,Male,54,0.0000,Approve
+LENDING-10017,"Jessica Miller",United Kingdom,109152.0,0.3580,696,30146.0,Male,77,0.1600,Approve
+LENDING-100168,"Patricia Martinez",France,168650.0,0.3407,765,21073.0,Female,18,0.0400,Approve
+LENDING-100171,"Charles Jones",United States,102058.0,0.2841,618,31221.0,Other,72,1.0000,Reject
+LENDING-100176,"Richard Martin",Singapore,106574.0,0.2435,723,17470.0,Male,35,0.1400,Approve
+LENDING-100174,"Elizabeth Taylor",Canada,103950.0,0.1062,581,39273.0,Male,74,1.0000,Reject
+LENDING-100175,"Michael Hernandez",Japan,140523.0,0.3470,662,48769.0,Female,69,0.2900,Approve
+LENDING-100173,"William Brown",Australia,34131.0,0.5270,691,12291.0,Male,40,0.1700,Approve
+LENDING-100172,"Sarah Gonzalez",United States,103605.0,0.2967,611,27901.0,Other,47,1.0000,Reject
+LENDING-100178,"Patricia Brown",United Kingdom,92848.0,0.2196,681,44773.0,Female,71,0.2900,Approve
+LENDING-10018,"Patricia Garcia",Japan,139134.0,0.2527,530,51633.0,Male,19,0.9900,Reject
+LENDING-100180,"Richard Hernandez",United Kingdom,84299.0,0.3715,602,13328.0,Male,20,1.0000,Reject
+LENDING-100177,"Sarah Davis",Germany,100138.0,0.4057,630,23809.0,Female,57,1.0000,Reject
+LENDING-100179,"Michael Jones",Japan,63302.0,0.2388,653,11894.0,Other,50,0.9900,Reject
+LENDING-100183,"Elizabeth Hernandez",Germany,50251.0,0.4422,636,20037.0,Other,23,1.0000,Reject
+LENDING-100182,"Sarah Lopez",Japan,109893.0,0.1172,667,38956.0,Other,54,0.0700,Approve
+LENDING-100184,"David Moore",United States,149737.0,0.2972,659,40588.0,Male,52,0.5200,Approve
+LENDING-100181,"William Johnson",Japan,29928.0,0.1932,813,14381.0,Other,24,0.0500,Approve
+LENDING-100185,"Jessica Martinez",Germany,21506.0,0.6050,621,7121.0,Other,27,0.9900,Reject
+LENDING-100188,"Karen Jones",France,108392.0,0.2942,537,20338.0,Female,22,1.0000,Reject
+LENDING-100189,"Robert Martin",France,19193.0,0.3453,650,6460.0,Other,66,1.0000,Reject
+LENDING-100187,"Jennifer Miller",France,95785.0,0.2972,584,12944.0,Other,61,1.0000,Reject
+LENDING-10019,"Richard Taylor",Canada,104750.0,0.3760,761,27173.0,Other,75,0.0100,Approve
+LENDING-100186,"Elizabeth Garcia",United States,155773.0,0.3062,710,26609.0,Female,39,0.2300,Approve
+LENDING-100194,"Mary Miller",France,130876.0,0.4531,737,31066.0,Male,27,0.0700,Approve
+LENDING-100192,"Linda Anderson",France,65020.0,0.4710,719,6836.0,Other,73,0.2300,Approve
+LENDING-100191,"Charles Gonzalez",France,90285.0,0.2705,719,43872.0,Other,26,0.1200,Approve
+LENDING-100190,"Michael Jackson",Germany,129018.0,0.3977,588,52700.0,Female,28,1.0000,Reject
+LENDING-100193,"Karen Jackson",United States,80268.0,0.3862,653,13866.0,Female,58,1.0000,Reject
+LENDING-100199,"Joseph Anderson",United States,172248.0,0.0706,675,20842.0,Other,61,0.4800,Approve
+LENDING-100198,"James Moore",United States,158245.0,0.3244,850,51917.0,Other,70,0.2500,Approve
+LENDING-100197,"Linda Johnson",Canada,85074.0,0.2753,747,39121.0,Other,33,0.0400,Approve
+LENDING-100196,"James Moore",Australia,81161.0,0.1345,813,32619.0,Male,65,0.1200,Approve
+LENDING-100195,"Richard Thomas",Canada,30079.0,0.2944,623,12484.0,Other,43,1.0000,Reject
+LENDING-10020,"Linda Rodriguez",Singapore,89153.0,0.0392,850,28717.0,Other,38,0.0600,Approve
+LENDING-100203,"William Thomas",United Kingdom,44177.0,0.5610,664,12185.0,Male,51,0.0900,Approve
+LENDING-100200,"Richard Smith",United Kingdom,48096.0,0.3671,732,11198.0,Female,36,0.1100,Approve
+LENDING-100201,"Sarah Martinez",Canada,65101.0,0.1149,759,11657.0,Other,76,0.1200,Approve
+LENDING-100202,"Barbara Rodriguez",United Kingdom,16242.0,0.5497,783,5307.0,Female,48,0.1600,Approve
+LENDING-100204,"Sarah Jackson",Germany,70825.0,0.4157,762,27295.0,Male,56,0.0300,Approve
+LENDING-100208,"James Smith",Australia,31443.0,0.1569,809,10167.0,Female,63,0.1300,Approve
+LENDING-100205,"Susan Moore",France,118531.0,0.2072,631,17299.0,Male,59,1.0000,Reject
+LENDING-100206,"William Martin",United States,169417.0,0.4975,669,68744.0,Female,74,0.3300,Approve
+LENDING-100207,"Joseph Lopez",Australia,160934.0,0.0444,758,37564.0,Female,70,0.1000,Approve
+LENDING-100209,"William Wilson",United States,48984.0,0.6263,692,12013.0,Other,74,0.2100,Approve
+LENDING-100211,"James Smith",United Kingdom,65670.0,0.0674,766,22284.0,Female,64,0.2400,Approve
+LENDING-10021,"John Moore",Germany,158142.0,0.4689,673,44017.0,Other,75,0.2800,Approve
+LENDING-100210,"Joseph Rodriguez",United Kingdom,70223.0,0.3522,589,25775.0,Other,29,1.0000,Reject
+LENDING-100212,"Patricia Lopez",Australia,72935.0,0.3816,758,30748.0,Female,54,0.0800,Approve
+LENDING-100213,"Richard Jones",Japan,66745.0,0.2122,631,10568.0,Male,20,1.0000,Reject
+LENDING-100217,"Jessica Martinez",France,71593.0,0.1946,771,28330.0,Female,31,0.1100,Approve
+LENDING-100216,"Susan Miller",Japan,78457.0,0.3516,850,29714.0,Other,39,0.0400,Approve
+LENDING-100215,"Charles Martin",Germany,73565.0,0.2096,644,12306.0,Female,21,1.0000,Reject
+LENDING-100214,"Patricia Williams",United States,111089.0,0.4715,806,45586.0,Female,40,0.2900,Approve
+LENDING-100218,"Thomas Wilson",Canada,109907.0,0.2414,755,33366.0,Female,43,0.0100,Approve
+LENDING-100219,"James Jones",Japan,32554.0,0.4644,674,11412.0,Other,62,0.2700,Approve
+LENDING-100222,"Robert Moore",Germany,54576.0,0.2902,614,25972.0,Other,64,1.0000,Reject
+LENDING-100221,"Mary Wilson",United Kingdom,116200.0,0.1315,748,54780.0,Male,19,0.0300,Approve
+LENDING-10022,"Karen Martinez",United Kingdom,25585.0,0.3412,677,5000.0,Female,29,0.0200,Approve
+LENDING-100220,"Charles Wilson",United Kingdom,142029.0,0.1813,715,31871.0,Other,34,0.1700,Approve
+LENDING-100226,"David Johnson",Australia,43337.0,0.4972,683,15458.0,Female,56,0.2900,Approve
+LENDING-100224,"Mary Williams",Singapore,95155.0,0.0657,682,11662.0,Male,66,0.1100,Approve
+LENDING-100227,"Elizabeth Miller",Singapore,165372.0,0.4130,685,72312.0,Other,43,0.3200,Approve
+LENDING-100223,"Richard Davis",Australia,121571.0,0.1389,769,16157.0,Male,65,0.0400,Approve
+LENDING-100225,"Michael Smith",Germany,29954.0,0.3914,673,9266.0,Other,52,0.1500,Approve
+LENDING-100230,"James Thomas",France,21216.0,0.2848,663,5000.0,Male,65,0.2500,Approve
+LENDING-100231,"Charles Williams",Germany,71629.0,0.3511,655,20365.0,Other,75,1.0000,Reject
+LENDING-10023,"Susan Martinez",Singapore,55637.0,0.4987,701,17240.0,Female,72,0.2600,Approve
+LENDING-100229,"John Gonzalez",France,114100.0,0.4283,801,45732.0,Other,27,0.0300,Approve
+LENDING-100228,"David Wilson",France,91580.0,0.2694,802,20946.0,Other,52,0.0200,Approve
+LENDING-100236,"Joseph Martinez",France,26603.0,0.3033,710,12277.0,Female,66,0.0600,Approve
+LENDING-100235,"Karen Williams",United States,69724.0,0.3105,647,8203.0,Female,32,1.0000,Reject
+LENDING-100234,"Linda Miller",Japan,114190.0,0.1828,616,35924.0,Male,45,0.9900,Reject
+LENDING-100233,"David Garcia",Japan,51055.0,0.1548,782,8595.0,Male,50,0.0300,Approve
+LENDING-100232,"Michael Jones",United States,97804.0,0.2369,802,48389.0,Female,67,0.0200,Approve
+LENDING-100238,"Patricia Gonzalez",Germany,33849.0,0.2716,684,6710.0,Male,38,0.2500,Approve
+LENDING-100240,"Michael Taylor",United States,52303.0,0.4501,850,22485.0,Other,75,0.0900,Approve
+LENDING-100241,"Linda Anderson",United States,140076.0,0.4681,623,47030.0,Male,48,0.9900,Reject
+LENDING-100239,"John Taylor",United States,50193.0,0.2176,418,24417.0,Male,41,1.0000,Reject
+LENDING-10024,"Linda Garcia",Singapore,99840.0,0.3576,604,34728.0,Other,61,1.0000,Reject
+LENDING-100237,"Charles Taylor",Australia,51584.0,0.0934,611,7877.0,Other,36,1.0000,Reject
+LENDING-100243,"David Williams",Germany,43030.0,0.1396,674,16045.0,Male,71,0.2900,Approve
+LENDING-100242,"Sarah Garcia",Japan,177110.0,0.2192,841,32236.0,Male,43,0.2400,Approve
+LENDING-100244,"James Hernandez",Singapore,165587.0,0.4337,735,47801.0,Female,49,0.0600,Approve
+LENDING-100245,"Karen Brown",Germany,81952.0,0.3618,848,33950.0,Female,19,0.0700,Approve
+LENDING-100246,"William Davis",France,75970.0,0.3439,619,18904.0,Male,29,1.0000,Reject
+LENDING-100249,"Michael Smith",United States,109803.0,0.0982,850,37374.0,Other,48,0.1400,Approve
+LENDING-100250,"Jennifer Moore",France,155217.0,0.4096,752,21102.0,Male,23,0.0600,Approve
+LENDING-10025,"Charles Lopez",France,62682.0,0.3928,718,26856.0,Male,75,0.0800,Approve
+LENDING-100248,"David Moore",United States,100531.0,0.3303,662,15114.0,Other,70,0.1800,Approve
+LENDING-100247,"Patricia Gonzalez",Australia,113499.0,0.1239,759,24373.0,Female,22,0.0800,Approve
+LENDING-100254,"Patricia Brown",Canada,155890.0,0.2362,706,45488.0,Other,71,0.2800,Approve
+LENDING-100253,"Karen Rodriguez",Australia,31274.0,0.3765,510,10083.0,Female,74,1.0000,Reject
+LENDING-100252,"Patricia Rodriguez",Japan,159232.0,0.3653,830,76322.0,Female,23,0.0500,Approve
+LENDING-100255,"Jessica Brown",Singapore,164703.0,0.2156,699,43409.0,Male,68,0.2000,Approve
+LENDING-100251,"Barbara Lopez",Australia,27350.0,0.2212,737,5649.0,Male,26,0.0300,Approve
+LENDING-100257,"Robert Hernandez",United Kingdom,155674.0,0.2647,703,55211.0,Male,25,0.1300,Approve
+LENDING-100256,"Susan Rodriguez",United Kingdom,136159.0,0.2566,599,34332.0,Male,27,1.0000,Reject
+LENDING-100258,"Charles Lopez",Japan,73221.0,0.1360,546,30086.0,Female,24,1.0000,Reject
+LENDING-100259,"William Johnson",Germany,158476.0,0.6526,606,16998.0,Female,71,0.9600,Reject
+LENDING-10026,"James Moore",Canada,42780.0,0.1854,595,18136.0,Male,32,1.0000,Reject
+LENDING-100264,"Patricia Jackson",France,131195.0,0.2281,659,49051.0,Male,73,0.3900,Approve
+LENDING-100261,"Jennifer Smith",United Kingdom,142848.0,0.1933,798,54684.0,Other,73,0.0600,Approve
+LENDING-100263,"Susan Smith",Germany,144063.0,0.3959,801,37510.0,Other,27,0.2800,Approve
+LENDING-100260,"Mary Hernandez",Germany,51721.0,0.4879,726,22136.0,Other,54,0.2500,Approve
+LENDING-100262,"Richard Garcia",United States,157470.0,0.2525,757,24991.0,Male,34,0.1600,Approve
+LENDING-100268,"Mary Wilson",Australia,43082.0,0.4541,734,17137.0,Female,29,0.1300,Approve
+LENDING-100265,"Charles Moore",United States,20957.0,0.3572,682,6170.0,Male,77,0.3200,Approve
+LENDING-100269,"Thomas Brown",Germany,153929.0,0.7401,712,49154.0,Female,60,0.3600,Approve
+LENDING-100267,"Jessica Williams",Germany,90443.0,0.1402,695,33656.0,Male,35,0.1800,Approve
+LENDING-100266,"William Thomas",United States,19647.0,0.0839,734,6857.0,Male,48,0.0400,Approve
+LENDING-100273,"Linda Williams",United Kingdom,134211.0,0.3277,633,42128.0,Male,43,0.9900,Reject
+LENDING-100272,"Linda Jackson",United States,68426.0,0.3315,675,8905.0,Male,42,0.3500,Approve
+LENDING-100270,"Karen Lopez",Singapore,102396.0,0.2924,559,41293.0,Other,66,1.0000,Reject
+LENDING-100271,"David Anderson",Australia,160011.0,0.3299,597,77876.0,Female,66,1.0000,Reject
+LENDING-10027,"Sarah Lopez",France,90176.0,0.3240,562,12406.0,Female,58,1.0000,Reject
+LENDING-100274,"Barbara Williams",United States,99680.0,0.5277,629,16027.0,Male,55,1.0000,Reject
+LENDING-100276,"Elizabeth Brown",Germany,74128.0,0.4515,759,8135.0,Male,56,0.0400,Approve
+LENDING-100278,"Joseph Williams",Australia,49499.0,0.1076,799,14615.0,Other,44,0.1200,Approve
+LENDING-100275,"Elizabeth Jackson",Canada,64862.0,0.3423,749,7729.0,Male,27,0.1500,Approve
+LENDING-100277,"Linda Johnson",Japan,92238.0,0.2439,794,43737.0,Male,57,0.0400,Approve
+LENDING-100279,"Elizabeth Rodriguez",Australia,57770.0,0.2815,697,25233.0,Other,77,0.4000,Approve
+LENDING-100281,"Jessica Lopez",United Kingdom,22917.0,0.3858,698,5000.0,Male,32,0.1400,Approve
+LENDING-100280,"Karen Johnson",United States,98667.0,0.2464,647,38497.0,Other,25,1.0000,Reject
+LENDING-100282,"Patricia Brown",Germany,99240.0,0.2890,583,25113.0,Other,38,1.0000,Reject
+LENDING-10028,"Susan Taylor",United Kingdom,106793.0,0.2158,815,19741.0,Female,19,0.2200,Approve
+LENDING-100283,"Karen Brown",Japan,97493.0,0.3001,603,22535.0,Female,56,1.0000,Reject
+LENDING-100286,"Jennifer Taylor",United Kingdom,141977.0,0.2788,677,20958.0,Male,70,0.1700,Approve
+LENDING-100285,"James Martin",Germany,106542.0,0.1513,615,10830.0,Male,29,0.9800,Reject
+LENDING-100287,"Mary Miller",United Kingdom,126354.0,0.1031,781,52169.0,Male,59,0.0500,Approve
+LENDING-100284,"Thomas Lopez",Japan,75359.0,0.5890,772,13264.0,Other,32,0.0900,Approve
+LENDING-100288,"Mary Davis",France,168170.0,0.1799,850,74061.0,Male,53,0.3600,Approve
+LENDING-100292,"Joseph Lopez",Canada,36276.0,0.4128,663,11256.0,Male,44,0.1600,Approve
+LENDING-100291,"John Jones",United Kingdom,29774.0,0.3255,720,6920.0,Female,75,0.1100,Approve
+LENDING-100290,"Sarah Jones",United Kingdom,148906.0,0.5384,770,18333.0,Female,44,0.0100,Approve
+LENDING-10029,"Charles Williams",United States,166629.0,0.2995,451,22130.0,Other,47,0.9800,Reject
+LENDING-100289,"John Martinez",Canada,160217.0,0.4644,753,21082.0,Male,25,0.0700,Approve
+LENDING-100294,"Joseph Moore",France,15349.0,0.3204,814,5000.0,Male,19,0.6000,Approve
+LENDING-100295,"Michael Martin",Canada,135875.0,0.3857,670,31258.0,Female,72,0.2500,Approve
+LENDING-100296,"Karen Rodriguez",United Kingdom,166146.0,0.2012,595,18570.0,Male,57,0.9900,Reject
+LENDING-100297,"Elizabeth Brown",Germany,55176.0,0.4218,660,18415.0,Male,75,0.1300,Approve
+LENDING-100293,"Jennifer Smith",Germany,126447.0,0.3772,752,35434.0,Female,58,0.0300,Approve
+LENDING-10030,"Jessica Gonzalez",France,66895.0,0.5612,783,15633.0,Other,64,0.1400,Approve
+LENDING-100301,"Thomas Jones",Australia,57972.0,0.2563,746,20149.0,Other,18,0.1100,Approve
+LENDING-100300,"Robert Williams",United States,44160.0,0.1935,659,17865.0,Other,50,0.2100,Approve
+LENDING-100299,"Karen Thomas",Germany,167467.0,0.4151,727,74958.0,Male,48,0.0700,Approve
+LENDING-100298,"Robert Hernandez",Japan,63060.0,0.0857,715,20613.0,Female,40,0.3100,Approve
+LENDING-100306,"Barbara Brown",Singapore,94943.0,0.4281,702,27764.0,Female,18,0.2200,Approve
+LENDING-100305,"Susan Martinez",Australia,70035.0,0.2449,672,10821.0,Female,73,0.2800,Approve
+LENDING-100307,"Sarah Martinez",Japan,151299.0,0.2024,696,67418.0,Other,66,0.1600,Approve
+LENDING-100304,"Jennifer Thomas",Australia,114950.0,0.3460,796,52054.0,Other,46,0.0300,Approve
+LENDING-100303,"Mary Smith",Germany,72103.0,0.1194,850,17907.0,Male,31,0.0400,Approve
+LENDING-100302,"Charles Moore",Canada,62455.0,0.1072,710,12023.0,Female,18,0.3100,Approve
+LENDING-100311,"Jennifer Anderson",Singapore,130570.0,0.1296,772,44666.0,Female,50,0.0400,Approve
+LENDING-100310,"Thomas Taylor",France,31208.0,0.3422,710,14654.0,Male,33,0.1400,Approve
+LENDING-10031,"Barbara Rodriguez",Australia,169107.0,0.0510,594,28891.0,Female,43,1.0000,Reject
+LENDING-100309,"Michael Gonzalez",Japan,28456.0,0.4145,630,8111.0,Female,45,1.0000,Reject
+LENDING-100308,"William Miller",France,71797.0,0.3062,720,35112.0,Male,42,0.4100,Approve
+LENDING-100313,"Mary Rodriguez",Germany,127099.0,0.2837,711,59473.0,Female,51,0.0700,Approve
+LENDING-100316,"Linda Taylor",Australia,45297.0,0.4081,666,9441.0,Female,53,0.2400,Approve
+LENDING-100312,"Joseph Garcia",Canada,101666.0,0.3594,628,18967.0,Female,62,1.0000,Reject
+LENDING-100314,"Linda Hernandez",Germany,136266.0,0.4752,706,56655.0,Other,47,0.3300,Approve
+LENDING-100315,"Joseph Martin",France,179082.0,0.2226,659,83696.0,Male,65,0.7800,Reject
+LENDING-10032,"John Jackson",France,87358.0,0.3534,687,26050.0,Other,41,0.1400,Approve
+LENDING-100320,"Barbara Williams",Germany,64324.0,0.1277,618,21905.0,Female,21,1.0000,Reject
+LENDING-100319,"James Miller",Singapore,122415.0,0.3673,663,37264.0,Male,73,0.0700,Approve
+LENDING-100318,"James Jackson",Singapore,155645.0,0.1915,812,18337.0,Female,44,0.0500,Approve
+LENDING-100317,"Jessica Jones",Germany,15613.0,0.2811,613,5411.0,Other,63,1.0000,Reject
+LENDING-100321,"Richard Miller",United Kingdom,170515.0,0.4215,768,19122.0,Female,60,0.0300,Approve
+LENDING-100325,"Sarah Davis",France,127475.0,0.4663,771,43319.0,Other,33,0.0300,Approve
+LENDING-100324,"Susan Hernandez",France,50440.0,0.2414,732,17037.0,Other,32,0.0100,Approve
+LENDING-100323,"Richard Hernandez",Australia,98818.0,0.3522,763,43383.0,Female,70,0.0200,Approve
+LENDING-100322,"Linda Williams",Canada,120354.0,0.2948,850,17878.0,Other,39,0.0400,Approve
+LENDING-100326,"Karen Anderson",Australia,124631.0,0.2235,772,52986.0,Female,77,0.0500,Approve
+LENDING-100329,"John Martinez",Japan,51462.0,0.1746,704,16444.0,Male,32,0.2000,Approve
+LENDING-100327,"Richard Miller",Japan,93839.0,0.3774,694,42345.0,Female,64,0.1300,Approve
+LENDING-10033,"David Davis",United States,176146.0,0.3396,629,42008.0,Female,57,1.0000,Reject
+LENDING-100328,"Richard Davis",United States,121619.0,0.1901,621,16597.0,Male,53,1.0000,Reject
+LENDING-100330,"Michael Wilson",United States,29354.0,0.4332,707,5632.0,Female,24,0.2000,Approve
+LENDING-100334,"William Hernandez",United Kingdom,50723.0,0.0806,664,9937.0,Other,33,0.1500,Approve
+LENDING-100331,"James Lopez",Germany,53829.0,0.1094,669,24389.0,Other,31,0.3300,Approve
+LENDING-100333,"Sarah Jackson",Australia,119218.0,0.4086,576,14556.0,Other,76,1.0000,Reject
+LENDING-100332,"Susan Martin",Germany,47184.0,0.3402,724,22205.0,Male,45,0.1200,Approve
+LENDING-100335,"John Johnson",Germany,75942.0,0.1474,622,36755.0,Other,26,1.0000,Reject
+LENDING-100338,"Joseph Garcia",Australia,43267.0,0.1383,631,13609.0,Female,75,1.0000,Reject
+LENDING-100337,"Elizabeth Martinez",Canada,159127.0,0.2547,814,51799.0,Female,71,0.2600,Approve
+LENDING-100339,"Linda Johnson",Japan,130769.0,0.4651,549,14661.0,Other,70,0.9900,Reject
+LENDING-100336,"John Williams",Germany,140475.0,0.5528,696,18237.0,Other,37,0.3100,Approve
+LENDING-10034,"Robert Taylor",Japan,162223.0,0.4067,618,80475.0,Other,45,0.9500,Reject
+LENDING-100340,"David Jones",United Kingdom,33802.0,0.1777,850,8190.0,Other,65,0.0000,Approve
+LENDING-100343,"Charles Williams",Australia,104074.0,0.3143,612,31741.0,Other,32,1.0000,Reject
+LENDING-100341,"Patricia Anderson",Germany,121997.0,0.4582,576,47442.0,Other,58,0.9900,Reject
+LENDING-100342,"Charles Smith",Japan,169529.0,0.5370,597,56153.0,Other,62,1.0000,Reject
+LENDING-100344,"Joseph Garcia",Japan,109494.0,0.5073,765,21623.0,Female,77,0.1900,Approve
+LENDING-100348,"Linda Jones",Singapore,32080.0,0.2929,770,5537.0,Other,41,0.0900,Approve
+LENDING-100347,"Patricia Garcia",Singapore,126672.0,0.1271,839,52076.0,Female,34,0.2000,Approve
+LENDING-100346,"Mary Williams",United States,56810.0,0.2698,570,17157.0,Other,35,1.0000,Reject
+LENDING-100345,"Robert Lopez",Australia,68047.0,0.2900,658,20362.0,Male,62,0.0500,Approve
+LENDING-100349,"Barbara Lopez",United States,72498.0,0.3289,821,10337.0,Female,49,0.0300,Approve
+LENDING-100352,"John Johnson",Japan,105518.0,0.1602,701,21188.0,Other,21,0.3400,Approve
+LENDING-100351,"Patricia Miller",United States,44610.0,0.0565,692,19996.0,Male,77,0.0600,Approve
+LENDING-100350,"Jennifer Hernandez",Australia,27076.0,0.5136,605,5000.0,Male,47,1.0000,Reject
+LENDING-10035,"Joseph Johnson",Germany,65072.0,0.1804,850,11828.0,Other,66,0.0600,Approve
+LENDING-100353,"James Martinez",Canada,103121.0,0.3865,719,40418.0,Male,58,0.0000,Approve
+LENDING-100357,"Karen Jackson",Canada,34681.0,0.4365,707,5000.0,Male,59,0.0400,Approve
+LENDING-100356,"Elizabeth Garcia",Germany,125111.0,0.0696,557,38510.0,Female,71,1.0000,Reject
+LENDING-100354,"Karen Jackson",Singapore,82907.0,0.4389,666,12510.0,Female,61,0.2900,Approve
+LENDING-100355,"Patricia Williams",Germany,150149.0,0.4312,699,61821.0,Female,65,0.4000,Approve
+LENDING-100358,"Sarah Moore",United Kingdom,73779.0,0.2501,722,11427.0,Other,19,0.1000,Approve
+LENDING-100359,"James Davis",Germany,68752.0,0.3030,634,20005.0,Male,28,1.0000,Reject
+LENDING-10036,"Thomas Martin",United Kingdom,110167.0,0.0606,830,36926.0,Female,18,0.0500,Approve
+LENDING-100360,"Jessica Martinez",Germany,168882.0,0.3162,690,74831.0,Other,19,0.2300,Approve
+LENDING-100361,"John Rodriguez",Singapore,71989.0,0.4743,830,30724.0,Male,52,0.0300,Approve
+LENDING-100362,"William Williams",Canada,144316.0,0.3517,630,36180.0,Female,77,0.9900,Reject
+LENDING-100367,"David Gonzalez",Canada,175930.0,0.2124,653,67059.0,Male,24,0.9800,Reject
+LENDING-100366,"Jennifer Martinez",Singapore,109186.0,0.3294,654,27169.0,Other,39,1.0000,Reject
+LENDING-100365,"Jessica Garcia",United States,18744.0,0.4322,587,5000.0,Female,73,1.0000,Reject
+LENDING-100364,"Richard Martin",Singapore,173023.0,0.2687,759,32425.0,Male,62,0.2000,Approve
+LENDING-100363,"Joseph Johnson",France,57428.0,0.2514,762,20296.0,Male,20,0.0100,Approve
+LENDING-10037,"Elizabeth Williams",Canada,149539.0,0.0947,689,70191.0,Female,35,0.2700,Approve
+LENDING-100369,"Karen Brown",France,123617.0,0.1414,835,36441.0,Other,37,0.0000,Approve
+LENDING-100368,"Patricia Moore",Germany,27921.0,0.1002,634,10931.0,Other,65,1.0000,Reject
+LENDING-100371,"John Jackson",Germany,18754.0,0.2263,671,9293.0,Male,58,0.1700,Approve
+LENDING-100372,"Robert Miller",Japan,133674.0,0.5153,694,53453.0,Female,59,0.0800,Approve
+LENDING-100370,"Charles Smith",United States,154710.0,0.7120,751,66242.0,Male,28,0.0700,Approve
+LENDING-100376,"Karen Gonzalez",United States,85584.0,0.0186,690,19072.0,Female,38,0.3100,Approve
+LENDING-100375,"Patricia Wilson",Japan,15667.0,0.1890,608,5000.0,Male,36,1.0000,Reject
+LENDING-100374,"James Jones",Singapore,127990.0,0.3494,767,30284.0,Female,19,0.1400,Approve
+LENDING-100373,"John Gonzalez",Japan,101669.0,0.2076,520,44555.0,Male,40,1.0000,Reject
+LENDING-100377,"David Miller",United Kingdom,142886.0,0.2378,704,44927.0,Male,30,0.1900,Approve
+LENDING-100379,"William Smith",France,60127.0,0.2546,750,21630.0,Female,75,0.0400,Approve
+LENDING-100378,"William Gonzalez",Canada,67359.0,0.1814,704,24043.0,Other,20,0.5800,Approve
+LENDING-100380,"Karen Garcia",Australia,32943.0,0.3508,619,12193.0,Other,71,1.0000,Reject
+LENDING-100381,"John Johnson",Australia,32685.0,0.1561,703,5000.0,Female,46,0.1100,Approve
+LENDING-10038,"Charles Brown",Canada,88411.0,0.6138,699,26132.0,Male,70,0.1200,Approve
+LENDING-100382,"James Brown",Japan,43294.0,0.1899,601,14925.0,Female,33,1.0000,Reject
+LENDING-100386,"James Garcia",Canada,29558.0,0.1814,751,8076.0,Other,21,0.0100,Approve
+LENDING-100387,"David Hernandez",United States,40101.0,0.2414,564,10036.0,Male,38,0.9900,Reject
+LENDING-100385,"Susan Jones",France,134998.0,0.4825,625,64199.0,Male,42,1.0000,Reject
+LENDING-100384,"Karen Rodriguez",Germany,80629.0,0.3926,653,21991.0,Male,20,0.9900,Reject
+LENDING-100383,"James Martin",Germany,36971.0,0.5647,688,5000.0,Other,63,0.2900,Approve
+LENDING-100390,"Michael Martinez",United Kingdom,156865.0,0.0602,835,21708.0,Male,31,0.0400,Approve
+LENDING-10039,"Charles Thomas",Australia,39053.0,0.2995,739,11329.0,Male,29,0.0500,Approve
+LENDING-100389,"Sarah Lopez",Canada,140949.0,0.2920,727,30582.0,Other,49,0.0400,Approve
+LENDING-100391,"Jessica Johnson",Australia,89926.0,0.2302,798,39177.0,Female,29,0.2200,Approve
+LENDING-100388,"Thomas Rodriguez",Canada,100299.0,0.3436,832,38877.0,Other,74,0.0300,Approve
+LENDING-100395,"William Taylor",Singapore,36563.0,0.3005,637,8798.0,Female,35,1.0000,Reject
+LENDING-100394,"Patricia Jackson",United Kingdom,88584.0,0.2829,735,39059.0,Female,59,0.0100,Approve
+LENDING-100392,"Sarah Miller",Singapore,112916.0,0.4172,850,51249.0,Other,67,0.0300,Approve
+LENDING-100393,"Elizabeth Jones",Singapore,134495.0,0.1863,650,43291.0,Other,30,1.0000,Reject
+LENDING-100396,"Karen Martinez",Germany,92963.0,0.3471,647,16306.0,Male,31,1.0000,Reject
+LENDING-100400,"Richard Anderson",Germany,102796.0,0.2630,776,41804.0,Male,58,0.0200,Approve
+LENDING-10040,"Joseph Anderson",United Kingdom,34519.0,0.1198,771,8860.0,Male,52,0.0500,Approve
+LENDING-100399,"Linda Moore",Singapore,103178.0,0.1496,778,47680.0,Female,59,0.0000,Approve
+LENDING-100398,"Thomas Wilson",Japan,61654.0,0.4398,687,8228.0,Other,64,0.3200,Approve
+LENDING-100397,"Elizabeth Miller",Japan,103911.0,0.4771,614,11265.0,Female,74,0.9900,Reject
+LENDING-100402,"William Moore",France,103503.0,0.4375,672,47217.0,Male,62,0.0500,Approve
+LENDING-100404,"Linda Moore",Japan,98531.0,0.3166,698,12152.0,Other,62,0.1900,Approve
+LENDING-100403,"Joseph Rodriguez",Australia,76178.0,0.1292,548,9955.0,Male,60,1.0000,Reject
+LENDING-100405,"Karen Hernandez",Germany,41972.0,0.4394,813,16328.0,Male,60,0.1400,Approve
+LENDING-100401,"David Taylor",United Kingdom,160919.0,0.3872,642,31608.0,Other,51,1.0000,Reject
+LENDING-100406,"Thomas Miller",Canada,104007.0,0.1933,720,36470.0,Other,47,0.0300,Approve
+LENDING-100410,"David Brown",Germany,86818.0,0.3232,638,30343.0,Male,25,1.0000,Reject
+LENDING-100408,"Richard Martin",Singapore,23684.0,0.4406,821,9661.0,Female,37,0.0100,Approve
+LENDING-10041,"Charles Lopez",France,148347.0,0.3861,699,66738.0,Male,47,0.1200,Approve
+LENDING-100409,"Mary Hernandez",Australia,79245.0,0.2480,746,16023.0,Male,18,0.1000,Approve
+LENDING-100407,"Barbara Davis",Singapore,31677.0,0.3917,767,13248.0,Male,24,0.0500,Approve
+LENDING-100415,"Jennifer Williams",Singapore,108290.0,0.1712,593,34228.0,Female,38,0.9900,Reject
+LENDING-100414,"Linda Jackson",Canada,175614.0,0.4763,578,58936.0,Other,61,1.0000,Reject
+LENDING-100412,"Karen Smith",Japan,164953.0,0.3053,695,70222.0,Other,31,0.4700,Approve
+LENDING-100411,"Thomas Thomas",Australia,57265.0,0.1504,710,7240.0,Other,20,0.1900,Approve
+LENDING-100413,"Elizabeth Moore",United States,160944.0,0.4760,844,36499.0,Male,49,0.1100,Approve
+LENDING-100416,"Elizabeth Rodriguez",United States,127629.0,0.0255,757,55187.0,Female,40,0.0300,Approve
+LENDING-100417,"David Martinez",Singapore,109780.0,0.1153,676,23487.0,Male,66,0.1400,Approve
+LENDING-10042,"Karen Jackson",Germany,128380.0,0.3062,674,58722.0,Male,65,0.0700,Approve
+LENDING-100420,"Karen Gonzalez",Canada,86324.0,0.5258,573,27875.0,Other,69,1.0000,Reject
+LENDING-100419,"Susan Wilson",France,46431.0,0.3713,446,19692.0,Other,32,1.0000,Reject
+LENDING-100418,"Mary Hernandez",Singapore,65948.0,0.2769,631,23249.0,Male,65,1.0000,Reject
+LENDING-100421,"Karen Williams",Japan,67554.0,0.3090,848,8431.0,Male,53,0.0500,Approve
+LENDING-100422,"Jennifer Miller",United Kingdom,100744.0,0.3405,753,15865.0,Male,72,0.1200,Approve
+LENDING-100423,"Barbara Moore",Singapore,143674.0,0.3599,635,65139.0,Female,20,0.9900,Reject
+LENDING-100424,"Richard Wilson",United Kingdom,67036.0,0.4482,747,27625.0,Other,58,0.0300,Approve
+LENDING-100425,"Susan Jones",Singapore,16542.0,0.3463,719,5000.0,Other,44,0.0000,Approve
+LENDING-100427,"Joseph Taylor",Japan,123674.0,0.4541,663,51360.0,Male,57,0.2700,Approve
+LENDING-10043,"Sarah Williams",Australia,52368.0,0.4013,628,13643.0,Female,46,1.0000,Reject
+LENDING-100428,"Linda Wilson",Australia,131032.0,0.3456,637,30883.0,Female,58,1.0000,Reject
+LENDING-100429,"Charles Jackson",France,36421.0,0.2643,651,5000.0,Female,67,0.9900,Reject
+LENDING-100426,"John Hernandez",Canada,55261.0,0.4371,596,6705.0,Male,46,1.0000,Reject
+LENDING-100433,"Mary Rodriguez",Japan,65266.0,0.2449,714,12046.0,Female,19,0.2200,Approve
+LENDING-100432,"John Johnson",Canada,142121.0,0.4196,711,14635.0,Male,75,0.4000,Approve
+LENDING-100434,"Susan Jones",Canada,49685.0,0.3951,645,12310.0,Other,24,1.0000,Reject
+LENDING-100431,"Sarah Brown",Australia,89175.0,0.4085,800,23742.0,Male,48,0.2900,Approve
+LENDING-100430,"William Brown",Japan,167518.0,0.4787,605,65634.0,Female,18,0.9800,Reject
+LENDING-100435,"Barbara Johnson",Canada,153525.0,0.3053,657,32499.0,Other,22,0.9900,Reject
+LENDING-100439,"Charles Jackson",Japan,171756.0,0.4383,699,36793.0,Other,57,0.1300,Approve
+LENDING-10044,"Elizabeth Thomas",United States,63326.0,0.2228,849,23033.0,Female,27,0.2800,Approve
+LENDING-100438,"Karen Hernandez",Australia,168628.0,0.1906,780,49279.0,Male,75,0.0900,Approve
+LENDING-100437,"Jessica Moore",France,90708.0,0.2297,757,38327.0,Female,48,0.1000,Approve
+LENDING-100436,"Patricia Smith",Canada,67157.0,0.3020,679,21859.0,Male,53,0.0900,Approve
+LENDING-100440,"James Gonzalez",United Kingdom,57528.0,0.4211,658,8354.0,Female,63,0.3800,Approve
+LENDING-100444,"James Martinez",United Kingdom,109283.0,0.2348,617,27344.0,Male,44,1.0000,Reject
+LENDING-100443,"Thomas Jones",France,121428.0,0.2332,572,53482.0,Male,38,1.0000,Reject
+LENDING-100442,"Richard Miller",United States,153647.0,0.2161,716,40454.0,Female,53,0.1300,Approve
+LENDING-100441,"Charles Davis",United States,176483.0,0.3169,667,38499.0,Other,49,0.2300,Approve
+LENDING-100445,"John Moore",France,130312.0,0.4579,654,39392.0,Male,26,1.0000,Reject
+LENDING-100447,"Joseph Johnson",Australia,149519.0,0.2083,607,30814.0,Male,21,1.0000,Reject
+LENDING-100446,"Charles Rodriguez",France,78503.0,0.1741,716,15279.0,Other,50,0.1300,Approve
+LENDING-100448,"Robert Martinez",Germany,106349.0,0.2919,747,12421.0,Other,19,0.0000,Approve
+LENDING-100449,"Jennifer Garcia",Singapore,59086.0,0.2655,726,7022.0,Other,47,0.1200,Approve
+LENDING-100452,"Jessica Gonzalez",France,88935.0,0.3374,616,10374.0,Other,46,1.0000,Reject
+LENDING-100451,"Linda Smith",Singapore,58803.0,0.2560,660,12411.0,Other,71,0.1600,Approve
+LENDING-100450,"Elizabeth Jones",Germany,99688.0,0.1755,743,33301.0,Female,71,0.1200,Approve
+LENDING-100453,"Michael Martinez",United Kingdom,148739.0,0.3671,621,73808.0,Female,33,0.9600,Reject
+LENDING-10045,"Elizabeth Moore",Australia,43230.0,0.2940,802,13180.0,Female,57,0.0600,Approve
+LENDING-100457,"Sarah Smith",France,127044.0,0.2156,723,13449.0,Male,18,0.2000,Approve
+LENDING-100458,"Richard Smith",United States,38145.0,0.2821,675,5058.0,Female,63,0.2000,Approve
+LENDING-100454,"Thomas Williams",United States,157204.0,0.6267,681,30847.0,Female,43,0.2300,Approve
+LENDING-100455,"Robert Taylor",Singapore,27265.0,0.1920,850,8059.0,Other,67,0.0600,Approve
+LENDING-100456,"James Rodriguez",Japan,76693.0,0.1902,668,29159.0,Female,33,0.2100,Approve
+LENDING-100462,"Jennifer Thomas",United States,135897.0,0.0156,713,24557.0,Male,58,0.0900,Approve
+LENDING-100461,"Robert Rodriguez",Germany,100241.0,0.0499,729,10645.0,Male,33,0.0200,Approve
+LENDING-100460,"Michael Thomas",Canada,157916.0,0.2688,850,22372.0,Female,24,0.1200,Approve
+LENDING-10046,"Thomas Williams",Japan,42536.0,0.4223,608,20668.0,Female,30,1.0000,Reject
+LENDING-100459,"Jessica Hernandez",United Kingdom,30196.0,0.4410,753,13928.0,Other,22,0.1200,Approve
+LENDING-100466,"Sarah Williams",United Kingdom,110417.0,0.4083,729,22548.0,Other,22,0.0800,Approve
+LENDING-100465,"Richard Jones",Canada,178323.0,0.4506,627,34409.0,Male,18,1.0000,Reject
+LENDING-100464,"Karen Johnson",Germany,33229.0,0.4915,687,5000.0,Other,59,0.7000,Reject
+LENDING-100467,"Sarah Brown",Japan,149931.0,0.1781,755,47997.0,Female,71,0.1300,Approve
+LENDING-100463,"Joseph Brown",Japan,179339.0,0.4103,675,33627.0,Other,19,0.1900,Approve
+LENDING-100471,"Robert Martin",Canada,66129.0,0.4689,805,31378.0,Other,31,0.0300,Approve
+LENDING-100468,"Thomas Gonzalez",United States,115404.0,0.3040,599,28867.0,Other,20,1.0000,Reject
+LENDING-100469,"Patricia Jackson",France,150787.0,0.2990,838,65841.0,Male,72,0.1400,Approve
+LENDING-10047,"James Thomas",United Kingdom,104100.0,0.4997,806,25847.0,Female,49,0.0200,Approve
+LENDING-100470,"David Miller",Japan,122008.0,0.4057,648,29046.0,Other,63,1.0000,Reject
+LENDING-100473,"Karen Anderson",France,16795.0,0.3416,651,5000.0,Female,27,1.0000,Reject
+LENDING-100474,"Sarah Moore",Canada,100886.0,0.5071,626,16682.0,Female,73,1.0000,Reject
+LENDING-100472,"Patricia Smith",Germany,89017.0,0.3187,729,31899.0,Female,70,0.0100,Approve
+LENDING-100476,"Karen Martin",United States,117522.0,0.2398,580,48215.0,Male,21,1.0000,Reject
+LENDING-100475,"Sarah Thomas",Australia,70109.0,0.2941,744,23922.0,Male,75,0.0500,Approve
+LENDING-100477,"Elizabeth Hernandez",Singapore,120011.0,0.4109,785,58927.0,Female,33,0.1500,Approve
+LENDING-100481,"David Lopez",United Kingdom,63697.0,0.1308,749,18499.0,Other,56,0.0500,Approve
+LENDING-100479,"Elizabeth Taylor",Germany,170581.0,0.2347,555,69855.0,Female,37,1.0000,Reject
+LENDING-100480,"Charles Moore",Australia,62054.0,0.2441,687,14807.0,Male,67,0.0600,Approve
+LENDING-100478,"James Jones",France,67444.0,0.3111,626,15238.0,Male,38,1.0000,Reject
+LENDING-10048,"David Lopez",Singapore,21234.0,0.2046,592,5374.0,Other,34,1.0000,Reject
+LENDING-100484,"Elizabeth Smith",Japan,96743.0,0.3556,582,42159.0,Other,57,1.0000,Reject
+LENDING-100486,"Sarah Lopez",France,140106.0,0.2685,766,47641.0,Other,72,0.0600,Approve
+LENDING-100485,"Richard Garcia",Australia,98772.0,0.2099,549,28098.0,Female,38,1.0000,Reject
+LENDING-100482,"Karen Brown",Germany,103222.0,0.2781,742,43614.0,Male,60,0.0700,Approve
+LENDING-100483,"William Wilson",Japan,46620.0,0.2937,606,17078.0,Female,77,1.0000,Reject
+LENDING-100490,"Linda Miller",France,137211.0,0.2378,747,24897.0,Male,77,0.1300,Approve
+LENDING-100487,"Joseph Martinez",Japan,123903.0,0.1573,647,55542.0,Other,64,1.0000,Reject
+LENDING-100488,"Linda Martinez",Germany,169711.0,0.2496,519,64171.0,Male,37,1.0000,Reject
+LENDING-10049,"John Jones",Japan,81171.0,0.3960,753,28751.0,Other,75,0.0500,Approve
+LENDING-100489,"Michael Wilson",Japan,45325.0,0.2269,730,9796.0,Female,71,0.0500,Approve
+LENDING-100495,"Sarah Jones",United Kingdom,173972.0,0.2424,667,24765.0,Male,71,0.3100,Approve
+LENDING-100493,"Joseph Smith",France,120630.0,0.4678,617,13560.0,Other,52,1.0000,Reject
+LENDING-100494,"Charles Taylor",France,110495.0,0.1405,611,44829.0,Male,73,1.0000,Reject
+LENDING-100496,"Jennifer Williams",Japan,153188.0,0.0816,689,58453.0,Other,35,0.1300,Approve
+LENDING-100492,"Richard Jackson",Germany,93177.0,0.2543,759,29810.0,Male,42,0.0200,Approve
+LENDING-100491,"Michael Hernandez",France,141252.0,0.3970,701,66330.0,Other,48,0.2300,Approve
+LENDING-100499,"Susan Jones",Japan,124576.0,0.2998,655,58341.0,Male,72,0.9900,Reject
+LENDING-100498,"Robert Brown",France,165844.0,0.3182,614,29752.0,Male,32,1.0000,Reject
+LENDING-10050,"Robert Johnson",United Kingdom,166848.0,0.0960,602,65376.0,Other,70,0.9800,Reject
+LENDING-100497,"Jessica Martin",France,110337.0,0.2007,729,40109.0,Male,50,0.0300,Approve
+LENDING-100500,"Jennifer Davis",Australia,75772.0,0.0874,763,15838.0,Other,19,0.0700,Approve
+LENDING-100501,"Thomas Taylor",Japan,39923.0,0.3457,679,13985.0,Male,25,0.3100,Approve
+LENDING-100505,"James Martin",United States,51529.0,0.4403,784,24009.0,Other,39,0.1200,Approve
+LENDING-100504,"Linda Jackson",France,147618.0,0.2676,560,18623.0,Female,54,0.9900,Reject
+LENDING-100502,"Barbara Williams",Australia,102836.0,0.2206,594,32401.0,Male,74,0.9900,Reject
+LENDING-100503,"David Davis",Japan,23519.0,0.2781,592,5918.0,Female,64,1.0000,Reject
+LENDING-100506,"Susan Davis",United Kingdom,53167.0,0.3492,714,23580.0,Female,19,0.2800,Approve
+LENDING-10051,"Susan Jones",United Kingdom,22922.0,0.3038,737,5167.0,Other,43,0.0000,Approve
+LENDING-100508,"David Moore",Canada,59250.0,0.3739,605,16411.0,Female,51,1.0000,Reject
+LENDING-100509,"Richard Moore",United States,92142.0,0.2801,746,11937.0,Male,58,0.1700,Approve
+LENDING-100507,"Elizabeth Lopez",United States,177916.0,0.2980,729,24379.0,Other,73,0.0300,Approve
+LENDING-100510,"Barbara Martin",Germany,113178.0,0.3367,678,32254.0,Other,21,0.2500,Approve
+LENDING-100514,"Linda Jackson",France,149727.0,0.4290,666,36656.0,Male,55,0.3900,Approve
+LENDING-100513,"Thomas Miller",United Kingdom,149171.0,0.0892,738,73007.0,Male,40,0.3100,Approve
+LENDING-100512,"Patricia Davis",Japan,155834.0,0.5463,553,21606.0,Other,39,0.9800,Reject
+LENDING-100511,"Patricia Johnson",France,16799.0,0.1388,723,5000.0,Male,76,0.1500,Approve
+LENDING-100515,"Sarah Johnson",United States,104505.0,0.0109,604,14526.0,Female,64,0.9900,Reject
+LENDING-100516,"David Gonzalez",France,107857.0,0.2240,707,52830.0,Male,20,0.0900,Approve
+LENDING-10052,"Joseph Martinez",United States,47618.0,0.2508,792,7433.0,Female,76,0.0100,Approve
+LENDING-100518,"John Brown",Japan,119955.0,0.3723,669,33683.0,Female,70,0.2500,Approve
+LENDING-100517,"Barbara Wilson",Singapore,37854.0,0.3853,713,15406.0,Other,59,0.2600,Approve
+LENDING-100519,"Robert Jackson",Japan,78032.0,0.4330,742,8422.0,Male,53,0.3000,Approve
+LENDING-100524,"James Garcia",Germany,125425.0,0.2275,711,21526.0,Other,32,0.2800,Approve
+LENDING-100522,"Richard Williams",Australia,58577.0,0.1782,621,25832.0,Female,39,1.0000,Reject
+LENDING-100521,"Barbara Brown",United States,102003.0,0.1877,720,49812.0,Other,21,0.1000,Approve
+LENDING-100520,"Sarah Wilson",Australia,115320.0,0.3812,649,39128.0,Male,37,1.0000,Reject
+LENDING-100523,"Jennifer Lopez",Canada,109758.0,0.4104,574,18511.0,Female,42,1.0000,Reject
+LENDING-100525,"John Wilson",United Kingdom,16256.0,0.5025,759,7652.0,Female,24,0.1000,Approve
+LENDING-100668,"Patricia Miller",United States,128423.0,0.2131,850,35597.0,Female,22,0.0500,Approve
+LENDING-100608,"Robert Jones",United Kingdom,105516.0,0.0945,610,34142.0,Female,27,1.0000,Reject
+LENDING-100527,"Michael Jackson",Germany,130764.0,0.1029,722,56345.0,Other,62,0.0900,Approve
+LENDING-100669,"Robert Moore",United States,73402.0,0.1465,697,28540.0,Other,27,0.1100,Approve
+LENDING-100577,"Michael Brown",France,66563.0,0.6895,667,28045.0,Male,35,0.6400,Approve
+LENDING-100531,"Patricia Lopez",Germany,129481.0,0.2703,752,22845.0,Other,28,0.0900,Approve
+LENDING-10055,"Jennifer Johnson",United States,150934.0,0.0809,652,67292.0,Female,34,0.9800,Reject
+LENDING-100526,"Linda Anderson",Singapore,63574.0,0.1933,740,29715.0,Other,26,0.0400,Approve
+LENDING-100551,"Thomas Brown",Japan,58759.0,0.1025,681,14843.0,Male,28,0.2500,Approve
+LENDING-100548,"Mary Jones",United States,121854.0,0.4098,769,30910.0,Other,77,0.2000,Approve
+LENDING-100529,"Joseph Wilson",United States,106357.0,0.3201,735,42507.0,Male,43,0.0100,Approve
+LENDING-100552,"Michael Anderson",Singapore,75084.0,0.2449,726,31758.0,Female,23,0.0500,Approve
+LENDING-10053,"William Jones",Japan,62308.0,0.3033,714,10464.0,Male,53,0.1100,Approve
+LENDING-100607,"Jennifer Moore",United States,34695.0,0.4601,653,13553.0,Other,59,1.0000,Reject
+LENDING-100580,"Thomas Johnson",Germany,96158.0,0.1255,757,46771.0,Male,26,0.4600,Approve
+LENDING-100550,"Richard Thomas",Germany,85312.0,0.4150,717,29753.0,Other,21,0.0800,Approve
+LENDING-10058,"Elizabeth Davis",Japan,74961.0,0.5320,512,24515.0,Male,77,1.0000,Reject
+LENDING-100579,"William Moore",United States,28207.0,0.2417,714,12711.0,Other,51,0.2300,Approve
+LENDING-100578,"James Rodriguez",Germany,58134.0,0.0257,731,22090.0,Other,23,0.2300,Approve
+LENDING-10000,"Charles Williams",France,20298.0,0.3336,592,5000.0,Male,64,1.0000,Reject
+LENDING-100002,"Susan Lopez",Australia,170236.0,0.2674,704,47597.0,Female,42,0.1700,Approve
+LENDING-100004,"Richard Lopez",Australia,35446.0,0.1409,663,12980.0,Female,73,0.6000,Approve
+LENDING-100000,"Jessica Anderson",United Kingdom,44492.0,0.4796,724,11268.0,Other,21,0.1600,Approve
+LENDING-100001,"Susan Martin",United States,96885.0,0.2028,850,28650.0,Other,46,0.0100,Approve
+LENDING-100003,"William Moore",Canada,71233.0,0.4196,692,10913.0,Other,74,0.2500,Approve
+LENDING-100005,"Barbara Williams",Canada,132892.0,0.3533,669,13457.0,Female,71,0.2300,Approve
+LENDING-100008,"Linda Gonzalez",Canada,131951.0,0.1937,649,62071.0,Other,63,1.0000,Reject
+LENDING-100009,"John Brown",United States,112712.0,0.0315,711,51138.0,Other,64,0.0500,Approve
+LENDING-100006,"Jessica Garcia",United Kingdom,69114.0,0.3113,624,20926.0,Female,75,1.0000,Reject
+LENDING-100007,"William Jones",Australia,23630.0,0.4878,825,5224.0,Other,33,0.0900,Approve
+LENDING-100010,"Charles Johnson",United States,86277.0,0.4774,775,36279.0,Male,55,0.0300,Approve
+LENDING-10001,"Sarah Hernandez",Australia,106082.0,0.1346,546,25939.0,Other,77,1.0000,Reject
+LENDING-100012,"David Hernandez",Japan,68730.0,0.4174,558,31484.0,Other,52,1.0000,Reject
+LENDING-100011,"Thomas Martinez",Singapore,24417.0,0.2658,771,5528.0,Other,40,0.0600,Approve
+LENDING-100013,"Jessica Thomas",Japan,47807.0,0.2079,689,15268.0,Other,44,0.2600,Approve
+LENDING-100018,"Patricia Thomas",Singapore,177203.0,0.1102,706,71579.0,Other,71,0.1700,Approve
+LENDING-100016,"Richard Gonzalez",Singapore,96354.0,0.2775,681,23962.0,Male,42,0.2300,Approve
+LENDING-100014,"Richard Martin",Canada,52340.0,0.1541,714,22501.0,Male,68,0.4200,Approve
+LENDING-100017,"James Gonzalez",Canada,27215.0,0.1360,637,13425.0,Other,34,0.9900,Reject
+LENDING-100015,"John Thomas",Singapore,26846.0,0.1726,618,12759.0,Other,65,1.0000,Reject
+LENDING-100022,"Michael Garcia",France,82626.0,0.3812,707,37684.0,Female,50,0.2900,Approve
+LENDING-100019,"Linda Smith",Germany,17964.0,0.3097,535,5000.0,Female,25,1.0000,Reject
+LENDING-100020,"David Hernandez",Singapore,39845.0,0.4003,679,18322.0,Female,19,0.0900,Approve
+LENDING-100021,"Jessica Jones",Japan,19811.0,0.5044,706,9860.0,Female,26,0.1900,Approve
+LENDING-10002,"Barbara Moore",United Kingdom,84195.0,0.1669,792,15644.0,Male,28,0.0600,Approve
+LENDING-100027,"Sarah Johnson",United Kingdom,17538.0,0.3646,712,7119.0,Other,24,0.4700,Approve
+LENDING-100026,"Karen Garcia",Germany,80364.0,0.3403,758,22490.0,Other,65,0.2300,Approve
+LENDING-100025,"Thomas Rodriguez",Japan,27900.0,0.3172,850,13212.0,Female,48,0.0100,Approve
+LENDING-100024,"David Garcia",Singapore,69783.0,0.4035,773,23253.0,Female,27,0.0600,Approve
+LENDING-100023,"William Brown",Australia,88609.0,0.6197,682,42349.0,Male,26,0.1500,Approve
+LENDING-100031,"Jennifer Johnson",Singapore,66261.0,0.1816,743,22830.0,Other,67,0.1100,Approve
+LENDING-100028,"Elizabeth Jackson",United States,89917.0,0.4014,651,14030.0,Male,41,0.9900,Reject
+LENDING-10003,"Susan Anderson",Japan,103567.0,0.2339,621,34646.0,Other,75,1.0000,Reject
+LENDING-100029,"Thomas Rodriguez",Australia,65345.0,0.2879,789,7120.0,Male,27,0.1800,Approve
+LENDING-100030,"Patricia Anderson",United States,32143.0,0.2362,705,7623.0,Male,77,0.1800,Approve
+LENDING-100032,"Elizabeth Wilson",United States,77695.0,0.1622,664,31181.0,Male,69,0.1200,Approve
+LENDING-100036,"William Thomas",France,149052.0,0.1156,670,74058.0,Female,77,0.4900,Approve
+LENDING-100034,"Mary Garcia",Germany,53376.0,0.1926,702,24426.0,Other,72,0.1500,Approve
+LENDING-100035,"Patricia Martin",United States,99606.0,0.4213,779,32613.0,Female,40,0.1100,Approve
+LENDING-100037,"William Miller",France,164466.0,0.2938,535,38821.0,Female,31,1.0000,Reject
+LENDING-100042,"Linda Rodriguez",Singapore,76998.0,0.3385,736,21350.0,Female,27,0.2400,Approve
+LENDING-100038,"Charles Taylor",Germany,142009.0,0.3523,835,33401.0,Other,69,0.1300,Approve
+LENDING-100039,"Sarah Wilson",Germany,16988.0,0.4055,690,5000.0,Other,59,0.3500,Approve
+LENDING-100033,"Charles Jackson",Canada,155988.0,0.2249,634,66448.0,Female,66,1.0000,Reject
+LENDING-100273,"Linda Williams",United Kingdom,134211.0,0.3277,633,42128.0,Male,43,0.9900,Reject
+LENDING-100126,"Elizabeth Williams",Australia,179531.0,0.3124,604,34878.0,Other,50,0.9900,Reject
+LENDING-100282,"Patricia Brown",Germany,99240.0,0.2890,583,25113.0,Other,38,1.0000,Reject
+LENDING-100338,"Joseph Garcia",Australia,43267.0,0.1383,631,13609.0,Female,75,1.0000,Reject
+LENDING-100053,"Patricia Thomas",United Kingdom,119355.0,0.4739,701,26566.0,Female,18,0.0600,Approve
+LENDING-100599,"Patricia Thomas",United States,34685.0,0.2727,588,5047.0,Female,32,1.0000,Reject
+LENDING-100061,"Richard Taylor",Canada,56387.0,0.0130,779,14089.0,Other,61,0.1100,Approve
+LENDING-100057,"Robert Brown",Germany,173863.0,0.1901,540,30099.0,Other,50,0.9900,Reject
+LENDING-100066,"Mary Miller",United Kingdom,121030.0,0.3180,672,36795.0,Male,53,0.2100,Approve
+LENDING-100043,"Elizabeth Martin",Canada,101377.0,0.4647,632,47365.0,Other,46,1.0000,Reject
+LENDING-100213,"Richard Jones",Japan,66745.0,0.2122,631,10568.0,Male,20,1.0000,Reject
+LENDING-100044,"Michael Wilson",Canada,107762.0,0.3468,634,42930.0,Other,50,1.0000,Reject
+LENDING-100104,"Mary Brown",United States,58907.0,0.4708,697,16433.0,Other,68,0.1100,Approve
+LENDING-100045,"Linda Thomas",Japan,38671.0,0.4897,780,18506.0,Other,71,0.0100,Approve
+LENDING-100296,"Karen Rodriguez",United Kingdom,166146.0,0.2012,595,18570.0,Male,57,0.9900,Reject
+LENDING-100084,"Joseph Martinez",Singapore,61254.0,0.3240,760,6933.0,Male,29,0.1000,Approve
+LENDING-100048,"Thomas Taylor",United States,104319.0,0.0579,685,40637.0,Other,46,0.2900,Approve
+LENDING-100051,"Jessica Thomas",Australia,126252.0,0.3500,650,14248.0,Other,27,0.9800,Reject

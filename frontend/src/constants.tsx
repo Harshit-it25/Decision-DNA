@@ -9,7 +9,7 @@ export const INITIAL_MODELS: ModelMetadata[] = [
     status: ModelStatus.STABLE_BASELINE,
     role: 'Monitoring',
     metrics: {
-      accuracy: 0.92,
+      accuracy: 0.9252,
       precision: 0.91,
       recall: 0.89,
       f1: 0.90,
@@ -37,7 +37,7 @@ export const INITIAL_MODELS: ModelMetadata[] = [
     status: ModelStatus.ACTIVE,
     role: 'Production',
     metrics: {
-      accuracy: 0.94,
+      accuracy: 0.9418,
       precision: 0.93,
       recall: 0.92,
       f1: 0.92,
