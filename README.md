@@ -67,12 +67,12 @@ One-click deployment to Google Cloud Run or AWS Fargate via Terraform. GitHub Ac
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                          React Frontend (SPA)                       │
+│                     React Frontend (SPA) (port 8007)                │
 │   Dashboard │ Monitoring │ Explainability │ Fairness │ Security │ Audit │
 └────────────────────────────────┬────────────────────────────────────┘
-                                 │ HTTPS / JWT Auth
+                                 │ HTTPS / JWT Auth / Vite Proxy
 ┌────────────────────────────────▼────────────────────────────────────┐
-│                     FastAPI Backend  (port 8007)                    │
+│                     FastAPI Backend  (port 8008)                    │
 │                                                                     │
 │   /api/predict          /api/audit/fairness    /api/security/       │
 │   /api/monitor/drift    /api/explain           /api/retrain         │
@@ -235,24 +235,41 @@ cp .env.example .env
 # Edit .env — add your VITE_GEMINI_API_KEY
 ```
 
-### 2. Backend (FastAPI)
+### 2. Setup and Run (Concurrent Dev Mode)
+
+You can set up and run both the frontend and backend concurrently using the root package scripts:
 
 ```bash
-pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8007 --reload
+# Install all dependencies (virtual environment & npm packages)
+npm run setup
+
+# Start both backend (port 8008) and frontend (port 8007) concurrently
+npm start
 ```
 
-Interactive API docs (Swagger UI) will be available at **http://localhost:8007/docs**.
+The React dashboard will automatically open at **http://localhost:8007**, and the API docs (Swagger UI) will be available at **http://localhost:8008/docs**.
 
-### 3. Frontend (React + Vite)
+### 3. Running Services Separately
 
+If you prefer to run services in separate terminals:
+
+**Backend (FastAPI)**
+```bash
+# If using the virtual environment created by npm run setup:
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Unix/macOS
+
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8008 --reload
+```
+Interactive API docs (Swagger UI) will be available at **http://localhost:8008/docs**.
+
+**Frontend (React + Vite)**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
-The dashboard will open at **http://localhost:5173**.
+The dashboard will open at **http://localhost:8007**.
 
 ### 4. Docker (all-in-one)
 
@@ -260,7 +277,7 @@ The dashboard will open at **http://localhost:5173**.
 docker-compose up --build
 ```
 
-The API will be available at **http://localhost:8000**.
+The API will be available at **http://localhost:8008**.
 
 ---
 
@@ -300,30 +317,44 @@ OAuth2 password flow. Returns a JWT access token (30-minute expiry).
 ### Example — Credit Risk Prediction
 
 ```bash
-curl -X POST http://localhost:8007/api/predict \
+curl -X POST http://localhost:8008/api/predict \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
-    "income": 75000,
-    "loanAmount": 25000,
-    "creditScore": 720,
-    "debt_to_income": 0.32,
-    "credit_utilization": 0.28,
-    "payment_history_score": 0.91,
-    "loan_repayment_ratio": 0.18
+    "applicant": {
+      "income": 75000,
+      "debtRatio": 0.32,
+      "creditScore": 720,
+      "loanAmount": 25000,
+      "monthsEmployed": 24,
+      "numCreditLines": 5,
+      "totalBalance": 5000,
+      "totalCreditLimit": 20000,
+      "pastDuePayments": 0,
+      "gender": "Male",
+      "age": 30
+    },
+    "modelId": "m2"
   }'
 ```
 
 ```json
 {
+  "riskProbability": 0.1400,
   "decision": "Approve",
-  "risk_probability": 0.14,
-  "shap_values": {
-    "creditScore": 0.31,
-    "payment_history_score": 0.22,
-    "debt_to_income": -0.18
+  "confidence": 0.8600,
+  "explanations": {
+    "creditScore": -0.3100,
+    "income": -0.2200,
+    "debtRatio": 0.1800
   },
-  "explanation": "Applicant approved. Strong credit score and payment history are the primary drivers. Debt-to-income ratio is within acceptable bounds."
+  "reason": "Decision: Approve. Key factors: strong Credit Score, strong Income.",
+  "modelId": "m2",
+  "mitigation_context": {
+    "active": false,
+    "applied_threshold": 0.65
+  },
+  "emailSent": false
 }
 ```
 
@@ -401,7 +432,7 @@ Every prediction is accompanied by:
 
 ```bash
 docker-compose up --build
-# API on :8000
+# API on :8008
 ```
 
 ### Google Cloud Run
