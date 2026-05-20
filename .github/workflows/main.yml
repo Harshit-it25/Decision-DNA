@@ -58,7 +58,14 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
     - name: Update ECS service
       run: |
         echo "Triggering rolling deployment on AWS ECS/Fargate..."
-        # aws ecs update-service --cluster decision-dna-cluster --service decision-dna-service --force-new-deployment --region us-east-1
+        aws ecs update-service --cluster decision-dna-cluster --service decision-dna-service --force-new-deployment --region us-east-1
