@@ -34,3 +34,7 @@ app/users.db
 
 # MinGit
 .mingit/
+
+# Models
+models/*.pkl
+!models/*_prod.pkl
