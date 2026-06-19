@@ -1,0 +1,22 @@
+{
+  "name": "decision-dna-root",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta,cyan\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": ".venv\\\\Scripts\\\\python -m uvicorn app.main:app --host 127.0.0.1 --port 8008 --reload",
+    "build": "cd frontend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "setup": "npm run install:backend && npm run install:frontend",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "python -m venv .venv && .venv\\\\Scripts\\\\python -m pip install --upgrade pip && .venv\\\\Scripts\\\\pip install -r requirements.txt",
+    "start": "npm run dev",
+    "test": "cd frontend && npm run test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "csv-parse": "^6.2.1"
+  }
+}

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  prediction-api:
+    build: .
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./models:/app/models
+      - ./app/users.db:/app/app/users.db
+    env_file:
+      - .env
+    environment:
+      - ENV=production

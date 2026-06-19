@@ -1,0 +1,27 @@
+# Core API
+fastapi
+uvicorn
+pydantic
+python-multipart
+prometheus-fastapi-instrumentator
+
+# Machine Learning & Data
+scikit-learn
+pandas
+numpy
+joblib
+shap
+imbalanced-learn
+scipy
+
+# Security & Governance
+PyJWT
+cryptography
+
+# Visualization
+matplotlib
+seaborn
+
+# Utility
+aiofiles
+python-dotenv
