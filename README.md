@@ -1,3 +1,12 @@
+---
+title: Decision DNA
+emoji: 🧬
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 <h1 align="center">🧬 Decision DNA</h1>
 <p align="center"><strong>Production-Grade AI Governance & Monitoring Platform for Credit Risk Models</strong></p>
 
