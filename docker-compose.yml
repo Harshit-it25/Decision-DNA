@@ -4,7 +4,7 @@ services:
   prediction-api:
     build: .
     ports:
-      - "8008:8008"
+      - "8008:7860"
     volumes:
       - ./models:/app/models
       - ./app/users.db:/app/app/users.db
