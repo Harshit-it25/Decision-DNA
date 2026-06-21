@@ -1,4 +1,5 @@
 <h1 align="center">🧬 Decision DNA</h1>
+<h1 align="center">Decision Dynamics, Navigation & Assurance
 <p align="center"><strong>Production-Grade AI Governance & Monitoring Platform for Credit Risk Models</strong></p>
 
 <p align="center">
@@ -14,7 +15,7 @@
 
 ---
 
-**Decision DNA** is an enterprise-scale credit risk AI system that goes far beyond prediction — it governs, monitors, secures, and explains every model decision in real time. Built for institutions that need to trust their AI, it combines high-fidelity machine learning (~94% accuracy) with a full governance stack: drift detection, adversarial robustness, fairness auditing, SHAP-based explainability, and an immutable audit trail — all deployable to GCP or AWS with a single command.
+**Decision DNA(Decision Dynamics, Navigation & Assurance)**  is an enterprise-scale credit risk AI system that goes far beyond prediction — it governs, monitors, secures, and explains every model decision in real time. Built for institutions that need to trust their AI, it combines high-fidelity machine learning (~94% accuracy) with a full governance stack: drift detection, adversarial robustness, fairness auditing, SHAP-based explainability, and an immutable audit trail — all deployable to GCP or AWS with a single command.
 
 ---
 
