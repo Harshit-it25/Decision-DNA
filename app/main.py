@@ -165,9 +165,9 @@ threat_state = {
 mitigation_state = {
     "active": False,
     "group_thresholds": {
-        "Male": 0.65,
-        "Female": 0.62,
-        "Age 18-25": 0.60
+        "Male": 0.50,
+        "Female": 0.50,
+        "Age 18-25": 0.50
     },
     "last_audit_di": 1.0,
     "mitigation_history": []
@@ -305,8 +305,8 @@ class ApplicantDetails(BaseModel):
 
     @validator("name")
     def validate_name(cls, v):
-        if v and not re.match(r"^[a-zA-Z\s'.,-]+$", v):
-            raise ValueError("Name can only contain letters, spaces, and standard punctuation.")
+        if v and not re.match(r"^[a-zA-Z0-9\s'.,-]+$", v):
+            raise ValueError("Name can only contain letters, numbers, spaces, and standard punctuation.")
         return v
 
     @validator("email")
@@ -534,11 +534,17 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         group = input_dict.get('gender', 'Male')
         
         # --- THRESHOLD TUNING ---
-        # Optimized decision threshold based on precision-recall tradeoff rather than default 0.5
-        tuned_threshold = 0.65 
+        # Standard decision threshold of 0.50
+        tuned_threshold = 0.50 
         threshold = mitigation_state["group_thresholds"].get("standard", tuned_threshold)
-        if mitigation_state["active"] and group == "Female":
-            threshold = mitigation_state["group_thresholds"]["Female"]
+        if mitigation_state["active"]:
+            age = input_dict.get("age", 30)
+            if group == "Female":
+                threshold = mitigation_state["group_thresholds"].get("Female", threshold)
+            elif 18 <= age <= 25:
+                threshold = mitigation_state["group_thresholds"].get("Age 18-25", threshold)
+            elif group == "Male":
+                threshold = mitigation_state["group_thresholds"].get("Male", threshold)
             
         risk_score = float(prob)
         # Decision logic: probability of risk >= threshold means Reject
@@ -764,9 +770,9 @@ async def reboot(_ = Depends(require_permissions("harden")), _limiter = Depends(
     mitigation_state = {
         "active": False,
         "group_thresholds": {
-            "Male": 0.65,
-            "Female": 0.62,
-            "Age 18-25": 0.60
+            "Male": 0.50,
+            "Female": 0.50,
+            "Age 18-25": 0.50
         },
         "last_audit_di": 1.0,
         "mitigation_history": []
