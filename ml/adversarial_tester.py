@@ -16,6 +16,13 @@ class AdversarialTester:
         self.processor = DataProcessor(scaler_path=scaler_path)
         if os.path.exists(model_path):
             self.model = joblib.load(model_path)
+            if self.model is not None:
+                if hasattr(self.model, 'named_steps') and 'classifier' in self.model.named_steps:
+                    clf = self.model.named_steps['classifier']
+                    if hasattr(clf, 'n_jobs'):
+                        clf.n_jobs = 1
+                elif hasattr(self.model, 'n_jobs'):
+                    self.model.n_jobs = 1
         else:
             self.model = None
             
@@ -29,8 +36,11 @@ class AdversarialTester:
 
         # Initial prediction
         df = pd.DataFrame([applicant_data])
-        X_scaled = self.processor.transform(df)
-        prob = float(self.model.predict_proba(X_scaled)[0][1])
+        if hasattr(self.model, 'named_steps'):
+            X_input, _ = self.processor.get_features(df)
+        else:
+            X_input = self.processor.transform(df)
+        prob = float(self.model.predict_proba(X_input)[0][1])
         initial_decision = "APPROVE" if prob < 0.5 else "REJECT"
         
         if initial_decision == target_decision:
@@ -86,8 +96,11 @@ class AdversarialTester:
                     if feat == 'totalCreditLimit': temp_data[feat] = max(1000, temp_data[feat])
                     
                     df_temp = pd.DataFrame([temp_data])
-                    X_temp = self.processor.transform(df_temp)
-                    new_prob = float(self.model.predict_proba(X_temp)[0][1])
+                    if hasattr(self.model, 'named_steps'):
+                        X_input_temp, _ = self.processor.get_features(df_temp)
+                    else:
+                        X_input_temp = self.processor.transform(df_temp)
+                    new_prob = float(self.model.predict_proba(X_input_temp)[0][1])
                     
                     # Target optimization:
                     # APPROVE -> minimize prob of rejection
@@ -156,8 +169,18 @@ class AdversarialTester:
         df = df_all.sample(min(1000, sample_size * 20))
         
         # Identify those the model REJECTS
-        X_scaled = self.processor.transform(df)
-        probs = self.model.predict_proba(X_scaled)[:, 1]
+        if hasattr(self.model, 'named_steps'):
+            X_input = self.processor.transform(df) # wait, processor.transform will scale features if self.processor.scaler is present.
+            # Wait, if self.model is a Pipeline, it does standard scaling internally, so it expects UNscaled engineered features.
+            # But self.processor.transform(df) does scaling if it has a scaler.
+            # Wait, did we initialize self.processor = DataProcessor(scaler_path=scaler_path)?
+            # Yes! So if scaler_path exists, self.processor.transform(df) will return SCALED features!
+            # But self.model is a Pipeline, so it expects UNscaled engineered features!
+            # Wait, if self.model is a Pipeline, we should feed it UNscaled features, which is:
+            X_input, _ = self.processor.get_features(df)
+        else:
+            X_input = self.processor.transform(df)
+        probs = self.model.predict_proba(X_input)[:, 1]
         df['initial_prob'] = probs
         
         rejected_candidates = df[df['initial_prob'] >= 0.5]

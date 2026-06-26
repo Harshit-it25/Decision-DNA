@@ -1,7 +1,7 @@
 import requests
 import json
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = "http://127.0.0.1:8008"
 
 USERS = {
     "admin": "decision_dna_2024",
@@ -10,17 +10,31 @@ USERS = {
 }
 
 ENDPOINTS = [
-    ("POST", "/predict", {"income": 75000, "loanAmount": 250000, "creditScore": 720}),
-    ("GET", "/security/status", None),
-    ("POST", "/security/red-team", None),
-    ("POST", "/security/harden", None),
-    ("GET", "/security/watermark/verify", None),
-    ("GET", "/monitoring/distribution", None),
-    ("GET", "/monitoring/drift", None),
+    ("POST", "/api/predict", {
+        "applicant": {
+            "income": 75000,
+            "loanAmount": 250000,
+            "creditScore": 720,
+            "debtRatio": 0.3,
+            "monthsEmployed": 24,
+            "numCreditLines": 5,
+            "totalBalance": 5000,
+            "totalCreditLimit": 20000,
+            "pastDuePayments": 0,
+            "gender": "Male",
+            "age": 30
+        },
+        "modelId": "m2"
+    }),
+    ("GET", "/api/security/status", None),
+    ("POST", "/api/security/red-team", None),
+    ("POST", "/api/security/harden", None),
+    ("GET", "/api/security/watermark/verify", None),
+    ("GET", "/api/monitoring-drift", None),
 ]
 
 def get_token(username, password):
-    resp = requests.post(f"{API_URL}/token", data={"username": username, "password": password})
+    resp = requests.post(f"{API_URL}/api/token", data={"username": username, "password": password})
     if resp.status_code == 200:
         return resp.json()["access_token"]
     return None

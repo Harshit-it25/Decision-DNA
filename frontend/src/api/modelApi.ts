@@ -1,4 +1,4 @@
-let authToken: string | null = localStorage.getItem('decision_dna_token');
+let authToken: string | null = typeof localStorage !== 'undefined' ? localStorage.getItem('decision_dna_token') : null;
 
 export const login = async (username: string, password: string) => {
   const formData = new URLSearchParams();
@@ -15,13 +15,22 @@ export const login = async (username: string, password: string) => {
     });
     
     if (!response.ok) {
-        throw new Error("Invalid credentials");
+        let errorMessage = 'Invalid credentials';
+        try {
+          const errData = await response.json();
+          if (errData && errData.detail) {
+            errorMessage = errData.detail;
+          }
+        } catch (_) {}
+        throw new Error(errorMessage);
     }
 
     const data = await response.json();
     if (data.access_token) {
       authToken = data.access_token;
-      localStorage.setItem('decision_dna_token', authToken!);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('decision_dna_token', authToken!);
+      }
       return { success: true };
     }
   } catch (e) {
@@ -33,7 +42,9 @@ export const login = async (username: string, password: string) => {
 
 export const logout = () => {
   authToken = null;
-  localStorage.removeItem('decision_dna_token');
+  if (typeof localStorage !== 'undefined') {
+    localStorage.removeItem('decision_dna_token');
+  }
 };
 
 export const getCurrentUserInfo = async () => {
@@ -123,6 +134,16 @@ export const rebootSystem = async () => {
     method: 'POST',
     headers
   });
+  if (!response.ok) {
+    let errorMessage = 'Reboot failed';
+    try {
+      const errData = await response.json();
+      if (errData && errData.detail) {
+        errorMessage = errData.detail;
+      }
+    } catch (_) {}
+    throw new Error(errorMessage);
+  }
   return await response.json();
 };
 
@@ -147,6 +168,7 @@ export const triggerHardening = async () => {
 export const getFairnessMetrics = async () => {
   const headers = await getHeaders();
   const response = await fetch('/api/audit/fairness', { headers });
+  if (!response.ok) throw new Error(`Fairness API error: ${response.status}`);
   return await response.json();
 };
 

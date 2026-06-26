@@ -1,49 +1,75 @@
-import { GoogleGenAI } from "@google/genai";
 import { ThreatLevel, IntegrityStatus } from "../types";
 
 export type AITier = 'standard' | 'performance';
 
+// Cache to avoid hitting rate limits on every state change
+interface InsightCache {
+  key: string;
+  value: string;
+  timestamp: number;
+}
+
+let insightCache: InsightCache | null = null;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 export const getSecurityInsight = async (
-  threatLevel: ThreatLevel, 
-  integrity: IntegrityStatus, 
+  threatLevel: ThreatLevel,
+  integrity: IntegrityStatus,
   psi: number,
   tier: AITier = 'standard'
 ): Promise<string> => {
-  const rawKey = import.meta.env.VITE_GEMINI_API_KEY;
-  // Strip any accidental quotes or whitespace
-  const apiKey = rawKey?.replace(/['"]/g, '').trim();
-  
-  if (!apiKey) return "AI Insights unavailable: API key not configured.";
+  // Use cached result if same inputs within TTL
+  const cacheKey = `${threatLevel}|${integrity}|${psi.toFixed(2)}|${tier}`;
+  if (insightCache && insightCache.key === cacheKey && Date.now() - insightCache.timestamp < CACHE_TTL_MS) {
+    return insightCache.value;
+  }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: tier === 'performance' ? "gemini-1.5-pro" : "gemini-1.5-flash",
-      contents: [{
-        role: 'user',
-        parts: [{
-          text: `As a Lead Model Governance Officer, analyze this system state:
-          - Threat Level: ${threatLevel}
-          - Integrity: ${integrity}
-          - Population Stability Index (PSI): ${psi.toFixed(3)}
-          
-          Provide a concise, 2-sentence executive summary of the risk and recommended action.`
-        }]
-      }],
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('decision_dna_token') : null;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch('/api/security/insight', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        threatLevel,
+        integrity,
+        psi,
+        tier
+      })
     });
 
-    // Handle both newer and older SDK return structures
-    const text = typeof (response as any).text === 'function' 
-      ? (response as any).text() 
-      : response.text;
-
-    return text || "No insight generated.";
-  } catch (error) {
-    console.error("Gemini Insight failed", error);
-    // Log more specific error info to help debug connectivity
-    if (error instanceof Error) {
-      console.warn("Gemini Error Details:", error.message);
+    if (!response.ok) {
+      if (response.status === 429) {
+        const friendly = "⚠️ Rate limit exceeded. Please wait a moment before requesting another security insight.";
+        insightCache = { key: cacheKey, value: friendly, timestamp: Date.now() };
+        return friendly;
+      }
+      throw new Error(`Failed with status ${response.status}`);
     }
-    return "Failed to retrieve AI insight. Check connectivity.";
+
+    const data = await response.json();
+    const text = data.insight || "No insight generated.";
+
+    // Cache successful result
+    insightCache = { key: cacheKey, value: text, timestamp: Date.now() };
+    return text;
+  } catch (error: any) {
+    const msg = error?.message || String(error);
+    console.error("Gemini Insight failed:", msg);
+
+    // Friendly error checks
+    if (msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('quota') || msg.includes('limit')) {
+      const friendly = "⚠️ AI quota limit reached for today. Governance insights will resume automatically tomorrow, or upgrade your Gemini API plan at ai.google.dev.";
+      insightCache = { key: cacheKey, value: friendly, timestamp: Date.now() };
+      return friendly;
+    }
+
+    return `AI insight unavailable: ${msg}`;
   }
 };

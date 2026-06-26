@@ -93,5 +93,5 @@ export const generateSingleApplicant = (index: number): Applicant => {
   };
 };
 
-// Increased to 100,000 applicants to support high-volume monitoring requirements
-export const MOCK_APPLICANTS: Applicant[] = Array.from({ length: 100000 }, (_, i) => generateSingleApplicant(i));
+// Decreased to 100 applicants to ensure dataset.csv is loaded on initial startup
+export const MOCK_APPLICANTS: Applicant[] = Array.from({ length: 100 }, (_, i) => generateSingleApplicant(i));

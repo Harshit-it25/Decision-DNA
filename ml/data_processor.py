@@ -4,12 +4,34 @@ import os
 from typing import Tuple, List
 
 class DataProcessor:
-    def __init__(self) -> None:
+    def __init__(self, scaler_path=None) -> None:
         self.feature_cols: List[str] = [
             'income', 'loanAmount', 'creditScore', 
             'debt_to_income', 'credit_utilization', 
             'payment_history_score', 'loan_repayment_ratio'
         ]
+        self.scaler = None
+        if scaler_path and os.path.exists(scaler_path):
+            import joblib
+            try:
+                self.scaler = joblib.load(scaler_path)
+            except Exception as e:
+                print(f"Warning: Failed to load scaler from {scaler_path}: {e}")
+
+    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
+        X_unscaled, _ = self.get_features(df)
+        if self.scaler is not None:
+            scaled_arr = self.scaler.transform(X_unscaled)
+            return pd.DataFrame(scaled_arr, columns=self.feature_cols, index=X_unscaled.index)
+        return X_unscaled
+
+    def fit_transform(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        X_unscaled, df_processed = self.get_features(df)
+        from sklearn.preprocessing import StandardScaler
+        self.scaler = StandardScaler()
+        scaled_arr = self.scaler.fit_transform(X_unscaled)
+        X_scaled = pd.DataFrame(scaled_arr, columns=self.feature_cols, index=X_unscaled.index)
+        return X_scaled, df_processed
 
     def clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """Clean missing values and standardize formats."""

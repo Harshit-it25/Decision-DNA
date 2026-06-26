@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { predictApplicant } from '../src/services/modelEngine';
-import { Applicant, ModelMetadata, ModelType, ModelStatus } from '../src/types';
+import { predictApplicant } from '../frontend/src/services/modelEngine';
+import { Applicant, ModelMetadata, ModelType, ModelStatus } from '../frontend/src/types';
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';
@@ -55,7 +55,7 @@ describe('modelEngine Integration Tests', () => {
     const testApplicant = mapToApplicant(allRecords[0]);
     const prediction = await predictApplicant(testApplicant, model);
 
-    expect(fetch).toHaveBeenCalledTimes(2); // one for getToken, one for /predict
+    expect(fetch).toHaveBeenCalledTimes(1); // one for /predict
     expect(prediction.riskProbability).toBe(0.2);
     expect(prediction.decision).toBe('Approve');
   });

@@ -70,9 +70,12 @@ def get_fairness_metrics(df_path='dataset.csv', model=None, processor=None, samp
     # Since the objective is model auditing, we should score the sample with the real model
     if model and processor:
         try:
-            X_scaled = processor.transform(df)
-            preds = model.predict(X_scaled)
-            df['predicted_decision'] = ['Approve' if p == 1 else 'Reject' for p in preds]
+            if hasattr(model, 'named_steps'):
+                X_input, _ = processor.get_features(df)
+            else:
+                X_input = processor.transform(df)
+            preds = model.predict(X_input)
+            df['predicted_decision'] = ['Reject' if p == 1 else 'Approve' for p in preds]  # 1=Reject, 0=Approve (matches train_models_prod.py)
             target_col = 'predicted_decision'
         except Exception as e:
             print(f"Error predicting for fairness audit: {e}")
@@ -135,15 +138,15 @@ def get_fairness_metrics(df_path='dataset.csv', model=None, processor=None, samp
         'Age 18-25': 0.50
     }
     
-    # If Female is under-approved, lower their threshold. If over-approved, lower Male threshold.
+    # Since decision = "Reject" if risk_score >= threshold else "Approve",
+    # raising the rejection threshold decreases rejections (increases approvals).
     if gender_di < 1.0 and gender_di > 0:
-        # e.g., DI = 0.8 -> threshold = 0.5 * 0.8 = 0.40
-        recommended_thresholds['Female'] = round(0.50 * gender_di, 2)
+        recommended_thresholds['Female'] = round(0.50 / gender_di, 2)
     elif gender_di > 1.0:
-        recommended_thresholds['Male'] = round(0.50 / gender_di, 2)
+        recommended_thresholds['Male'] = round(0.50 * gender_di, 2)
         
     if age_di < 1.0 and age_di > 0:
-        recommended_thresholds['Age 18-25'] = round(0.50 * age_di, 2)
+        recommended_thresholds['Age 18-25'] = round(0.50 / age_di, 2)
 
     metrics['recommended_thresholds'] = recommended_thresholds
 

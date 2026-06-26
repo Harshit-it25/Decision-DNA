@@ -8,19 +8,19 @@ interface CreateApplicantModalProps {
 }
 
 const InputField = ({ label, icon, name, type = 'text', errors, ...props }: any) => (
-  <div className="space-y-1.5 flex flex-col">
-    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-      {icon} {label}
+  <div className="space-y-1.5 flex flex-col font-sans">
+    <label className="text-[10px] font-bold text-neutral-secondary uppercase tracking-widest ml-1 flex items-center gap-2">
+      <span className="text-burgundy">{icon}</span> {label}
     </label>
     <input 
       {...props}
       type={type}
       name={name}
-      className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-white outline-none transition-all ${
-        errors[name] ? 'border-rose-500 bg-rose-500/5 shadow-[0_0_10px_rgba(244,63,94,0.1)]' : 'border-slate-800 focus:border-indigo-500/50'
+      className={`w-full bg-white border rounded-xl px-4 py-3 text-sm text-neutral-text outline-none transition-all shadow-sm ${
+        errors[name] ? 'border-danger bg-danger-light/30 shadow-sm' : 'border-neutral-border focus:border-burgundy/50'
       }`}
     />
-    {errors[name] && <span className="text-[10px] text-rose-500 font-bold ml-1 animate-in fade-in slide-in-from-left-2">{errors[name]}</span>}
+    {errors[name] && <span className="text-[10px] text-danger font-bold ml-1 animate-in fade-in slide-in-from-left-2">{errors[name]}</span>}
   </div>
 );
 
@@ -82,11 +82,15 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
   };
 
   return (
-    <div className="fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-3xl p-8 shadow-2xl scale-in-center overflow-y-auto max-h-[90vh]">
+    <div className="fixed inset-0 z-[110] bg-neutral-text/40 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-white border border-neutral-border w-full max-w-2xl rounded-2xl p-8 shadow-xl scale-in-center overflow-y-auto max-h-[90vh] font-sans text-neutral-text">
         <div className="flex justify-between items-start mb-8">
-          <h3 className="text-2xl font-black text-white flex items-center gap-2"><PlusCircle className="text-indigo-400" /> Ingest Applicant</h3>
-          <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-500 hover:text-white"><X size={20} /></button>
+          <h3 className="text-2xl font-bold text-neutral-text flex items-center gap-2">
+            <PlusCircle className="text-burgundy" /> Ingest Applicant
+          </h3>
+          <button onClick={onClose} className="p-2 hover:bg-neutral-bg rounded-full transition-colors text-neutral-secondary hover:text-neutral-text">
+            <X size={20} />
+          </button>
         </div>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
@@ -113,13 +117,13 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           </div>
           
           <div className="space-y-1.5 flex flex-col">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-              <Globe size={12}/> Nationality
+            <label className="text-[10px] font-bold text-neutral-secondary uppercase tracking-widest ml-1 flex items-center gap-2">
+              <span className="text-burgundy"><Globe size={12}/></span> Nationality
             </label>
             <select 
               value={formData.nationality} 
               onChange={(e: any) => setFormData({...formData, nationality: e.target.value})}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500/50"
+              className="w-full bg-white border border-neutral-border rounded-xl px-4 py-3 text-sm text-neutral-text outline-none focus:border-burgundy/50 shadow-sm"
             >
               {countries.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -167,13 +171,13 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           />
 
           <div className="space-y-1.5 flex flex-col">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-              <Users size={12}/> Gender
+            <label className="text-[10px] font-bold text-neutral-secondary uppercase tracking-widest ml-1 flex items-center gap-2">
+              <span className="text-burgundy"><Users size={12}/></span> Gender
             </label>
             <select 
               value={formData.gender} 
               onChange={(e: any) => setFormData({...formData, gender: e.target.value as any})}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-indigo-500/50"
+              className="w-full bg-white border border-neutral-border rounded-xl px-4 py-3 text-sm text-neutral-text outline-none focus:border-burgundy/50 shadow-sm"
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -192,7 +196,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           />
 
           <div className="md:col-span-2">
-            <button type="submit" className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-900/20">
+            <button type="submit" className="w-full py-4 bg-burgundy hover:bg-burgundy-hover text-white font-bold rounded-xl transition-all shadow-sm">
               Ingest Application
             </button>
           </div>

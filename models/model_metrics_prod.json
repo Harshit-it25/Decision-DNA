@@ -1,1 +1,1 @@
-{"last_retrained": "2026-05-08T13:44:11.648082", "accuracy": 0.99993, "version": "20260508_134406", "status": "PROMOTED"}
+{"last_retrained": "2026-05-23T11:36:50.992462", "accuracy": 0.88345, "random_forest_accuracy": 0.88345, "logistic_regression_accuracy": 0.8777, "version": "20260523_113646", "status": "PROMOTED"}

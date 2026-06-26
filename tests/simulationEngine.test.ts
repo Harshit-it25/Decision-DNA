@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { generateAuditId, performAttackSimulation, performSystemReboot } from '../src/services/simulationEngine';
-import { ThreatLevel, IntegrityStatus, DriftMetrics } from '../src/types';
+import { generateAuditId, performAttackSimulation, performSystemReboot } from '../frontend/src/services/simulationEngine';
+import { ThreatLevel, IntegrityStatus, DriftMetrics } from '../frontend/src/types';
 
 describe('simulationEngine', () => {
   describe('generateAuditId', () => {

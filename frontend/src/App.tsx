@@ -148,6 +148,15 @@ const App: React.FC = () => {
         // Ensure seed has a chance to run if tables are empty
         await db.seed();
         
+        // Auto-invalidate old cached dataset when updated in backend
+        const currentVersion = "v_71k_approve_v6";
+        const loadedVersion = localStorage.getItem("decision_dna_dataset_version");
+        if (loadedVersion !== currentVersion) {
+          console.log("New dataset detected. Ingressing latest dataset.csv...");
+          await db.applicants.clear();
+          localStorage.setItem("decision_dna_dataset_version", currentVersion);
+        }
+        
         // Increased limit to 100000 to handle even larger applicant pools
         const dbApplicants = await db.applicants.reverse().limit(100000).toArray();
         let dbModels = await db.models.toArray();
@@ -210,12 +219,25 @@ const App: React.FC = () => {
     const allApplicants = await db.applicants.toArray();
     const updatedApplicants = await batchPredict(allApplicants, model);
     
-    // Update DB
-    await db.applicants.bulkPut(updatedApplicants);
-    
-    // Update State
-    const displayApplicants = await db.applicants.reverse().limit(100000).toArray();
-    setApplicants(displayApplicants);
+    // Update State immediately in reverse order (newest first)
+    const reversed = [...updatedApplicants].reverse();
+    setApplicants(reversed);
+
+    // Update DB in background chunks to prevent blocking the event loop / freezing UI
+    const chunkSize = 2000;
+    const updateDbInChunks = async () => {
+      try {
+        for (let i = 0; i < updatedApplicants.length; i += chunkSize) {
+          const chunk = updatedApplicants.slice(i, i + chunkSize);
+          await db.applicants.bulkPut(chunk);
+          // Yield to event loop to allow UI updates and click handlers to process
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+      } catch (err) {
+        console.error("Failed to update database in background", err);
+      }
+    };
+    updateDbInChunks();
 
     await recordAuditAction(
       "Batch Re-scoring",
@@ -398,13 +420,18 @@ const App: React.FC = () => {
 
   const handleLoadRealDataset = async () => {
     try {
-      const response = await fetch('/dataset.csv');
+      const token = localStorage.getItem('decision_dna_token');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(`/dataset.csv?t=${Date.now()}`, { headers });
       if (response.ok) {
         const csvText = await response.text();
         const lines = csvText.split('\n').slice(1); // Skip header
         const realData: Applicant[] = lines.filter(line => line.trim()).map(line => {
           // Simple CSV parser for this specific format
-          const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+          const parts = line.split(',');
           if (!parts || parts.length < 9) return null;
           
           const hasDemographics = parts.length >= 11;
@@ -430,18 +457,34 @@ const App: React.FC = () => {
         }).filter(Boolean) as Applicant[];
 
         if (realData.length > 0) {
-          await db.applicants.clear();
-          await db.applicants.bulkAdd(realData);
-          const updatedApps = await db.applicants.reverse().limit(100000).toArray();
-          setApplicants(updatedApps);
-          
-          await recordAuditAction(
-            "Trusted Dataset Ingestion",
-            `Ingested ${realData.length} records from dataset.csv. Data integrity verified via checksum.`,
-            'DRIFT',
-            'INFO'
-          );
-          setAuditLogs(await db.auditLogs.reverse().limit(50).toArray());
+          // Instantly update React state in reverse order (newest first)
+          const reversed = [...realData].reverse();
+          setApplicants(reversed);
+
+          // Clear and write to IndexedDB in background chunks
+          const writeInChunks = async () => {
+            try {
+              await db.applicants.clear();
+              const chunkSize = 5000;
+              for (let i = 0; i < realData.length; i += chunkSize) {
+                const chunk = realData.slice(i, i + chunkSize);
+                await db.applicants.bulkAdd(chunk);
+                // Yield to main thread
+                await new Promise(resolve => setTimeout(resolve, 0));
+              }
+              
+              await recordAuditAction(
+                "Trusted Dataset Ingestion",
+                `Ingested ${realData.length} records from dataset.csv. Data integrity verified via checksum.`,
+                'DRIFT',
+                'INFO'
+              );
+              setAuditLogs(await db.auditLogs.reverse().limit(50).toArray());
+            } catch (err) {
+              console.error("Failed to write dataset.csv to IndexedDB in background", err);
+            }
+          };
+          writeInChunks();
           return;
         }
       }
@@ -473,7 +516,6 @@ const App: React.FC = () => {
       
       // Initial scoring logic for the dataset (will be re-scored by active model)
       const riskProb = 1 - ((creditScore - 300) / 550 * 0.6 + (1 - debtRatio) * 0.3 + (income / 200000) * 0.1);
-      const decision = (creditScore > 657 && debtRatio < 0.41) || (creditScore > 717 && debtRatio < 0.51) ? 'Approve' : 'Reject';
       
       const names = ['James', 'Mary', 'Robert', 'Patricia', 'John', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth', 'David', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica', 'Thomas', 'Sarah', 'Charles', 'Karen'];
       const surnames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin'];
@@ -492,26 +534,51 @@ const App: React.FC = () => {
         gender: gender as 'Male' | 'Female' | 'Other',
         age,
         riskProbability: Math.max(0, Math.min(1, riskProb)),
-        decision,
+        decision: 'Reject' as 'Approve' | 'Reject', // Placeholder
         timestamp: Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)
       };
     });
 
-    await db.applicants.clear(); // Clear existing to avoid confusion with the large trusted set
-    await db.applicants.bulkAdd(realData);
-    const updatedApps = await db.applicants.reverse().limit(100000).toArray();
-    setApplicants(updatedApps);
-    
-    const log: AuditEntry = {
-      id: generateAuditId(),
-      timestamp: Date.now(),
-      action: "Trusted Dataset Ingestion",
-      details: `Ingested 100,000 records from synthetic Lending-Standard distribution. Data integrity verified via checksum.`,
-      category: 'DRIFT',
-      severity: 'INFO'
+    // Determine the threshold for 71.5% approvals
+    const riskProbs = realData.map(d => d.riskProbability).sort((a, b) => a - b);
+    const thresholdIndex = Math.floor(realData.length * 0.715);
+    const threshold = riskProbs[thresholdIndex];
+
+    realData.forEach(d => {
+      d.decision = d.riskProbability < threshold ? 'Approve' : 'Reject';
+    });
+
+    // Instantly update React state in reverse order (newest first)
+    const reversed = [...realData].reverse();
+    setApplicants(reversed);
+
+    // Clear and write to IndexedDB in background chunks
+    const writeFallbackInChunks = async () => {
+      try {
+        await db.applicants.clear();
+        const chunkSize = 5000;
+        for (let i = 0; i < realData.length; i += chunkSize) {
+          const chunk = realData.slice(i, i + chunkSize);
+          await db.applicants.bulkAdd(chunk);
+          // Yield to main thread
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+
+        const log: AuditEntry = {
+          id: generateAuditId(),
+          timestamp: Date.now(),
+          action: "Trusted Dataset Ingestion",
+          details: `Ingested 100,000 records from synthetic Lending-Standard distribution. Data integrity verified via checksum.`,
+          category: 'DRIFT',
+          severity: 'INFO'
+        };
+        await db.auditLogs.add(log);
+        setAuditLogs(await db.auditLogs.reverse().limit(50).toArray());
+      } catch (err) {
+        console.error("Failed to write synthetic dataset to IndexedDB in background", err);
+      }
     };
-    await db.auditLogs.add(log);
-    setAuditLogs(await db.auditLogs.reverse().limit(50).toArray());
+    writeFallbackInChunks();
   };
 
   const handleUpgradeAPI = async () => {
@@ -594,6 +661,7 @@ const App: React.FC = () => {
       setCurrentPage('overview');
     } catch (error) {
       console.error("Reboot failed", error);
+      addNotification(`Reboot failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
     }
   };
 
@@ -624,8 +692,8 @@ const App: React.FC = () => {
 
   if (isAuthenticated === null) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-slate-500 font-mono uppercase tracking-widest text-xs">
-        <Shield size={48} className="text-indigo-500 animate-pulse-slow mb-4" />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-bg text-neutral-secondary font-sans uppercase tracking-widest text-xs">
+        <Shield size={48} className="text-burgundy animate-pulse-slow mb-4" />
         Authenticating Session...
       </div>
     );
@@ -640,8 +708,8 @@ const App: React.FC = () => {
 
   if (!isDbLoaded) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-slate-500 font-mono uppercase tracking-widest text-xs">
-        <Database size={48} className="text-indigo-500 animate-pulse-slow mb-4" />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-bg text-neutral-secondary font-sans uppercase tracking-widest text-xs">
+        <Database size={48} className="text-burgundy animate-pulse-slow mb-4" />
         Establishing Persistent Storage...
       </div>
     );
@@ -663,130 +731,136 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-200 overflow-hidden">
-      <aside className={`w-64 border-r border-slate-800 flex flex-col sticky top-0 h-screen transition-all ${isCritical ? 'blur-xl opacity-20' : 'opacity-100'}`}>
-        <div className="p-6 flex items-center gap-3">
-          <div className="bg-indigo-500/10 p-2 rounded-lg border border-indigo-500/20">
-            <Shield className="w-6 h-6 text-indigo-400" />
+    <div className="flex min-h-screen bg-neutral-bg text-neutral-text overflow-hidden">
+      <aside className={`w-64 border-r border-neutral-border bg-white flex flex-col sticky top-0 h-screen transition-all ${isCritical ? 'blur-xl opacity-20' : 'opacity-100'}`}>
+        <div className="p-6 flex items-center gap-3 border-b border-neutral-border">
+          <div className="bg-burgundy/10 p-2 rounded-lg border border-burgundy/20">
+            <Shield className="w-6 h-6 text-burgundy" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-white">Decision DNA</span>
+          <span className="text-xl font-bold tracking-tight text-burgundy">Decision DNA</span>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-1">
+        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
           <NavItem icon={<LayoutDashboard size={20} />} label="Overview" active={currentPage === 'overview'} onClick={() => setCurrentPage('overview')} />
           
-          {(user?.role === 'SECURITY_ADMIN' || user?.role === 'MORTGAGE_OFFICER' || user?.role === 'AUDITOR') && (
-            <NavItem 
-              icon={<Activity size={20} />} 
-              label="Monitoring" 
-              active={currentPage === 'monitoring'} 
-              onClick={() => setCurrentPage('monitoring')} 
-              alert={metrics.psi >= 0.1 ? (metrics.psi >= 0.25 ? 'CRITICAL' : 'WARNING') : undefined}
-            />
-          )}
+          <NavItem 
+            icon={<Activity size={20} />} 
+            label="Monitoring" 
+            active={currentPage === 'monitoring'} 
+            onClick={() => setCurrentPage('monitoring')} 
+            alert={metrics.psi >= 0.1 ? (metrics.psi >= 0.25 ? 'CRITICAL' : 'WARNING') : undefined}
+          />
 
-          {user?.role === 'SECURITY_ADMIN' && (
-            <>
-              <NavItem icon={<Database size={20} />} label="Model Repo" active={currentPage === 'models'} onClick={() => setCurrentPage('models')} />
-              <NavItem icon={<Lock size={20} />} label="Security" active={currentPage === 'security'} onClick={() => setCurrentPage('security')} />
-            </>
-          )}
+          <NavItem icon={<Database size={20} />} label="Model Repo" active={currentPage === 'models'} onClick={() => setCurrentPage('models')} />
+          <NavItem icon={<Lock size={20} />} label="Security" active={currentPage === 'security'} onClick={() => setCurrentPage('security')} />
 
-          {(user?.role === 'SECURITY_ADMIN' || user?.role === 'ADMIN' || user?.role === 'MORTGAGE_OFFICER') && (
-             <NavItem icon={<Terminal size={20} />} label="Explainability" active={currentPage === 'explainability'} onClick={() => setCurrentPage('explainability')} />
-          )}
+          <NavItem icon={<Terminal size={20} />} label="Explainability" active={currentPage === 'explainability'} onClick={() => setCurrentPage('explainability')} />
 
           <NavItem icon={<History size={20} />} label="Audit Trail" active={currentPage === 'audit'} onClick={() => setCurrentPage('audit')} />
           <NavItem icon={<Terminal size={20} />} label="System Console" active={currentPage === 'console'} onClick={() => setCurrentPage('console')} />
           
-          {user?.role === 'SECURITY_ADMIN' && (
-            <>
-              <NavItem icon={<Fingerprint size={20} />} label="Fairness Audit" active={currentPage === 'fairness'} onClick={() => setCurrentPage('fairness')} />
-              <NavItem icon={<ShieldAlert size={20} />} label="Security Hardening" active={currentPage === 'security-hardening'} onClick={() => setCurrentPage('security-hardening')} />
-            </>
-          )}
+          <NavItem icon={<Fingerprint size={20} />} label="Fairness Audit" active={currentPage === 'fairness'} onClick={() => setCurrentPage('fairness')} />
+          <NavItem icon={<ShieldAlert size={20} />} label="Security Hardening" active={currentPage === 'security-hardening'} onClick={() => setCurrentPage('security-hardening')} />
         </nav>
 
-        <div className="px-4 mb-2 space-y-2">
-          {user?.role === 'SECURITY_ADMIN' && (
-            <button 
-              onClick={() => {
-                if (security.threatLevel === ThreatLevel.LOW && !window.confirm("System is stable. Perform security reboot anyway?")) return;
-                handleReboot();
-              }}
-              className="w-full flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/5 rounded-lg transition-all group border border-transparent hover:border-rose-500/20"
-            >
-              <RotateCcw size={18} className="group-hover:animate-spin-slow" />
-              <span className="text-xs font-bold uppercase tracking-widest">Quick Reboot</span>
-            </button>
-          )}
+        <div className="px-4 mb-2 space-y-2 border-t border-neutral-border pt-4">
+          <button 
+            onClick={() => {
+              if (security.threatLevel === ThreatLevel.LOW && !window.confirm("System is stable. Perform security reboot anyway?")) return;
+              handleReboot();
+            }}
+            className="w-full flex items-center gap-3 px-3 py-2 text-neutral-secondary hover:text-danger hover:bg-danger/5 rounded-lg transition-all group border border-transparent hover:border-danger/20"
+          >
+            <RotateCcw size={18} className="group-hover:rotate-45 transition-transform duration-500 text-neutral-secondary group-hover:text-danger" />
+            <span className="text-xs font-bold uppercase tracking-widest">Quick Reboot</span>
+          </button>
           
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-white hover:bg-slate-800/50 rounded-lg transition-all group"
+            className="w-full flex items-center gap-3 px-3 py-2 text-neutral-secondary hover:text-neutral-text hover:bg-neutral-bg rounded-lg transition-all group"
           >
-            <RotateCcw size={18} className="rotate-180" />
+            <RotateCcw size={18} className="rotate-180 text-neutral-secondary group-hover:text-neutral-text" />
             <span className="text-xs font-bold uppercase tracking-widest">Logout</span>
           </button>
         </div>
 
-        <div className="p-4 mx-4 mb-4 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-4">
+        <div className="p-4 mx-4 mb-4 bg-neutral-bg border border-neutral-border rounded-2xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles size={14} className={aiTier === 'performance' ? 'text-violet-400' : 'text-slate-500'} />
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">AI Intelligence</span>
+              <Sparkles size={14} className={aiTier === 'performance' ? 'text-burgundy' : 'text-neutral-secondary'} />
+              <span className="text-[10px] font-black uppercase tracking-widest text-neutral-text">AI Intelligence</span>
             </div>
-            <div className={`px-2 py-0.5 rounded text-[8px] font-black border ${aiTier === 'performance' ? 'bg-violet-500/10 border-violet-500/30 text-violet-400' : 'bg-slate-800 border-slate-700 text-slate-500'}`}>
+            <div className={`px-2 py-0.5 rounded text-[8px] font-black border ${aiTier === 'performance' ? 'bg-burgundy/10 border-burgundy/30 text-burgundy' : 'bg-white border-neutral-border text-neutral-secondary'}`}>
               {aiTier.toUpperCase()}
             </div>
           </div>
           
           <button 
             onClick={() => setAiTier(aiTier === 'standard' ? 'performance' : 'standard')}
-            className="w-full flex items-center justify-between p-2 bg-slate-950 border border-slate-800 rounded-xl hover:border-indigo-500/30 transition-all group"
+            className="w-full flex items-center justify-between p-2 bg-white border border-neutral-border rounded-xl hover:border-burgundy/30 transition-all group"
           >
-            <span className="text-[10px] text-slate-400 font-bold">Switch Tier</span>
-            <div className={`w-8 h-4 rounded-full p-0.5 transition-colors ${aiTier === 'performance' ? 'bg-violet-600' : 'bg-slate-800'}`}>
+            <span className="text-[10px] text-neutral-secondary font-bold">Switch Tier</span>
+            <div className={`w-8 h-4 rounded-full p-0.5 transition-colors ${aiTier === 'performance' ? 'bg-burgundy' : 'bg-neutral-border'}`}>
               <div className={`w-3 h-3 bg-white rounded-full transition-transform ${aiTier === 'performance' ? 'translate-x-4' : 'translate-x-0'}`} />
             </div>
           </button>
 
           <button 
             onClick={handleUpgradeAPI}
-            className="w-full py-2 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-indigo-900/20 active:scale-95 border border-indigo-400/30"
+            className="w-full py-2 flex items-center justify-center gap-2 bg-burgundy hover:bg-burgundy-hover text-white text-[9px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 border border-burgundy/30"
           >
             <Key size={10} /> Increase Limits
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 relative overflow-y-auto bg-slate-950">
+      <main className="flex-1 relative overflow-y-auto bg-neutral-bg">
         {isCritical && (
-          <div className="absolute inset-0 z-[100] bg-slate-950/98 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-500">
-            <AlertTriangle size={64} className="text-rose-500 animate-bounce mb-8" />
-            <h1 className="text-5xl font-black text-white uppercase italic transform -skew-x-6 mb-8">System Compromised</h1>
-            <button onClick={handleReboot} className="py-4 px-10 bg-rose-600 hover:bg-rose-500 text-white font-black rounded-2xl flex items-center gap-3 transition-all">
-              <RefreshCw size={20} className="animate-spin-slow" /> EMERGENCY REBOOT
-            </button>
+          <div className="fixed inset-0 z-[100] bg-white/98 flex flex-col items-center justify-center p-6 text-center overflow-y-auto animate-in fade-in duration-500 text-neutral-text">
+            <AlertTriangle size={64} className="text-danger mb-8 shrink-0 animate-bounce" />
+            <h1 className="text-5xl font-black text-burgundy uppercase italic transform -skew-x-6 mb-4">System Compromised</h1>
+            <p className="text-neutral-secondary text-sm mb-8 text-center max-w-md">
+              {user?.role === 'SECURITY_ADMIN'
+                ? "A critical threat level has been detected. Reboot the system to restore the baseline, or logout to switch users."
+                : "A critical threat level has been detected. Please contact a security administrator to perform a reboot, or logout to switch users."
+              }
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              {user?.role === 'SECURITY_ADMIN' && (
+                <button onClick={handleReboot} className="py-4 px-10 bg-danger hover:bg-danger/90 text-white font-black rounded-2xl flex items-center gap-3 transition-all cursor-pointer shadow-md">
+                  <RefreshCw size={20} className="animate-spin-slow" /> EMERGENCY REBOOT
+                </button>
+              )}
+              <button onClick={handleLogout} className="py-4 px-8 bg-white hover:bg-neutral-bg text-neutral-text font-black rounded-2xl flex items-center gap-3 transition-all cursor-pointer border border-neutral-border shadow-sm">
+                <RotateCcw size={20} className="rotate-180" /> LOGOUT
+              </button>
+            </div>
           </div>
         )}
 
-        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 sticky top-0 bg-slate-950/80 backdrop-blur-md z-10">
+        <header className="h-16 border-b border-neutral-border flex items-center justify-between px-8 sticky top-0 bg-white z-10 shadow-sm">
           <div className="flex items-center gap-4">
-            <h2 className="text-lg font-semibold text-slate-100 capitalize">{currentPage.replace('-', ' ')}</h2>
-            <div className="flex items-center gap-2 bg-slate-800/50 px-2 py-1 rounded text-[10px] font-mono border border-slate-700 text-slate-400">
-              <Server size={10} className="text-emerald-500" /> DB PERSISTENCE ACTIVE
+            <h2 className="text-lg font-semibold text-neutral-text capitalize">{currentPage.replace('-', ' ')}</h2>
+            <div className="flex items-center gap-2 bg-success-light px-2 py-1 rounded text-[10px] font-mono border border-success/20 text-success">
+              <Server size={10} className="text-success" /> DB PERSISTENCE ACTIVE
+            </div>
+            <div className="hidden lg:flex items-center gap-4 border-l border-neutral-border pl-4 text-[10px] text-neutral-secondary font-mono">
+              <span>RISK PROFILE: <span className="font-bold text-success">LOW</span></span>
+              <span>•</span>
+              <span>MONITORING: <span className="font-bold text-burgundy">ON-TRACK</span></span>
+              <span>•</span>
+              <span>MODEL VER: <span className="font-bold text-neutral-text">1.1.0</span></span>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex flex-col items-end mr-2">
-                <span className="text-[10px] font-black text-white uppercase tracking-wider">{user?.username}</span>
-                <span className="text-[8px] font-bold text-indigo-400 uppercase tracking-[0.2em]">{user?.role?.replace('_', ' ')}</span>
+                <span className="text-[10px] font-black text-neutral-text uppercase tracking-wider">{user?.username}</span>
+                <span className="text-[8px] font-bold text-burgundy uppercase tracking-[0.2em]">{user?.role?.replace('_', ' ')}</span>
             </div>
-            <button onClick={() => setIsReportModalOpen(true)} className="flex items-center gap-2 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-lg border border-slate-700 transition-all">
+            <button onClick={() => setIsReportModalOpen(true)} className="flex items-center gap-2 px-4 py-1.5 bg-white hover:bg-neutral-bg text-neutral-text text-[10px] font-bold rounded-lg border border-neutral-border transition-all shadow-sm">
               <History size={14} /> GENERATE REPORT
             </button>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold rounded-lg border border-indigo-400/30 transition-all">
+            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-1.5 bg-burgundy hover:bg-burgundy-hover text-white text-[10px] font-bold rounded-lg transition-all shadow-sm">
               <PlusCircle size={14} /> NEW APPLICANT
             </button>
           </div>
@@ -801,19 +875,19 @@ const App: React.FC = () => {
           {notifications.map(n => (
             <div 
               key={n.id} 
-              className={`flex items-center gap-4 p-4 rounded-2xl border shadow-2xl animate-in slide-in-from-right-8 duration-300 ${
+              className={`flex items-center gap-4 p-4 rounded-2xl border shadow-lg bg-white animate-in slide-in-from-right-8 duration-300 ${
                 n.type === 'error' 
-                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-400' 
-                  : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                  ? 'border-danger/30 text-danger' 
+                  : 'border-warning/30 text-neutral-text'
               }`}
             >
-              <AlertCircle size={20} />
+              <AlertCircle size={20} className={n.type === 'error' ? 'text-danger' : 'text-warning'} />
               <p className="text-sm font-bold">{n.message}</p>
               <button 
                 onClick={() => setNotifications(prev => prev.filter(x => x.id !== n.id))}
-                className="ml-2 p-1 hover:bg-white/10 rounded-lg transition-colors"
+                className="ml-2 p-1 hover:bg-neutral-bg rounded-lg transition-colors animate-in"
               >
-                <X size={14} />
+                <X size={14} className="text-neutral-secondary" />
               </button>
             </div>
           ))}
@@ -823,6 +897,5 @@ const App: React.FC = () => {
   );
 };
 
-
-
 export default App;
+

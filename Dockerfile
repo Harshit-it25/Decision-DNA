@@ -31,7 +31,8 @@ COPY dataset_processed.csv ./
 COPY --from=frontend-builder /frontend/dist ./frontend/dist
 
 # Expose the FastAPI port
-EXPOSE 8008
+EXPOSE 7860
 
 # Command to run the application using dynamic PORT for PaaS compatibility
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8008}"]
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860}"]
+

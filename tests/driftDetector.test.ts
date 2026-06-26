@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { detectDrift } from '../src/drift/driftDetector';
-import { Applicant } from '../src/types';
+import { detectDrift } from '../frontend/src/drift/driftDetector';
+import { Applicant } from '../frontend/src/types';
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'csv-parse/sync';

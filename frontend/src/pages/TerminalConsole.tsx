@@ -17,6 +17,11 @@ const TerminalConsole: React.FC = () => {
   const [mem, setMem] = useState('128.0');
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const getHeaders = (): Record<string, string> => {
+    const token = localStorage.getItem('decision_dna_token') || localStorage.getItem('token');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  };
+
   useEffect(() => {
     const startTime = Date.now();
     const timer = setInterval(() => {
@@ -31,11 +36,6 @@ const TerminalConsole: React.FC = () => {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
-    const getHeaders = () => {
-      const token = localStorage.getItem('token');
-      return token ? { 'Authorization': `Bearer ${token}` } : {};
-    };
 
     const fetchLogs = async () => {
       try {
@@ -97,12 +97,11 @@ const TerminalConsole: React.FC = () => {
     } else {
       // Remote execution
       try {
-        const token = localStorage.getItem('token');
         const response = await fetch('/api/system/command', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            ...getHeaders()
           },
           body: JSON.stringify({ command: cmd })
         });
@@ -133,10 +132,10 @@ const TerminalConsole: React.FC = () => {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'ERROR': return 'text-rose-500';
-      case 'WARNING': return 'text-amber-500';
-      case 'INFO': return 'text-indigo-400';
-      default: return 'text-slate-400';
+      case 'ERROR': return 'text-danger';
+      case 'WARNING': return 'text-warning';
+      case 'INFO': return 'text-burgundy';
+      default: return 'text-neutral-secondary';
     }
   };
 
@@ -146,22 +145,22 @@ const TerminalConsole: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500">
+    <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500 font-sans text-neutral-text">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
-            <Terminal className="text-indigo-500" />
+          <h2 className="text-2xl font-bold text-neutral-text tracking-tight flex items-center gap-3">
+            <Terminal className="text-burgundy" />
             SYSTEM CONSOLE
           </h2>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Live kernel & API event stream</p>
+          <p className="text-neutral-secondary text-xs font-bold uppercase tracking-widest mt-1">Live kernel & API event stream</p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl">
-             <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-700'}`} />
-             <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Live Stream</span>
+          <div className="flex items-center gap-2 bg-white border border-neutral-border px-3 py-1.5 rounded-xl shadow-sm">
+             <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-success animate-pulse' : 'bg-neutral-secondary'}`} />
+             <span className="text-[10px] font-bold text-neutral-text uppercase tracking-widest">Live Stream</span>
              <button 
                 onClick={() => setIsLive(!isLive)}
-                className={`ml-2 p-1 rounded-lg transition-all ${isLive ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-800 text-slate-500'}`}
+                className={`ml-2 p-1 rounded-lg transition-all ${isLive ? 'bg-burgundy/10 text-burgundy' : 'bg-neutral-bg text-neutral-secondary'}`}
              >
                 <RefreshCw size={14} className={isLive ? 'animate-spin-slow' : ''} />
              </button>
@@ -169,16 +168,16 @@ const TerminalConsole: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 bg-slate-950 border border-slate-800 rounded-3xl overflow-hidden flex flex-col shadow-2xl">
-        <div className="bg-slate-900/50 px-6 py-3 border-b border-slate-800 flex items-center justify-between">
+      <div className="flex-1 bg-white border border-neutral-border rounded-2xl overflow-hidden flex flex-col shadow-sm">
+        <div className="bg-neutral-bg px-6 py-3 border-b border-neutral-border flex items-center justify-between">
           <div className="flex gap-4 items-center">
             <div className="flex gap-1.5 mr-4">
-              <div className="w-2.5 h-2.5 rounded-full bg-rose-500/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
+              <div className="w-2.5 h-2.5 rounded-full bg-danger/50" />
+              <div className="w-2.5 h-2.5 rounded-full bg-warning/50" />
+              <div className="w-2.5 h-2.5 rounded-full bg-success/50" />
             </div>
-            <div className="flex items-center gap-4 text-[10px] font-mono text-slate-500 font-bold tracking-widest uppercase">
-              <span className="text-indigo-400">UPTIME: {uptime}</span>
+            <div className="flex items-center gap-4 text-[10px] font-mono text-neutral-secondary font-bold tracking-widest uppercase">
+              <span className="text-burgundy">UPTIME: {uptime}</span>
               <span className="hidden md:inline">CPU: {cpu}%</span>
               <span className="hidden md:inline">MEM: {mem}MB</span>
             </div>
@@ -187,54 +186,54 @@ const TerminalConsole: React.FC = () => {
              <input 
                 type="text" 
                 placeholder="FILTER LOGS..." 
-                className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 text-[10px] text-indigo-400 placeholder:text-slate-700 focus:outline-none focus:border-indigo-500/50 w-40"
+                className="bg-white border border-neutral-border rounded-lg px-3 py-1 text-[10px] text-burgundy placeholder:text-neutral-secondary focus:outline-none focus:border-burgundy/50 w-40"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
              />
-            <Cpu size={14} className="text-slate-700" />
+            <Cpu size={14} className="text-neutral-secondary" />
           </div>
         </div>
 
         <div 
           ref={scrollRef}
-          className="flex-1 p-6 font-mono text-sm overflow-y-auto terminal-scroll bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.05),transparent)] scroll-smooth"
+          className="flex-1 p-6 font-mono text-sm overflow-y-auto terminal-scroll bg-neutral-bg/30 scroll-smooth"
         >
           <div className="space-y-1.5">
             {filteredLogs.length === 0 ? (
-              <div className="flex items-center gap-3 text-slate-600 italic">
+              <div className="flex items-center gap-3 text-neutral-secondary italic">
                 {searchTerm ? 'No logs match filter.' : 'Initializing kernel log buffers...'}
               </div>
             ) : (
               filteredLogs.map((log, i) => (
-                <div key={i} className="group flex gap-4 hover:bg-white/5 p-1 rounded transition-colors border-l-2 border-transparent hover:border-indigo-500/30">
-                  <span className="text-slate-700 select-none shrink-0 w-20">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                <div key={i} className="group flex gap-4 hover:bg-neutral-bg p-1 rounded transition-colors border-l-2 border-transparent hover:border-burgundy/30">
+                  <span className="text-neutral-secondary select-none shrink-0 w-20">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
                   <span className={`font-bold shrink-0 w-16 ${getLevelColor(log.level)}`}>{log.level}</span>
-                  <span className="text-slate-300 break-all">{log.message}</span>
+                  <span className="text-neutral-text break-all">{log.message}</span>
                 </div>
               ))
             )}
           </div>
         </div>
 
-        <form onSubmit={handleCommand} className="bg-slate-900/50 px-6 py-3 border-t border-slate-800 flex items-center justify-between gap-3">
+        <form onSubmit={handleCommand} className="bg-neutral-bg px-6 py-3 border-t border-neutral-border flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1">
-            <span className="text-indigo-500 font-mono font-bold">$</span>
+            <span className="text-burgundy font-mono font-bold">$</span>
             <input 
               type="text" 
-              className="flex-1 bg-transparent border-none focus:ring-0 font-mono text-sm text-slate-300 placeholder:text-slate-700 outline-none"
+              className="flex-1 bg-transparent border-none focus:ring-0 font-mono text-sm text-neutral-text placeholder:text-neutral-secondary outline-none"
               placeholder="Type or select a command..."
               value={commandValue}
               onChange={(e) => setCommandValue(e.target.value)}
             />
           </div>
           <div className="flex gap-2 items-center">
-            <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest hidden md:inline">Quick Actions:</span>
+            <span className="text-[10px] text-neutral-secondary font-bold uppercase tracking-widest hidden md:inline">Quick Actions:</span>
             {['help', 'status', 'clear', 'train', 'harden'].map((cmd) => (
               <button
                 key={cmd}
                 type="button"
                 onClick={() => executeCommand(cmd)}
-                className="text-[10px] bg-slate-800 hover:bg-indigo-500/20 text-slate-400 hover:text-indigo-400 border border-slate-700 hover:border-indigo-500/30 px-2 py-1 rounded transition-colors font-mono uppercase"
+                className="text-[10px] bg-white hover:bg-burgundy/10 text-neutral-secondary hover:text-burgundy border border-neutral-border px-2 py-1 rounded transition-colors font-mono uppercase shadow-sm"
               >
                 {cmd}
               </button>
@@ -244,24 +243,34 @@ const TerminalConsole: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <LogMetricCard icon={<Activity size={18} />} label="Total Events" value={logs.length.toString()} color="indigo" />
-        <LogMetricCard icon={<AlertCircle size={18} />} label="Error Count" value={logs.filter(l => l.level === 'ERROR').length.toString()} color="rose" />
-        <LogMetricCard icon={<Shield size={18} />} label="Security Events" value={logs.filter(l => l.message.toLowerCase().includes('security') || l.message.toLowerCase().includes('attack')).length.toString()} color="amber" />
+        <LogMetricCard icon={<Activity size={18} />} label="Total Events" value={logs.length.toString()} color="burgundy" />
+        <LogMetricCard icon={<AlertCircle size={18} />} label="Error Count" value={logs.filter(l => l.level === 'ERROR').length.toString()} color="danger" />
+        <LogMetricCard icon={<Shield size={18} />} label="Security Events" value={logs.filter(l => l.message.toLowerCase().includes('security') || l.message.toLowerCase().includes('attack')).length.toString()} color="gold" />
       </div>
     </div>
   );
 };
 
-const LogMetricCard = ({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color: string }) => (
-  <div className={`bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center gap-4 transition-all hover:border-${color}-500/30`}>
-    <div className={`p-2 rounded-xl bg-${color}-500/10 text-${color}-400 border border-${color}-500/20`}>
-      {icon}
+const LogMetricCard = ({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color: string }) => {
+  const getBadgeStyle = (col: string) => {
+    switch (col) {
+      case 'danger': return 'bg-danger/5 text-danger border-danger/10';
+      case 'gold': return 'bg-gold/5 text-gold border-gold/10';
+      default: return 'bg-burgundy/5 text-burgundy border-burgundy/10';
+    }
+  };
+
+  return (
+    <div className="bg-white border border-neutral-border p-4 rounded-xl flex items-center gap-4 shadow-sm hover:border-burgundy/30 transition-all">
+      <div className={`p-2 rounded-xl border ${getBadgeStyle(color)}`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-[10px] font-bold text-neutral-secondary uppercase tracking-widest">{label}</p>
+        <p className="text-xl font-bold text-neutral-text">{value}</p>
+      </div>
     </div>
-    <div>
-      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{label}</p>
-      <p className="text-xl font-black text-white">{value}</p>
-    </div>
-  </div>
-);
+  );
+};
 
 export default TerminalConsole;

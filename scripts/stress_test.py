@@ -5,22 +5,25 @@ import statistics
 import json
 
 # Configuration
-API_URL = "http://127.0.0.1:8000"
-AUTH_ENDPOINT = f"{API_URL}/token"
-PREDICT_ENDPOINT = f"{API_URL}/predict"
+API_URL = "http://127.0.0.1:8008"
+AUTH_ENDPOINT = f"{API_URL}/api/token"
+PREDICT_ENDPOINT = f"{API_URL}/api/predict"
 CONCURRENT_USERS = 20
 REQUESTS_PER_USER = 5
 
 # Mock applicant data
 APPLICANT = {
-    "income": 75000,
-    "loanAmount": 250000,
-    "creditScore": 720,
-    "monthsEmployed": 48,
-    "numCreditLines": 12,
-    "totalBalance": 15000,
-    "totalCreditLimit": 50000,
-    "pastDuePayments": 0
+    "applicant": {
+        "income": 75000,
+        "loanAmount": 250000,
+        "creditScore": 720,
+        "monthsEmployed": 48,
+        "numCreditLines": 12,
+        "totalBalance": 15000,
+        "totalCreditLimit": 50000,
+        "pastDuePayments": 0
+    },
+    "modelId": "m2"
 }
 
 def get_token():

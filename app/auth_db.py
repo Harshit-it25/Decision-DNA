@@ -40,10 +40,14 @@ def seed_default_users():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
+    admin_pw = os.getenv("ADMIN_PASSWORD", "decision_dna_2024")
+    officer_pw = os.getenv("OFFICER_PASSWORD", "officer_pass_2024")
+    auditor_pw = os.getenv("AUDITOR_PASSWORD", "auditor_pass_2024")
+    
     default_users = [
-        ("admin", get_password_hash("decision_dna_2024"), "SECURITY_ADMIN", False),
-        ("officer", get_password_hash("officer_pass_2024"), "MORTGAGE_OFFICER", False),
-        ("auditor", get_password_hash("auditor_pass_2024"), "AUDITOR", False)
+        ("admin", get_password_hash(admin_pw), "SECURITY_ADMIN", False),
+        ("officer", get_password_hash(officer_pw), "MORTGAGE_OFFICER", False),
+        ("auditor", get_password_hash(auditor_pw), "AUDITOR", False)
     ]
     
     for user in default_users:

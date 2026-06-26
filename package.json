@@ -12,9 +12,11 @@
     "setup": "npm run install:backend && npm run install:frontend",
     "install:frontend": "cd frontend && npm install",
     "install:backend": "python -m venv .venv && .venv\\\\Scripts\\\\python -m pip install --upgrade pip && .venv\\\\Scripts\\\\pip install -r requirements.txt",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "test": "cd frontend && npm run test"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "csv-parse": "^6.2.1"
   }
 }

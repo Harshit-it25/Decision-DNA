@@ -60,9 +60,13 @@ class Watermarker:
         
         # Drop the target decision for prediction
         X_test_df = triggers_df.drop('decision', axis=1)
-        X_scaled = self.processor.transform(X_test_df)
         
-        probs = model.predict_proba(X_scaled)[:, 1]
+        if hasattr(model, 'named_steps'):
+            X_input, _ = self.processor.get_features(X_test_df)
+        else:
+            X_input = self.processor.transform(X_test_df)
+        
+        probs = model.predict_proba(X_input)[:, 1]
         # In our project, Reject is prob >= 0.5
         predictions = ["Reject" if p >= 0.5 else "Approve" for p in probs]
         

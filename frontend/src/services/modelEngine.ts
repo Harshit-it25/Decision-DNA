@@ -21,16 +21,40 @@ export const predictApplicant = async (applicant: Applicant, model: ModelMetadat
 };
 
 export const simulatePrediction = (applicant: Applicant, model: ModelMetadata): { riskProbability: number, decision: 'Approve' | 'Reject', reason?: string, emailSent?: boolean } => {
-  const baseScore = (applicant.creditScore - 300) / 550 * 0.6 + (1 - applicant.debtRatio) * 0.4;
+  // Normalize credit score (300-850)
+  const normCredit = (applicant.creditScore - 300) / 550;
+  
+  // Normalize income (clamp at $250,000 for calculation)
+  const normIncome = Math.min(1, applicant.income / 250000);
+  
+  // Debt-to-income ratio based on loan amount vs income (clip at 2.0)
+  const loanToIncome = Math.min(2, applicant.loanAmount / applicant.income);
+  const normLoanToIncome = 1 - (loanToIncome / 2); // 1 is best (0 loan), 0 is worst (2+ times income)
+  
+  // Combine factors to get a worthiness score (higher is better)
+  const score = (normCredit * 0.4) + (normIncome * 0.3) + (normLoanToIncome * 0.3);
+  
   let noise = (Math.random() - 0.5) * 0.05;
   if (model.type === ModelType.RANDOM_FOREST) noise += 0.02;
-  const riskProbability = Math.max(0, Math.min(1, 1 - baseScore + noise));
-  const decision = riskProbability < 0.45 ? 'Approve' : 'Reject';
+  
+  // Risk probability is 1 - worthiness score
+  const riskProbability = Math.max(0, Math.min(1, 1 - score + noise));
+  
+  // Standard decision boundary is 0.50 (more than 50% risk = Reject)
+  const decision = riskProbability < 0.50 ? 'Approve' : 'Reject';
+  
   const reason = `Simulation: ${decision === 'Approve' ? 'Stable' : 'Unfavorable'} metrics based on credit history.`;
   return { riskProbability, decision, reason };
 };
 
 export const batchPredict = async (applicants: Applicant[], model: ModelMetadata): Promise<Applicant[]> => {
+  if (applicants.length > 100) {
+    // Avoid network socket exhaustion/browser freeze by simulating batch re-scoring locally
+    return applicants.map(app => ({
+      ...app,
+      ...simulatePrediction(app, model)
+    }));
+  }
   const results = await Promise.all(applicants.map(app => predictApplicant(app, model)));
   return applicants.map((app, i) => ({ ...app, ...results[i] }));
 };

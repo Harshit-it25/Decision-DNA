@@ -57,11 +57,17 @@ class RobustTrainer:
         """
         Retrains the model with augmented adversarial data.
         """
-        if not os.path.exists(self.data_path):
-            return {"error": "Source dataset not found"}
+        data_path = self.data_path
+        if not os.path.exists(data_path):
+            if data_path == 'dataset_large.csv' and os.path.exists('dataset.csv'):
+                data_path = 'dataset.csv'
+            elif data_path == 'dataset.csv' and os.path.exists('dataset_large.csv'):
+                data_path = 'dataset_large.csv'
+            else:
+                return {"error": f"Source dataset {data_path} not found"}
 
-        print(f"Loading base data from {self.data_path}...")
-        df = pd.read_csv(self.data_path)
+        print(f"Loading base data from {data_path}...")
+        df = pd.read_csv(data_path)
         
         # 1. Generate Adversaries
         adv_df = self.generate_adversarial_dataset(df, fraction=adversarial_fraction)
@@ -74,18 +80,34 @@ class RobustTrainer:
         combined_df = pd.concat([df, adv_df, wm_df], ignore_index=True)
         
         # 4. Process data
-        X_scaled, df_processed = self.processor.fit_transform(combined_df)
+        X_unscaled, df_processed = self.processor.get_features(combined_df)
         y = df_processed['decision'].apply(lambda x: 1 if x == 'Reject' else 0).values
         
-        # 4. Retrain
-        X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+        # 5. Split (No data leakage)
+        X_train, X_test, y_train, y_test = train_test_split(X_unscaled, y, test_size=0.2, random_state=42)
         
-        print("Retraining hardened Random Forest...")
-        hardened_model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
-        hardened_model.fit(X_train, y_train)
+        # Apply SMOTE to handle imbalance on training split
+        from imblearn.over_sampling import SMOTE
+        print("Applying SMOTE to balance the training set...")
+        smote = SMOTE(random_state=42)
+        X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
         
-        # 5. Evaluate and Save
-        joblib.dump(hardened_model, self.model_path)
+        # 6. Retrain inside a Pipeline
+        print("Retraining hardened Random Forest Pipeline...")
+        from sklearn.pipeline import Pipeline
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.metrics import accuracy_score
+        
+        hardened_pipeline = Pipeline([
+            ('scaler', StandardScaler()),
+            ('classifier', RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1))
+        ])
+        hardened_pipeline.fit(X_train_resampled, y_train_resampled)
+        rf_acc = accuracy_score(y_test, hardened_pipeline.predict(X_test))
+        
+        # 7. Evaluate and Save
+        joblib.dump(hardened_pipeline, self.model_path, compress=3)
+        joblib.dump(hardened_pipeline.named_steps['scaler'], self.scaler_path, compress=3)
         
         # Update metadata
         meta_path = 'models/model_metadata_prod.json'
@@ -99,13 +121,26 @@ class RobustTrainer:
             with open(meta_path, 'w') as f:
                 json.dump(meta, f, indent=4)
         
+        # Update metrics
+        metrics_path = 'models/model_metrics_prod.json'
+        if os.path.exists(metrics_path):
+            try:
+                with open(metrics_path, 'r') as f:
+                    metrics = json.load(f)
+            except Exception:
+                metrics = {}
+            metrics["random_forest_accuracy"] = float(rf_acc)
+            metrics["last_retrained"] = datetime.now().isoformat()
+            with open(metrics_path, 'w') as f:
+                json.dump(metrics, f, indent=4)
+        
         # Run a quick red-team check on the new model
         tester = AdversarialTester(self.model_path, self.scaler_path)
         audit = tester.run_red_team_audit(sample_size=10)
         
         # Verify watermark
         wm = Watermarker(scaler_path=self.scaler_path)
-        wm_verification = wm.verify_watermark(hardened_model)
+        wm_verification = wm.verify_watermark(hardened_pipeline)
         
         return {
             "status": "success",
@@ -118,5 +153,5 @@ class RobustTrainer:
 
 if __name__ == "__main__":
     trainer = RobustTrainer()
-    res = trainer.train_hardened_model(adversarial_fraction=0.001)
+    res = trainer.train_hardened_model(adversarial_fraction=0.0001)
     print(f"Hardening Complete. New Robustness: {res['robustness_score']:.2f}")

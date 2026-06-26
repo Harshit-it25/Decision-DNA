@@ -5,7 +5,7 @@ import random
 import threading
 
 # Configuration
-API_URL = "http://localhost:8000/api/predict"
+API_URL = "http://localhost:8008/api/predict"
 STREAM_DELAY = 2.0 # seconds between applications
 
 def kafka_producer_simulator():

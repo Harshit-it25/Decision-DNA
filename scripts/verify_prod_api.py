@@ -2,7 +2,7 @@ import requests
 import json
 import time
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8008"
 
 def verify_security():
     print("--- Verifying API Security (Step 11) ---")

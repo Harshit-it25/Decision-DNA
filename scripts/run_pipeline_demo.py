@@ -2,7 +2,7 @@ import requests
 import time
 import json
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8008"
 USERNAME = "admin"
 PASSWORD = "decision_dna_2024"
 

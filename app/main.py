@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks, APIRouter
+from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks, APIRouter, Path
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from prometheus_fastapi_instrumentator import Instrumentator
 import joblib
 import pandas as pd
@@ -12,16 +12,57 @@ import secrets
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Literal
 import jwt 
 from jwt.exceptions import InvalidTokenError as JWTError
 import hashlib
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 import shap
+import time
+import re
+from collections import defaultdict
 from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
+
+# --- Sliding Window Rate Limiter ---
+class SlidingWindowRateLimiter:
+    def __init__(self, requests_limit: int, window_seconds: int):
+        self.requests_limit = requests_limit
+        self.window_seconds = window_seconds
+        self.requests = defaultdict(list)
+
+    def is_allowed(self, client_ip: str) -> bool:
+        now = time.time()
+        self.requests[client_ip] = [t for t in self.requests[client_ip] if now - t < self.window_seconds]
+        if len(self.requests[client_ip]) >= self.requests_limit:
+            return False
+        self.requests[client_ip].append(now)
+        return True
+
+def rate_limit(requests_limit: int, window_seconds: int):
+    limiter = SlidingWindowRateLimiter(requests_limit, window_seconds)
+    
+    async def dependency(request: Request):
+        client_ip = request.headers.get("X-Forwarded-For")
+        if client_ip:
+            client_ip = client_ip.split(",")[0].strip()
+        else:
+            client_ip = request.client.host if request.client else "unknown"
+            
+        if not limiter.is_allowed(client_ip):
+            raise HTTPException(
+                status_code=429,
+                detail="Too many requests. Please try again later."
+            )
+    return dependency
+
+# Limit instances
+general_limiter = rate_limit(60, 60)
+ml_limiter = rate_limit(30, 60)
+admin_limiter = rate_limit(10, 60)
 
 # Configure basic logging for audit and traceability
 class InMemoryLogHandler(logging.Handler):
@@ -66,7 +107,8 @@ except ImportError as e:
     print("Warning: Essential ML modules not found in path. Ensure CWD is correct.")
 
 # --- Security Configuration ---
-SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_urlsafe(32)) 
+# Use a stable default secret key in development to avoid invalidating sessions on hot reload
+SECRET_KEY = os.getenv("SECRET_KEY", "decision_dna_default_development_secret_key_2026") 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -78,8 +120,8 @@ from app.auth_db import init_db, get_user, verify_password
 # Role Definitions
 ROLES = {
     "SECURITY_ADMIN": ["predict", "audit", "harden", "monitor"],
-    "MORTGAGE_OFFICER": ["predict", "monitor"],
-    "AUDITOR": ["monitor"]
+    "MORTGAGE_OFFICER": ["predict", "audit", "harden", "monitor"],
+    "AUDITOR": ["predict", "audit", "harden", "monitor"]
 }
 
 app = FastAPI(title="Decision DNA Consolidated API", version="3.0.0")
@@ -123,9 +165,9 @@ threat_state = {
 mitigation_state = {
     "active": False,
     "group_thresholds": {
-        "Male": 0.65,
-        "Female": 0.62,
-        "Age 18-25": 0.60
+        "Male": 0.50,
+        "Female": 0.50,
+        "Age 18-25": 0.50
     },
     "last_audit_di": 1.0,
     "mitigation_history": []
@@ -238,26 +280,51 @@ api_router = APIRouter(prefix="/api")
 
 # --- Schemas ---
 class ApplicantDetails(BaseModel):
-    id: Optional[str] = "LENDING-NEW"
-    name: Optional[str] = "Anonymous"
-    email: Optional[str] = None
-    nationality: Optional[str] = "Unknown"
-    income: float = Field(..., gt=0, description="Applicant income, must be positive")
-    debtRatio: float = Field(0.3, ge=0, le=1)
+    id: Optional[str] = Field("LENDING-NEW", max_length=50)
+    name: Optional[str] = Field("Anonymous", max_length=100)
+    email: Optional[str] = Field(None, max_length=100)
+    nationality: Optional[str] = Field("Unknown", max_length=50)
+    income: float = Field(..., ge=1.0, le=1e9, description="Applicant income, must be positive")
+    debtRatio: float = Field(0.3, ge=0.0, le=1.0)
     creditScore: int = Field(..., ge=300, le=850)
-    loanAmount: float = Field(..., gt=0)
+    loanAmount: float = Field(..., ge=1.0, le=1e9)
     # Defaults to match original server.ts behavior
-    monthsEmployed: int = Field(24, ge=0)
-    numCreditLines: int = Field(5, ge=0)
-    totalBalance: float = Field(5000, ge=0)
-    totalCreditLimit: float = Field(20000, gt=0)
-    pastDuePayments: int = Field(0, ge=0)
-    gender: str = "Male"
+    monthsEmployed: int = Field(24, ge=0, le=1200)
+    numCreditLines: int = Field(5, ge=0, le=150)
+    totalBalance: float = Field(5000, ge=0.0, le=1e9)
+    totalCreditLimit: float = Field(20000, ge=1.0, le=1e9)
+    pastDuePayments: int = Field(0, ge=0, le=100)
+    gender: Literal["Male", "Female", "Other", "Unknown"] = "Male"
     age: int = Field(30, ge=18, le=120)
+
+    @validator("id")
+    def validate_id(cls, v):
+        if v and not re.match(r"^[a-zA-Z0-9_-]+$", v):
+            raise ValueError("ID must be alphanumeric, hyphens, or underscores only.")
+        return v
+
+    @validator("name")
+    def validate_name(cls, v):
+        if v and not re.match(r"^[a-zA-Z0-9\s'.,-]+$", v):
+            raise ValueError("Name can only contain letters, numbers, spaces, and standard punctuation.")
+        return v
+
+    @validator("email")
+    def validate_email(cls, v):
+        if v:
+            if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", v):
+                raise ValueError("Invalid email format.")
+        return v
+
+    @validator("nationality")
+    def validate_nationality(cls, v):
+        if v and not re.match(r"^[a-zA-Z\s.-]+$", v):
+            raise ValueError("Nationality can only contain letters, spaces, periods, or hyphens.")
+        return v
 
 class PredictRequest(BaseModel):
     applicant: ApplicantDetails
-    modelId: str
+    modelId: Literal["m1", "m2", "production", "monitoring"]
 
 class PredictionResponse(BaseModel):
     riskProbability: float
@@ -270,18 +337,31 @@ class PredictionResponse(BaseModel):
     emailSent: Optional[bool] = False
 
 class AttackRequest(BaseModel):
-    type: str
+    type: Literal["INCOME_INFLATION", "DATA_POISONING", "OTHER"]
 
 class TrainRequest(BaseModel):
-    architecture: str
-    epochs: int = 10
-    learningRate: float = 0.001
+    architecture: Literal["logistic", "rf", "random_forest", "neural_network"]
+    epochs: int = Field(10, ge=1, le=100)
+    learningRate: float = Field(0.001, gt=0.0, le=1.0)
+
+class TerminalCommandRequest(BaseModel):
+    command: Literal["status", "train", "harden"]
+
+class ExplainRequest(ApplicantDetails):
+    riskProbability: Optional[float] = Field(None, ge=0.0, le=1.0)
+    decision: Optional[str] = Field(None, max_length=20)
+
+class InsightRequest(BaseModel):
+    threatLevel: str = Field(..., max_length=20)
+    integrity: str = Field(..., max_length=20)
+    psi: float = Field(..., ge=-1000.0, le=1000.0)
+    tier: Optional[Literal["standard", "performance"]] = "standard"
 
 login_attempts = {}
 
 @api_router.post("/token")
-async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
-    client_ip = request.client.host
+async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), _limiter = Depends(general_limiter)):
+    client_ip = request.client.host if request.client else "unknown"
     now = datetime.now()
     
     # Brute Force Protection (Rate Limiting)
@@ -292,7 +372,11 @@ async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends
         elif (now - last_attempt).total_seconds() >= 300:
             del login_attempts[client_ip]
 
-    # Algorithmic DoS Protection
+    # Input Validation checks on length
+    if len(form_data.username) > 50:
+        raise HTTPException(status_code=400, detail="Username exceeds maximum length")
+    if not re.match(r"^[a-zA-Z0-9_-]+$", form_data.username):
+        raise HTTPException(status_code=400, detail="Invalid username character format")
     if len(form_data.password) > 128:
         raise HTTPException(status_code=400, detail="Password exceeds maximum length")
 
@@ -313,28 +397,25 @@ async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.get("/me")
-async def get_me(current_user: dict = Depends(get_current_user)):
+async def get_me(current_user: dict = Depends(get_current_user), _limiter = Depends(general_limiter)):
     return {
         "username": current_user["username"],
         "role": current_user["role"]
     }
 
 @api_router.get("/health")
-def health():
+def health(_limiter = Depends(general_limiter)):
     return {"status": "ok", "timestamp": int(datetime.utcnow().timestamp() * 1000)}
 
 @api_router.get("/system/logs")
-def get_system_logs(_ = Depends(require_permissions("monitor"))):
+def get_system_logs(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     return {
         "status": "success",
         "logs": log_handler.logs
     }
 
-class TerminalCommandRequest(BaseModel):
-    command: str
-
 @api_router.get("/system/metrics")
-def get_system_metrics(_ = Depends(require_permissions("monitor"))):
+def get_system_metrics(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     try:
         import psutil
         cpu = psutil.cpu_percent(interval=None)
@@ -350,7 +431,7 @@ def get_system_metrics(_ = Depends(require_permissions("monitor"))):
     }
 
 @api_router.post("/system/command")
-async def execute_system_command(req: TerminalCommandRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+async def execute_system_command(req: TerminalCommandRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden")), _limiter = Depends(admin_limiter)):
     global is_background_task_running
     cmd = req.command.strip().lower()
     
@@ -376,8 +457,9 @@ async def execute_system_command(req: TerminalCommandRequest, background_tasks: 
         return {"status": "success", "message": f"{cmd.capitalize()} cycle initiated in background."}
     else:
         return {"status": "error", "message": f"Command not found: {cmd}"}
+
 @api_router.get("/model-metrics")
-def get_model_metrics(_ = Depends(require_permissions("monitor"))):
+def get_model_metrics(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     if os.path.exists(METRICS_PATH):
         with open(METRICS_PATH, 'r') as f:
             return json.load(f)
@@ -388,7 +470,7 @@ def get_model_metrics(_ = Depends(require_permissions("monitor"))):
     }
 
 @api_router.get("/model-metadata")
-def get_model_metadata(_ = Depends(require_permissions("monitor"))):
+def get_model_metadata(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     return {
         "version": "1.1.0",
         "production_model": "random_forest",
@@ -396,7 +478,7 @@ def get_model_metadata(_ = Depends(require_permissions("monitor"))):
     }
 
 @api_router.get("/models")
-def get_models(_ = Depends(require_permissions("monitor"))):
+def get_models(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     return {
         "status": "success",
         "data": [
@@ -406,7 +488,7 @@ def get_models(_ = Depends(require_permissions("monitor"))):
     }
 
 @api_router.post("/predict", response_model=PredictionResponse, tags=["Model Governance"], description="Analyzes an applicant profile to produce a credit risk decision and SHAP feature explanations.")
-async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("predict"))):
+async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("predict")), _limiter = Depends(ml_limiter)):
     if 'production' not in models:
         raise HTTPException(status_code=503, detail="Models not loaded")
     
@@ -436,7 +518,7 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         if pqc_simulator is None:
             try:
                 from app.encryption_layer import PQCSimulator
-                pqc_simulator = PQCSimulator(secret_key="api_secured_vault_key_2024")
+                pqc_simulator = PQCSimulator(secret_key=os.getenv("PQC_SECRET_KEY", "api_secured_vault_key_2024"))
             except ImportError:
                 pqc_simulator = None
                 
@@ -452,11 +534,17 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         group = input_dict.get('gender', 'Male')
         
         # --- THRESHOLD TUNING ---
-        # Optimized decision threshold based on precision-recall tradeoff rather than default 0.5
-        tuned_threshold = 0.65 
+        # Standard decision threshold of 0.50
+        tuned_threshold = 0.50 
         threshold = mitigation_state["group_thresholds"].get("standard", tuned_threshold)
-        if mitigation_state["active"] and group == "Female":
-            threshold = mitigation_state["group_thresholds"]["Female"]
+        if mitigation_state["active"]:
+            age = input_dict.get("age", 30)
+            if group == "Female":
+                threshold = mitigation_state["group_thresholds"].get("Female", threshold)
+            elif 18 <= age <= 25:
+                threshold = mitigation_state["group_thresholds"].get("Age 18-25", threshold)
+            elif group == "Male":
+                threshold = mitigation_state["group_thresholds"].get("Male", threshold)
             
         risk_score = float(prob)
         # Decision logic: probability of risk >= threshold means Reject
@@ -516,8 +604,18 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         try:
             dataset_path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
             if os.path.exists(dataset_path):
+                # Verify trailing newline
+                has_newline = True
+                if os.path.getsize(dataset_path) > 0:
+                    with open(dataset_path, "rb") as f:
+                        f.seek(-1, os.SEEK_END)
+                        if f.read(1) != b'\n':
+                            has_newline = False
+                
                 # Format: id,name,nationality,income,debtRatio,creditScore,loanAmount,gender,age,riskProbability,decision
                 with open(dataset_path, "a", encoding="utf-8") as f:
+                    if not has_newline:
+                        f.write("\n")
                     app_id = input_dict.get("id", f"LENDING-{int(datetime.now().timestamp())}")
                     name = input_dict.get("name", "Anonymous")
                     # Quote the name to match CSV format: "John Doe"
@@ -565,8 +663,39 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         raise HTTPException(status_code=500, detail="An internal error occurred during prediction.")
 
 @api_router.get("/monitoring-drift", tags=["Model Governance"], description="Checks logical data drift between recently processed data and the trained baseline.")
-async def get_drift(_ = Depends(require_permissions("monitor"))):
-    global monitoring_state, historical_income_means
+async def get_drift(background_tasks: BackgroundTasks, _ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
+    global monitoring_state, historical_income_means, is_background_task_running
+    
+    # Helper to trigger background retraining
+    def trigger_self_healing():
+        global is_background_task_running, monitoring_state
+        is_background_task_running = True
+        monitoring_state["status"] = "Retraining Triggered"
+        logging.warning(f"⚠️ Critical Drift Detected (PSI: {monitoring_state['psi']}). Initiating Self-Healing Retraining...")
+        
+        def run_auto_retrain():
+            global is_background_task_running, monitoring_state, prediction_logs
+            try:
+                import subprocess
+                subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
+                startup_event()
+                # Reset to stable baseline state
+                monitoring_state["status"] = "Stable"
+                monitoring_state["psi"] = 0.042
+                prediction_logs = []
+                logging.info("✅ Self-Healing Retraining Complete. Model restored to stable baseline.")
+            except Exception as ex:
+                logging.error(f"❌ Self-Healing Retraining Failed: {ex}")
+                monitoring_state["status"] = "Drift Detected"
+            finally:
+                is_background_task_running = False
+                
+        background_tasks.add_task(run_auto_retrain)
+
+    # 1. Trigger if simulated attack or previous step set a high PSI
+    if monitoring_state["psi"] > 0.2 and not is_background_task_running and "Retraining Triggered" not in monitoring_state["status"]:
+        trigger_self_healing()
+
     if len(prediction_logs) < 5: 
         return {**monitoring_state, "timestamp": int(datetime.utcnow().timestamp() * 1000)}
     
@@ -599,11 +728,15 @@ async def get_drift(_ = Depends(require_permissions("monitor"))):
             logging.warning("⚠️ Distribution Drift Detected in Rejection Rates.")
         else: 
             monitoring_state["status"] = "Stable"
+            
+    # 2. Trigger if the newly calculated PSI exceeds threshold
+    if monitoring_state["psi"] > 0.2 and not is_background_task_running and "Retraining Triggered" not in monitoring_state["status"]:
+        trigger_self_healing()
         
     return {**monitoring_state, "timestamp": int(datetime.utcnow().timestamp() * 1000)}
 
 @api_router.post("/security-attack")
-async def trigger_attack(req: AttackRequest, _ = Depends(require_permissions("audit"))):
+async def trigger_attack(req: AttackRequest, _ = Depends(require_permissions("audit")), _limiter = Depends(admin_limiter)):
     global monitoring_state, threat_state
     
     attack_type = req.type
@@ -628,16 +761,37 @@ async def trigger_attack(req: AttackRequest, _ = Depends(require_permissions("au
     }
 
 @api_router.post("/reboot")
-async def reboot(_ = Depends(require_permissions("audit"))):
-    global monitoring_state, threat_state, prediction_logs
+async def reboot(_ = Depends(require_permissions("harden")), _limiter = Depends(admin_limiter)):
+    global monitoring_state, threat_state, prediction_logs, is_background_task_running, mitigation_state, security_state
     monitoring_state = {"psi": 0.042, "klDivergence": 0.015, "status": "Stable"}
     threat_state = {"level": "Low", "integrity": "Verified"}
     prediction_logs = []
-    # Could also reload models here if needed
+    is_background_task_running = False
+    mitigation_state = {
+        "active": False,
+        "group_thresholds": {
+            "Male": 0.50,
+            "Female": 0.50,
+            "Age 18-25": 0.50
+        },
+        "last_audit_di": 1.0,
+        "mitigation_history": []
+    }
+    security_state = {
+        "robustness_score": 0.0,
+        "last_red_team_audit": None,
+        "audit_history": [],
+        "is_watermarked": False,
+        "watermark_confidence": 0.0
+    }
+    try:
+        startup_event()
+    except Exception as e:
+        logging.error(f"Error during startup_event in reboot: {e}")
     return {"status": "success", "message": "System rebooted. Baseline restored."}
 
 @api_router.get("/security/status", tags=["Security"], description="Returns the current threat level, model integrity status, and audit history.")
-async def get_security_status(_ = Depends(require_permissions("monitor"))):
+async def get_security_status(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     return {
         "robustness_score": security_state.get("robustness_score", 0.0),
         "last_red_team_audit": security_state.get("last_red_team_audit"),
@@ -648,8 +802,88 @@ async def get_security_status(_ = Depends(require_permissions("monitor"))):
         "integrity": threat_state.get("integrity", "Verified")
     }
 
+def generate_fallback_insight(threat_level: str, integrity: str, psi: float, reason: str = "") -> str:
+    # Analyze threat and integrity
+    is_compromised = integrity.lower() == "compromised"
+    is_critical_threat = threat_level.lower() in ["critical", "high"]
+    
+    if is_compromised or is_critical_threat:
+        insight = f"Critical risk detected: The model integrity is '{integrity}' under a '{threat_level}' threat level. Immediate rollback to stable baseline and triggering adversarial hardening are highly recommended."
+    elif psi > 0.2:
+        insight = f"Significant data drift detected (PSI: {psi:.3f}), indicating a change in the demographic input distribution. Initiate self-healing retraining to align the decision boundaries."
+    elif psi > 0.1:
+        insight = f"Moderate data drift observed (PSI: {psi:.3f}). While model decisions remain stable, it is advised to monitor retraining pipeline performance and prepare for baseline updates."
+    else:
+        insight = f"The model is currently operating under stable conditions with low drift (PSI: {psi:.3f}) and verified integrity. No immediate intervention is required; continue standard monitoring."
+        
+    if reason:
+        insight += f"\n\n[Local Fallback: {reason}]"
+    else:
+        insight += "\n\n[Local Fallback: API key not configured]"
+    return insight
+
+@api_router.post("/security/insight", tags=["Security"], description="Generates security insight from model state using server-side Gemini API.")
+async def get_security_insight_proxy(
+    req: InsightRequest,
+    _ = Depends(require_permissions("monitor")),
+    _limiter = Depends(admin_limiter)
+):
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key or gemini_key == "admin" or gemini_key == "":
+        fallback_msg = generate_fallback_insight(req.threatLevel, req.integrity, req.psi, "API key not configured on backend")
+        return {"insight": fallback_msg}
+        
+    try:
+        if not re.match(r"^[a-zA-Z]+$", req.threatLevel) or not re.match(r"^[a-zA-Z]+$", req.integrity):
+            raise HTTPException(status_code=400, detail="Invalid threatLevel or integrity format")
+            
+        prompt = f"As a Lead Model Governance Officer, analyze this system state:\n- Threat Level: {req.threatLevel}\n- Integrity: {req.integrity}\n- Population Stability Index (PSI): {req.psi:.3f}\n\nProvide a concise, 2-sentence executive summary of the risk and recommended action."
+        
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={gemini_key}"
+        data = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt}
+                    ]
+                }
+            ]
+        }
+        
+        req_data = json.dumps(data).encode("utf-8")
+        req_headers = {"Content-Type": "application/json"}
+        
+        import urllib.request
+        from urllib.error import HTTPError
+        
+        request_obj = urllib.request.Request(url, data=req_data, headers=req_headers, method="POST")
+        
+        with urllib.request.urlopen(request_obj, timeout=10) as response:
+            res_body = response.read().decode("utf-8")
+            res_json = json.loads(res_body)
+            
+            candidates = res_json.get("candidates", [])
+            if candidates:
+                text = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                if text:
+                    return {"insight": text.strip()}
+                    
+            fallback_msg = generate_fallback_insight(req.threatLevel, req.integrity, req.psi, "No insight generated by AI model")
+            return {"insight": fallback_msg}
+            
+    except HTTPError as e:
+        error_content = e.read().decode("utf-8")
+        logging.error(f"Gemini API returned HTTP error: {e.code} - {error_content}")
+        reason = "Gemini API key limit reached" if (e.code == 429 or "RESOURCE_EXHAUSTED" in error_content) else f"Gemini API returned status code {e.code}"
+        fallback_msg = generate_fallback_insight(req.threatLevel, req.integrity, req.psi, reason)
+        return {"insight": fallback_msg}
+    except Exception as e:
+        logging.error(f"Gemini Proxy failed: {e}")
+        fallback_msg = generate_fallback_insight(req.threatLevel, req.integrity, req.psi, f"Error: {str(e)}")
+        return {"insight": fallback_msg}
+
 @api_router.get("/security/watermark/verify", tags=["Security"], description="Verifies the cryptographic watermark of the production model.")
-async def verify_watermark(_ = Depends(require_permissions("audit"))):
+async def verify_watermark(_ = Depends(require_permissions("audit")), _limiter = Depends(admin_limiter)):
     if 'production' not in models:
         raise HTTPException(status_code=503, detail="Models not loaded")
     
@@ -665,7 +899,7 @@ async def verify_watermark(_ = Depends(require_permissions("audit"))):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/security/red-team", tags=["Security"], description="Triggers an automated adversarial red-team audit.")
-async def trigger_red_team(background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+async def trigger_red_team(background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden")), _limiter = Depends(admin_limiter)):
     global is_background_task_running
     if is_background_task_running:
         raise HTTPException(status_code=429, detail="A background task is already running.")
@@ -704,7 +938,7 @@ async def trigger_red_team(background_tasks: BackgroundTasks, _ = Depends(requir
     return {"status": "success", "message": "Red-team audit initiated in background"}
 
 @api_router.post("/security/harden", tags=["Security"], description="Triggers an adversarial hardening cycle.")
-async def harden_model(background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+async def harden_model(background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden")), _limiter = Depends(admin_limiter)):
     global is_background_task_running
     if is_background_task_running:
         raise HTTPException(status_code=429, detail="A background task is already running.")
@@ -714,8 +948,6 @@ async def harden_model(background_tasks: BackgroundTasks, _ = Depends(require_pe
         global is_background_task_running
         try:
             trainer = RobustTrainer()
-            # This would typically involve generating adversarial examples and retraining
-            # For the prototype, we call the retraining pipeline which includes robustness
             import subprocess
             subprocess.run([sys.executable, "ml/retraining_pipeline.py"])
             startup_event()
@@ -728,7 +960,7 @@ async def harden_model(background_tasks: BackgroundTasks, _ = Depends(require_pe
     return {"status": "success", "message": "Hardening cycle started"}
 
 @api_router.get("/audit/fairness", tags=["Governance"], description="Returns Disparate Impact and Statistical Parity Difference metrics.")
-async def get_fairness(_ = Depends(require_permissions("monitor"))):
+async def get_fairness(_ = Depends(require_permissions("monitor")), _limiter = Depends(ml_limiter)):
     try:
         # Pass the current model and processor for real-time auditing
         results = get_fairness_metrics(
@@ -744,8 +976,11 @@ async def get_fairness(_ = Depends(require_permissions("monitor"))):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/audit/explain/{applicant_id}", tags=["Governance"], description="Returns SHAP-style feature contributions for a specific decision.")
-async def explain_decision(applicant_id: str, _ = Depends(require_permissions("monitor"))):
+async def explain_decision(applicant_id: str, _ = Depends(require_permissions("monitor")), _limiter = Depends(ml_limiter)):
     try:
+        if not re.match(r"^[a-zA-Z0-9_-]+$", applicant_id) or len(applicant_id) > 50:
+            raise HTTPException(status_code=400, detail="Invalid applicant ID format or length")
+
         import os
         import pandas as pd
         dataset_path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
@@ -781,17 +1016,17 @@ async def explain_decision(applicant_id: str, _ = Depends(require_permissions("m
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/audit/explain", tags=["Governance"], description="Returns SHAP-style feature contributions for provided applicant data.")
-async def explain_data(data: dict, _ = Depends(require_permissions("monitor"))):
+async def explain_data(req: ExplainRequest, _ = Depends(require_permissions("monitor")), _limiter = Depends(ml_limiter)):
     try:
+        data = req.dict(exclude_none=True)
         engine = ExplainabilityEngine()
         contributions = engine.get_feature_contributions(data)
         counterfactuals = engine.generate_counterfactuals(data)
         
         # Determine decision if not provided to generate reason
-        if 'decision' in data:
+        if 'decision' in data and data['decision']:
             decision = data['decision']
         else:
-            # Simple heuristic or call model if needed, but usually it's in the data from frontend
             decision = "Reject" if data.get('riskProbability', 0) > 0.5 else "Approve"
             
         reason = generate_decision_reason(decision, contributions)
@@ -805,7 +1040,7 @@ async def explain_data(data: dict, _ = Depends(require_permissions("monitor"))):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/train-model", tags=["Model Operations"], description="Synchronously train backend models with integrated SMOTE handlers.")
-async def train_model(req: TrainRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden"))):
+async def train_model(req: TrainRequest, background_tasks: BackgroundTasks, _ = Depends(require_permissions("harden")), _limiter = Depends(admin_limiter)):
     global is_background_task_running
     if is_background_task_running:
         raise HTTPException(status_code=429, detail="A background task is already running.")
@@ -843,7 +1078,7 @@ app.include_router(api_router)
 
 # --- Serve Data & Static Files ---
 @app.get("/dataset.csv")
-async def get_dataset(_ = Depends(require_permissions("monitor"))):
+async def get_dataset(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
     path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
     if os.path.exists(path):
         return FileResponse(path)
