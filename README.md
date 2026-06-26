@@ -1,8 +1,8 @@
 ---
 title: Decision DNA
 emoji: 🧬
-colorFrom: indigo
-colorTo: blue
+colorFrom: red
+colorTo: gray
 sdk: docker
 app_port: 7860
 pinned: false

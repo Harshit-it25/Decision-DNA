@@ -97,66 +97,66 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
   })).sort((a, b) => b.approvalRate - a.approvalRate);
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 font-sans text-neutral-text">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Applicant List */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl flex flex-col overflow-hidden h-[700px]">
-          <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
-            <h3 className="text-lg font-bold text-white">Decision Queue</h3>
-            <button onClick={onAddApplicant} className="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-all">
+        <div className="bg-white border border-neutral-border rounded-2xl flex flex-col overflow-hidden h-[700px] shadow-sm">
+          <div className="p-6 border-b border-neutral-border flex justify-between items-center bg-white">
+            <h3 className="text-lg font-bold text-neutral-text">Decision Queue</h3>
+            <button onClick={onAddApplicant} className="p-2 bg-burgundy hover:bg-burgundy-hover text-white rounded-lg transition-all shadow-sm">
               <PlusCircle size={16} />
             </button>
           </div>
           
-          <div className="p-4 bg-slate-950/30 border-b border-slate-800">
+          <div className="p-4 bg-neutral-bg border-b border-neutral-border">
             <div className="relative mb-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-secondary" size={14} />
               <input 
                 type="text" 
                 placeholder="Search applicants (name, id)..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white outline-none focus:border-indigo-500/50 transition-all"
+                className="w-full bg-white border border-neutral-border rounded-xl pl-10 pr-4 py-2 text-xs text-neutral-text outline-none focus:border-burgundy/50 transition-all shadow-sm"
               />
             </div>
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setStatusFilter('All')}
-                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${statusFilter === 'All' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:bg-slate-800/50'}`}
+                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${statusFilter === 'All' ? 'bg-burgundy text-white shadow-sm' : 'text-neutral-secondary hover:bg-neutral-border'}`}
               >All</button>
               <button 
                 onClick={() => setStatusFilter('Approve')}
-                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${statusFilter === 'Approve' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-400 border border-transparent'}`}
+                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${statusFilter === 'Approve' ? 'bg-success-light text-success border-success/30 shadow-sm' : 'text-neutral-secondary border-transparent hover:bg-success-light/30 hover:text-success'}`}
               >Approve</button>
               <button 
                 onClick={() => setStatusFilter('Reject')}
-                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${statusFilter === 'Reject' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'text-slate-500 hover:bg-rose-500/10 hover:text-rose-400 border border-transparent'}`}
+                className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${statusFilter === 'Reject' ? 'bg-danger-light text-danger border-danger/30 shadow-sm' : 'text-neutral-secondary border-transparent hover:bg-danger-light/30 hover:text-danger'}`}
               >Reject</button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-800">
+          <div className="flex-1 overflow-y-auto divide-y divide-neutral-border bg-white">
             {filteredApplicants.length > 0 ? (
               filteredApplicants.slice(0, 200).map(app => (
                 <button 
                   key={app.id} 
                   onClick={() => setSelectedId(app.id)}
-                  className={`w-full p-6 text-left transition-all hover:bg-slate-800/50 flex justify-between items-center group ${selectedId === app.id ? 'bg-indigo-500/5 border-l-4 border-indigo-500' : 'border-l-4 border-transparent'}`}
+                  className={`w-full p-6 text-left transition-all hover:bg-neutral-bg flex justify-between items-center group ${selectedId === app.id ? 'bg-burgundy-light/20 border-l-4 border-burgundy' : 'border-l-4 border-transparent'}`}
                 >
                   <div>
-                    <p className={`text-sm font-bold ${selectedId === app.id ? 'text-indigo-400' : 'text-slate-200'}`}>{app.name}</p>
-                    <p className="text-[10px] text-slate-500 font-mono">{app.id}</p>
+                    <p className={`text-sm font-bold ${selectedId === app.id ? 'text-burgundy' : 'text-neutral-text'}`}>{app.name}</p>
+                    <p className="text-[10px] text-neutral-secondary font-mono">{app.id}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase border ${app.decision === 'Approve' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
+                    <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase border ${app.decision === 'Approve' ? 'bg-success-light border-success/20 text-success' : 'bg-danger-light border-danger/20 text-danger'}`}>
                       {app.decision}
                     </span>
-                    <ChevronRight size={14} className={`transition-transform ${selectedId === app.id ? 'translate-x-1 text-indigo-400' : 'text-slate-700'}`} />
+                    <ChevronRight size={14} className={`transition-transform ${selectedId === app.id ? 'translate-x-1 text-burgundy' : 'text-neutral-secondary'}`} />
                   </div>
                 </button>
               ))
             ) : (
-              <div className="p-12 text-center text-slate-600">
+              <div className="p-12 text-center text-neutral-secondary">
                 <p className="text-xs font-bold uppercase tracking-widest">No results found</p>
               </div>
             )}
@@ -167,20 +167,20 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
         <div className="lg:col-span-2 space-y-8">
           {selectedApp ? (
             <>
-              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+              <div className="bg-white border border-neutral-border rounded-2xl p-8 shadow-sm">
                 <div className="flex justify-between items-start mb-8">
                   <div className="flex gap-4">
-                    <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl text-indigo-400">
+                    <div className="p-4 bg-burgundy-light/30 border border-burgundy/10 rounded-xl text-burgundy">
                       <Terminal size={32} />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-black text-white uppercase tracking-tight">Decision DNA</h3>
-                      <p className="text-slate-500 text-sm">Local interpretable model-agnostic explanations.</p>
+                      <h3 className="text-2xl font-bold text-neutral-text uppercase tracking-tight">Decision DNA</h3>
+                      <p className="text-neutral-secondary text-sm">Local interpretable model-agnostic explanations (SHAP).</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Risk Probability</p>
-                    <p className={`text-3xl font-black ${selectedApp.riskProbability > 0.6 ? 'text-rose-500' : 'text-emerald-500'}`}>
+                    <p className="text-[10px] font-bold text-neutral-secondary uppercase tracking-widest mb-1">Risk Probability</p>
+                    <p className={`text-3xl font-black ${selectedApp.riskProbability > 0.6 ? 'text-danger' : 'text-success'}`}>
                       {(selectedApp.riskProbability * 100).toFixed(1)}%
                     </p>
                   </div>
@@ -189,7 +189,7 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Feature Contributions */}
                   <div className="space-y-6">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-burgundy uppercase tracking-widest flex items-center gap-2">
                       <BarChart4 size={14} /> Feature Contributions
                     </h4>
                     <div className="space-y-4">
@@ -202,24 +202,24 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
 
                   {/* Model Context */}
                   <div className="space-y-6">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-neutral-text uppercase tracking-widest flex items-center gap-2">
                       <Cpu size={14} /> Governance Context
                     </h4>
-                    <div className="p-6 bg-slate-950 border border-slate-800 rounded-2xl space-y-4">
+                    <div className="p-6 bg-neutral-bg border border-neutral-border rounded-xl space-y-4">
                       <div className="flex justify-between text-xs">
-                        <span className="text-slate-500">Active Model</span>
-                        <span className="text-slate-200 font-bold">{activeModel.type} v{activeModel.version}</span>
+                        <span className="text-neutral-secondary">Active Model</span>
+                        <span className="text-neutral-text font-bold">{activeModel.type} v{activeModel.version}</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-slate-500">Inference Latency</span>
-                        <span className="text-emerald-400 font-bold">12ms</span>
+                        <span className="text-neutral-secondary">Inference Latency</span>
+                        <span className="text-success font-bold">12ms</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-slate-500">AI Tier</span>
-                        <span className="text-violet-400 font-bold uppercase">{aiTier}</span>
+                        <span className="text-neutral-secondary">AI Tier</span>
+                        <span className="text-burgundy font-bold uppercase">{aiTier}</span>
                       </div>
-                      <div className="pt-4 border-t border-slate-800">
-                        <p className="text-[10px] text-slate-500 leading-relaxed italic">
+                      <div className="pt-4 border-t border-neutral-border">
+                        <p className="text-[10px] text-neutral-secondary leading-relaxed italic">
                           "{dynamicReason || selectedApp.reason || "Analyzing decision drivers..."}"
                         </p>
                       </div>
@@ -229,76 +229,76 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
               </div>
 
               {/* Counterfactuals */}
-              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+              <div className="bg-white border border-neutral-border rounded-2xl p-8 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <Zap className="text-amber-400" size={20} />
+                  <Zap className="text-gold" size={20} />
                   <div>
-                    <h3 className="text-lg font-bold text-white">Counterfactual Analysis</h3>
-                    <p className="text-xs text-slate-500">Dynamically generated requirements to reverse model boundary decision.</p>
+                    <h3 className="text-lg font-bold text-neutral-text">Counterfactual Analysis</h3>
+                    <p className="text-xs text-neutral-secondary">Dynamically generated requirements to reverse model boundary decision.</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {counterfactuals.length > 0 ? counterfactuals.map((cf, i) => (
-                    <div key={i} className="p-4 bg-slate-950 border border-slate-800 rounded-xl relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                         {cf.direction === 'Increase' ? <ArrowUpRight size={48} className={cf.targetDecision === 'Approve' ? 'text-emerald-400' : 'text-rose-400'} /> : <ArrowDownRight size={48} className={cf.targetDecision === 'Approve' ? 'text-emerald-400' : 'text-rose-400'}/>}
+                    <div key={i} className="p-4 bg-neutral-bg border border-neutral-border rounded-xl relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                         {cf.direction === 'Increase' ? <ArrowUpRight size={48} className={cf.targetDecision === 'Approve' ? 'text-success' : 'text-danger'} /> : <ArrowDownRight size={48} className={cf.targetDecision === 'Approve' ? 'text-success' : 'text-danger'}/>}
                       </div>
-                      <p className="text-[10px] font-bold text-slate-500 uppercase mb-2 relative z-10">To flip to {cf.targetDecision}:</p>
-                      <p className="text-xs text-slate-300 relative z-10">{cf.feature}: <span className={`${cf.targetDecision === 'Approve' ? 'text-emerald-400' : 'text-rose-400'} font-bold`}>{cf.direction === 'Increase' ? '+' : '-'}{cf.amount}</span></p>
+                      <p className="text-[10px] font-bold text-neutral-secondary uppercase mb-2 relative z-10">To flip to {cf.targetDecision}:</p>
+                      <p className="text-xs text-neutral-text relative z-10">{cf.feature}: <span className={`${cf.targetDecision === 'Approve' ? 'text-success' : 'text-danger'} font-bold`}>{cf.direction === 'Increase' ? '+' : '-'}{cf.amount}</span></p>
                     </div>
                   )) : (
-                    <div className="col-span-full p-4 bg-slate-950 border border-slate-800 rounded-xl">
-                        <p className="text-xs text-slate-500 text-center">No single feature adjustment can flip this decision.</p>
+                    <div className="col-span-full p-4 bg-neutral-bg border border-neutral-border rounded-xl">
+                        <p className="text-xs text-neutral-secondary text-center">No single feature adjustment can flip this decision.</p>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Demographic Fairness Audit */}
-              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+              <div className="bg-white border border-neutral-border rounded-2xl p-8 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <Users className="text-sky-400" size={20} />
+                  <Users className="text-burgundy" size={20} />
                   <div>
-                    <h3 className="text-lg font-bold text-white">Demographic Fairness Audit</h3>
-                    <p className="text-xs text-slate-500">Live approval rate distribution mapped across reported nationalities.</p>
+                    <h3 className="text-lg font-bold text-neutral-text">Demographic Fairness Audit</h3>
+                    <p className="text-xs text-neutral-secondary">Live approval rate distribution mapped across reported nationalities.</p>
                   </div>
                 </div>
                 
                 <div className="h-[250px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={demographicChartData} margin={{ top: 20, right: 30, left: -20, bottom: 50 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
                       <XAxis 
                         dataKey="name" 
                         angle={-45} 
                         textAnchor="end" 
                         height={60} 
-                        stroke="#64748b" 
+                        stroke="#6B7280" 
                         fontSize={10} 
-                        tick={{ fill: '#94a3b8' }} 
+                        tick={{ fill: '#6B7280' }} 
                         tickMargin={20}
                       />
                       <YAxis 
-                        stroke="#64748b" 
+                        stroke="#6B7280" 
                         fontSize={10} 
                         tickFormatter={(value) => `${value}%`}
                         domain={[0, 100]}
                       />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '0.75rem', fontSize: '12px', color: '#f8fafc' }}
-                        itemStyle={{ color: '#38bdf8' }}
+                        contentStyle={{ backgroundColor: '#ffffff', borderColor: '#E5E7EB', borderRadius: '0.75rem', fontSize: '12px', color: '#111827' }}
+                        itemStyle={{ color: '#5C0A28' }}
                         formatter={(value: any, name: any, props: any) => [`${value}% (n=${props.payload.sampleSize})`, 'Approval Rate']}
                       />
                       <Bar dataKey="approvalRate" radius={[4, 4, 0, 0]}>
                         {demographicChartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.approvalRate < 20 ? '#f43f5e' : entry.approvalRate > 80 ? '#34d399' : '#818cf8'} />
+                          <Cell key={`cell-${index}`} fill={entry.approvalRate < 20 ? '#DC2626' : entry.approvalRate > 80 ? '#2E7D32' : '#5C0A28'} />
                         ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
                 {demographicChartData.length > 0 && demographicChartData[demographicChartData.length - 1].approvalRate < 20 && (
-                  <div className="mt-4 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-3 text-rose-400 text-xs">
+                  <div className="mt-4 p-4 bg-danger-light border border-danger/20 rounded-xl flex items-center gap-3 text-danger text-xs shadow-sm">
                     <Info size={14} className="shrink-0" />
                     Warning: Structural disparities detected. Group "{demographicChartData[demographicChartData.length - 1].name}" falls below 20% approval threshold.
                   </div>
@@ -306,8 +306,8 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
               </div>
             </>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-slate-600 bg-slate-900 border border-slate-800 rounded-3xl">
-              <Search size={64} className="opacity-10 mb-4" />
+            <div className="h-full flex flex-col items-center justify-center text-neutral-secondary bg-white border border-neutral-border rounded-2xl p-20 shadow-sm">
+              <Search size={64} className="opacity-10 mb-4 text-burgundy" />
               <p className="text-sm font-bold uppercase tracking-widest">Select an applicant to analyze</p>
             </div>
           )}
@@ -324,16 +324,16 @@ const FeatureBar = ({ label, value, max, weight, inverse }: any) => {
   return (
     <div className="space-y-2">
       <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
-        <span className="text-slate-400">{label}</span>
-        <span className="text-slate-200">{displayValue}</span>
+        <span className="text-neutral-secondary">{label}</span>
+        <span className="text-neutral-text">{displayValue}</span>
       </div>
-      <div className="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+      <div className="h-2 bg-neutral-bg rounded-full overflow-hidden border border-neutral-border">
         <div 
-          className={`h-full rounded-full transition-all duration-1000 ${inverse ? (percentage > 40 ? 'bg-rose-500' : 'bg-emerald-500') : (percentage > 70 ? 'bg-emerald-500' : 'bg-amber-500')}`} 
+          className={`h-full rounded-full transition-all duration-1000 ${inverse ? (percentage > 40 ? 'bg-danger' : 'bg-success') : (percentage > 70 ? 'bg-success' : 'bg-gold')}`} 
           style={{ width: `${percentage}%` }} 
         />
       </div>
-      <div className="flex justify-between text-[8px] text-slate-600 font-mono">
+      <div className="flex justify-between text-[8px] text-neutral-secondary font-mono">
         <span>Weight: {(weight * 100).toFixed(0)}%</span>
         <span>Impact: {inverse ? (percentage > 40 ? 'Negative' : 'Positive') : (percentage > 70 ? 'Positive' : 'Neutral')}</span>
       </div>

@@ -96,31 +96,31 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, appli
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 w-full max-w-3xl rounded-3xl p-8 shadow-2xl scale-in-center overflow-y-auto max-h-[90vh]">
-        <div className="flex justify-between items-start mb-8 border-b border-slate-800 pb-6">
+    <div className="fixed inset-0 z-[200] bg-neutral-text/40 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-white border border-neutral-border w-full max-w-3xl rounded-2xl p-8 shadow-xl scale-in-center overflow-y-auto max-h-[90vh] font-sans text-neutral-text">
+        <div className="flex justify-between items-start mb-8 border-b border-neutral-border pb-6">
           <div>
-            <h3 className="text-2xl font-black text-white flex items-center gap-2">
-              <FileText className="text-indigo-400" /> Decision Analytics Report
+            <h3 className="text-2xl font-bold text-neutral-text flex items-center gap-2">
+              <FileText className="text-burgundy" /> Decision Analytics Report
             </h3>
-            <p className="text-slate-500 text-sm mt-1">Aggregated insights on model throughput and rejections.</p>
+            <p className="text-neutral-secondary text-sm mt-1">Aggregated insights on model throughput and rejections.</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-500 hover:text-white">
+          <button onClick={onClose} className="p-2 hover:bg-neutral-bg rounded-full transition-colors text-neutral-secondary hover:text-neutral-text">
             <X size={20} />
           </button>
         </div>
 
         <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <div className="flex items-center gap-2 bg-neutral-bg p-1 rounded-xl border border-neutral-border">
             <button 
               onClick={() => setTimeframe('Weekly')}
-              className={`flex items-center gap-2 px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${timeframe === 'Weekly' ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+              className={`flex items-center gap-2 px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${timeframe === 'Weekly' ? 'bg-burgundy text-white border-burgundy shadow-sm' : 'text-neutral-secondary border-transparent hover:text-burgundy'}`}
             >
               <Calendar size={14} /> 7 Days
             </button>
             <button 
               onClick={() => setTimeframe('Monthly')}
-              className={`flex items-center gap-2 px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${timeframe === 'Monthly' ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+              className={`flex items-center gap-2 px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${timeframe === 'Monthly' ? 'bg-burgundy text-white border-burgundy shadow-sm' : 'text-neutral-secondary border-transparent hover:text-burgundy'}`}
             >
               <Calendar size={14} /> 30 Days
             </button>
@@ -129,7 +129,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, appli
           <button 
             onClick={handleExportCSV}
             disabled={relevantApplicants.length === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed text-slate-200 text-[10px] font-bold uppercase tracking-widest rounded-lg border border-slate-700 transition-all"
+            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-neutral-bg disabled:opacity-50 disabled:cursor-not-allowed text-neutral-text text-[10px] font-bold uppercase tracking-widest rounded-lg border border-neutral-border transition-all shadow-sm"
           >
             <Download size={14} /> Export CSV
           </button>
@@ -138,15 +138,15 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, appli
         {/* Global Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <StatCard title="Total Volume" value={reportData.total} />
-          <StatCard title="Approved" value={reportData.approved} color="text-emerald-400" />
-          <StatCard title="Rejected" value={reportData.rejected} color="text-rose-400" />
+          <StatCard title="Approved" value={reportData.approved} color="text-success" />
+          <StatCard title="Rejected" value={reportData.rejected} color="text-danger" />
           <StatCard title="Approval Rate" value={`${reportData.approvalRate}%`} />
         </div>
 
         {/* Reason Analysis */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6">
-          <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
-            <PieChart size={14} /> Rejection Analysis Breakdown
+        <div className="bg-neutral-bg border border-neutral-border rounded-xl p-6">
+          <h4 className="text-[10px] font-bold text-neutral-secondary uppercase tracking-widest mb-6 flex items-center gap-2">
+            <PieChart size={14} className="text-burgundy" /> Rejection Analysis Breakdown
           </h4>
           
           <div className="space-y-4">
@@ -154,31 +154,31 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, appli
               label="Low Credit Score (< 640)" 
               count={reportData.reasons.lowCredit} 
               total={reportData.rejected} 
-              color="bg-amber-500"
+              color="bg-warning"
             />
             <ReasonBar 
               label="High Debt-to-Income (> 45%)" 
               count={reportData.reasons.highDebt} 
               total={reportData.rejected} 
-              color="bg-rose-500"
+              color="bg-danger"
             />
             <ReasonBar 
               label="Insufficient Income (< $30k)" 
               count={reportData.reasons.insufficientIncome} 
               total={reportData.rejected} 
-              color="bg-orange-500"
+              color="bg-gold"
             />
             <ReasonBar 
               label="Risk Model Safety Threshold" 
               count={reportData.reasons.modelConfidence} 
               total={reportData.rejected} 
-              color="bg-indigo-500"
+              color="bg-burgundy"
             />
           </div>
 
           {reportData.rejected === 0 && (
-            <div className="flex flex-col items-center justify-center py-6 text-slate-600">
-              <TrendingDown size={32} className="mb-2 opacity-50" />
+            <div className="flex flex-col items-center justify-center py-6 text-neutral-secondary">
+              <TrendingDown size={32} className="mb-2 opacity-50 text-burgundy" />
               <p className="text-xs uppercase tracking-widest font-bold">No Rejections Recorded</p>
             </div>
           )}
@@ -188,9 +188,9 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, appli
   );
 };
 
-const StatCard = ({ title, value, color = "text-slate-100" }: any) => (
-  <div className="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:border-slate-700 transition-colors">
-    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">{title}</span>
+const StatCard = ({ title, value, color = "text-neutral-text" }: any) => (
+  <div className="bg-neutral-bg border border-neutral-border p-4 rounded-xl flex flex-col items-center justify-center text-center hover:border-burgundy/25 transition-colors shadow-sm">
+    <span className="text-[9px] font-bold text-neutral-secondary uppercase tracking-widest mb-1">{title}</span>
     <span className={`text-3xl font-black ${color}`}>{value}</span>
   </div>
 );
@@ -201,10 +201,10 @@ const ReasonBar = ({ label, count, total, color }: { label: string, count: numbe
   return (
     <div className="space-y-1">
       <div className="flex justify-between items-end text-xs">
-        <span className="text-slate-300 font-bold">{label}</span>
-        <span className="text-slate-500 font-mono">{count} <span className="text-[10px] ml-1">({percentage.toFixed(1)}%)</span></span>
+        <span className="text-neutral-text font-bold">{label}</span>
+        <span className="text-neutral-secondary font-mono">{count} <span className="text-[10px] ml-1">({percentage.toFixed(1)}%)</span></span>
       </div>
-      <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+      <div className="h-1.5 w-full bg-white rounded-full overflow-hidden border border-neutral-border">
         <div className={`h-full ${color} rounded-full`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
