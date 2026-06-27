@@ -25,7 +25,7 @@ pinned: false
 
 ---
 
-**Decision DNA (Decision Dynamics, Navigation & Assurance)** is an enterprise-scale credit risk AI system that goes far beyond prediction — it governs, monitors, secures, and explains every model decision in real time. Built for institutions that need to trust their AI, it combines high-fidelity machine learning (~97% accuracy) with a full governance stack: drift detection, adversarial robustness, fairness auditing, SHAP-based explainability, and an immutable audit trail — all deployable to GCP or AWS with a single command.
+**Decision DNA (Decision Dynamics, Navigation & Assurance)** is an enterprise-scale credit risk AI system that goes far beyond prediction — it governs, monitors, secures, and explains every model decision in real time. Built for institutions that need to trust their AI, it combines high-fidelity machine learning (~88% accuracy) with a full governance stack: drift detection, adversarial robustness, fairness auditing, SHAP-based explainability, and an immutable audit trail — all deployable to GCP or AWS with a single command.
 
 ---
 
@@ -49,7 +49,7 @@ pinned: false
 ## ✨ Key Features
 
 **Production ML Engine**
-Two models power every decision: a Random Forest (96.67% accuracy) serving as the production engine and a Logistic Regression (96.93% accuracy) used as a stability monitor. Both are trained on a 100,000-sample synthetic credit dataset with features including income, credit score, debt-to-income ratio, credit utilization, payment history, and loan repayment ratio.
+Two models power every decision: a Random Forest (88.35% accuracy) serving as the production engine and a Logistic Regression (87.77% accuracy) used as a stability monitor. Both are trained on a 100,000-sample synthetic credit dataset with features including income, credit score, debt-to-income ratio, credit utilization, payment history, and loan repayment ratio.
 
 **Real-Time Governance Dashboard**
 A React SPA gives risk officers a live view of model health — predictions, drift scores, fairness metrics, and security events — all updating in real time without a page refresh.
@@ -128,8 +128,8 @@ Both models are trained on a 100,000-sample synthetic credit dataset.
 
 | Model | Accuracy | Role |
 |---|---|---|
-| Random Forest | **96.67%** | Production — primary decision engine |
-| Logistic Regression | **96.93%** | Monitor — stability & drift reference |
+| Random Forest | **88.35%** | Production — primary decision engine |
+| Logistic Regression | **87.77%** | Monitor — stability & drift reference |
 
 **Input features:**
 
