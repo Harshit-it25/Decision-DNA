@@ -154,6 +154,7 @@ decision-dna/
 │
 ├── app/
 │   ├── main.py                   # FastAPI application — all API routes
+│   ├── db.py                     # Unified Database Manager (MySQL + SQLite/CSV fallback)
 │   └── encryption_layer.py       # Encryption utilities
 │
 ├── ml/
@@ -202,6 +203,7 @@ decision-dna/
 │   └── model_metadata.json            # Version & training metadata
 │
 ├── scripts/
+│   ├── seed_mysql.py           # Database schema initialization and CSV seeding
 │   ├── run_pipeline_demo.py    # Full pipeline demo
 │   ├── stress_test.py          # Load & stress testing
 │   ├── test_rbac.py            # RBAC role testing
@@ -243,7 +245,7 @@ decision-dna/
 git clone https://github.com/Harshit-it25/Decision-DNA.git
 cd Decision-DNA
 cp .env.example .env
-# Edit .env — add your VITE_GEMINI_API_KEY
+# Edit .env — add your GEMINI_API_KEY
 ```
 
 ### 2. Setup and Run (Concurrent Dev Mode)
@@ -316,12 +318,13 @@ OAuth2 password flow. Returns a JWT access token (30-minute expiry).
 | Method | Endpoint | Description | Role Required |
 |---|---|---|---|
 | `POST` | `/api/predict` | Run a credit risk prediction with SHAP attribution | MORTGAGE_OFFICER+ |
-| `GET` | `/api/monitor/drift` | Current PSI, KL-Divergence, and drift status | AUDITOR+ |
+| `GET` | `/api/monitoring-drift` | Current PSI, KL-Divergence, and drift status | AUDITOR+ |
 | `GET` | `/api/audit/fairness` | Disparate Impact & SPD fairness metrics | AUDITOR+ |
-| `GET` | `/api/explain` | SHAP feature importances + Gemini narrative | MORTGAGE_OFFICER+ |
+| `GET` | `/api/audit/explain/{applicant_id}` | SHAP feature importances for a specific applicant | AUDITOR+ |
+| `POST` | `/api/audit/explain` | Counterfactuals & SHAP explanations for provided applicant data | MORTGAGE_OFFICER+ |
 | `GET` | `/api/security/status` | Threat level & model integrity status | SECURITY_ADMIN |
 | `POST` | `/api/security/harden` | Trigger adversarial hardening run | SECURITY_ADMIN |
-| `POST` | `/api/retrain` | Manually trigger model retraining | SECURITY_ADMIN |
+| `POST` | `/api/train-model` | Manually trigger model retraining | SECURITY_ADMIN |
 | `GET` | `/api/models` | List model registry with versions & metrics | AUDITOR+ |
 | `GET` | `/metrics` | Prometheus metrics scrape endpoint | — |
 
