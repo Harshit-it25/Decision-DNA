@@ -720,7 +720,7 @@ const App: React.FC = () => {
       case 'overview': return <Dashboard activeModel={activeModel} metrics={metrics} security={security} auditLogs={auditLogs} insight={aiInsight} aiTier={aiTier} applicants={applicants} />;
       case 'models': return <ModelManagement models={models} setModels={setModels} activeModelId={activeModelId} setActiveModelId={handleActivateModel} onTrain={handleTrainModel} onTrainAll={handleTrainAllModels} onLoadRealData={handleLoadRealDataset} onRunTest={handleRunIntegrityTest} />;
       case 'monitoring': return <MonitoringCenter metrics={metrics} security={security} applicants={applicants} />;
-      case 'security': return <SecurityCenter security={security} onAttack={handleAttack} onReboot={handleReboot} logs={auditLogs.filter(l => l.category === 'ATTACK' || l.category === 'SECURITY')} />;
+      case 'security': return <SecurityCenter security={security} activeModel={activeModel} user={user} onAttack={handleAttack} onReboot={handleReboot} logs={auditLogs.filter(l => l.category === 'ATTACK' || l.category === 'SECURITY')} />;
       case 'explainability': return <Explainability activeModel={activeModel} applicants={applicants} aiTier={aiTier} onAddApplicant={() => setIsModalOpen(true)} onTrain={handleTrainModel} />;
       case 'audit': return <AuditTimeline logs={auditLogs} />;
       case 'fairness': return <FairnessAudit applicants={applicants} />;

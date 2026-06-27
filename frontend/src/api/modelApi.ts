@@ -99,11 +99,17 @@ export const predictRisk = async (applicant: any, modelId: string) => {
 };
 
 export const getModelMetrics = async () => {
-   return { status: "ok" };
+  const headers = await getHeaders();
+  const response = await fetch('/api/model-metrics', { headers });
+  if (!response.ok) throw new Error("Failed to fetch model metrics");
+  return await response.json();
 };
 
 export const getModelMetadata = async () => {
-   return { status: "ok" };
+  const headers = await getHeaders();
+  const response = await fetch('/api/model/metadata', { headers });
+  if (!response.ok) throw new Error("Failed to fetch model metadata");
+  return await response.json();
 };
 
 export const triggerAttack = async (type: string) => {
