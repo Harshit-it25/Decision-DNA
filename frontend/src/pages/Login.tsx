@@ -38,7 +38,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             <Shield className="w-12 h-12 text-burgundy" />
           </div>
           <h1 className="text-3xl font-extrabold text-burgundy tracking-tighter mb-2">DECISION DNA</h1>
-          <p className="text-neutral-secondary text-sm font-medium uppercase tracking-[0.2em]">Enterprise ML Governance</p>
+          <p className="text-neutral-secondary text-sm font-medium uppercase tracking-[0.2em] text-center">Intelligent AI Assurance Platform for Credit Risk Systems</p>
         </div>
 
         <div className="bg-white border border-neutral-border p-8 rounded-2xl shadow-lg relative group overflow-hidden">
