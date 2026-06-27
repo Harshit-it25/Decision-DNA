@@ -13,9 +13,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from ml.data_processor import DataProcessor
 from ml.adversarial_tester import AdversarialTester
 from ml.watermarker import Watermarker
+from app.db import load_applicants_as_dataframe, DB_MODE
 
 class RobustTrainer:
-    def __init__(self, data_path='dataset_large.csv', model_path='models/random_forest_model_prod.pkl', scaler_path='models/scaler_prod.pkl'):
+    def __init__(self, data_path='dataset.csv', model_path='models/random_forest_model_prod.pkl', scaler_path='models/scaler_prod.pkl'):
         self.data_path = data_path
         self.model_path = model_path
         self.scaler_path = scaler_path
@@ -57,17 +58,24 @@ class RobustTrainer:
         """
         Retrains the model with augmented adversarial data.
         """
-        data_path = self.data_path
-        if not os.path.exists(data_path):
-            if data_path == 'dataset_large.csv' and os.path.exists('dataset.csv'):
-                data_path = 'dataset.csv'
-            elif data_path == 'dataset.csv' and os.path.exists('dataset_large.csv'):
-                data_path = 'dataset_large.csv'
-            else:
-                return {"error": f"Source dataset {data_path} not found"}
+        if DB_MODE == 'mysql':
+            print("Loading base data from MySQL database...")
+            try:
+                df = load_applicants_as_dataframe()
+            except Exception as e:
+                return {"error": f"Failed to load dataset: {e}"}
+        else:
+            data_path = self.data_path
+            if not os.path.exists(data_path):
+                if data_path == 'dataset_large.csv' and os.path.exists('dataset.csv'):
+                    data_path = 'dataset.csv'
+                elif data_path == 'dataset.csv' and os.path.exists('dataset_large.csv'):
+                    data_path = 'dataset_large.csv'
+                else:
+                    return {"error": f"Source dataset {data_path} not found"}
 
-        print(f"Loading base data from {data_path}...")
-        df = pd.read_csv(data_path)
+            print(f"Loading base data from {data_path}...")
+            df = pd.read_csv(data_path)
         
         # 1. Generate Adversaries
         adv_df = self.generate_adversarial_dataset(df, fraction=adversarial_fraction)

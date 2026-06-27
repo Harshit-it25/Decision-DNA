@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app.db import load_applicants_as_dataframe, DB_MODE
 
 def calculate_disparate_impact(df, protected_attr, privileged_class, unprivileged_class, target_col='decision', favorable_outcome='Approve'):
     """
@@ -54,13 +59,19 @@ def get_fairness_metrics(df_path='dataset.csv', model=None, processor=None, samp
     """
     Loads data, predicts outcomes with the model, and calculates fairness metrics.
     """
-    try:
-        df = pd.read_csv(df_path, on_bad_lines='skip')
-    except FileNotFoundError:
+    if df_path == 'dataset.csv':
         try:
-            df = pd.read_csv('dataset_processed.csv', on_bad_lines='skip')
+            df = load_applicants_as_dataframe()
+        except Exception as e:
+            return {"error": f"Failed to load dataset: {e}"}
+    else:
+        try:
+            df = pd.read_csv(df_path, on_bad_lines='skip')
         except FileNotFoundError:
-            return {"error": "Dataset not found"}
+            try:
+                df = pd.read_csv('dataset_processed.csv', on_bad_lines='skip')
+            except FileNotFoundError:
+                return {"error": "Dataset not found"}
 
     # Use a sample for speed if dataset is huge
     if len(df) > sample_size:

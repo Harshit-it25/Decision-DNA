@@ -1,5 +1,10 @@
 import pandas as pd
 import numpy as np
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app.db import load_applicants_as_dataframe, DB_MODE
 import os
 from typing import Tuple, List
 
@@ -82,11 +87,12 @@ class DataProcessor:
 if __name__ == "__main__":
     # Test run
     processor = DataProcessor()
-    # Load raw data if exists
-    if os.path.exists('dataset.csv'):
-        df_raw = pd.read_csv('dataset.csv')
+    try:
+        df_raw = load_applicants_as_dataframe()
         X_unscaled, df_processed = processor.get_features(df_raw)
         print(f"Processed features: {processor.feature_cols}")
         print(f"Unscaled shape: {X_unscaled.shape}")
         df_processed.to_csv('dataset_processed.csv', index=False)
+    except Exception as e:
+        print(f"Error loading or processing data: {e}")
 

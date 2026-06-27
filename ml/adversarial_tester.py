@@ -8,6 +8,7 @@ from datetime import datetime
 # Add parents directory to path to import DataProcessor
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from ml.data_processor import DataProcessor
+from app.db import load_applicants_as_dataframe
 
 class AdversarialTester:
     def __init__(self, model_path='models/random_forest_model_prod.pkl', scaler_path='models/scaler_prod.pkl'):
@@ -161,12 +162,13 @@ class AdversarialTester:
         """
         Performs a full red-team audit on a sample of rejected applicants.
         """
-        if not os.path.exists('dataset.csv'):
-            return {"error": "Dataset not found for auditing"}
-            
         # Sample candidates for red teaming
-        df_all = pd.read_csv('dataset.csv', on_bad_lines='skip')
-        df = df_all.sample(min(1000, sample_size * 20))
+        try:
+            df_all = load_applicants_as_dataframe()
+        except Exception as e:
+            return {"error": f"Failed to load dataset for auditing: {e}"}
+            
+        df = df_all.sample(min(len(df_all), sample_size * 20))
         
         # Identify those the model REJECTS
         if hasattr(self.model, 'named_steps'):

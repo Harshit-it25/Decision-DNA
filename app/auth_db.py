@@ -1,10 +1,7 @@
-import sqlite3
 import hashlib
 import os
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'users.db')
-
 import secrets
+from app.db import get_db_connection, DB_MODE
 
 def get_password_hash(password: str) -> str:
     salt = os.urandom(16)
@@ -21,23 +18,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         return False
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            hashed_password TEXT NOT NULL,
-            role TEXT NOT NULL,
-            disabled BOOLEAN NOT NULL DEFAULT 0
-        )
-    ''')
-    conn.commit()
-    conn.close()
-    
-    seed_default_users()
+    from app.db import init_db as main_init_db
+    main_init_db()
 
 def seed_default_users():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     admin_pw = os.getenv("ADMIN_PASSWORD", "decision_dna_2024")
@@ -51,22 +36,35 @@ def seed_default_users():
     ]
     
     for user in default_users:
-        cursor.execute('''
-            INSERT OR IGNORE INTO users (username, hashed_password, role, disabled)
-            VALUES (?, ?, ?, ?)
-        ''', user)
+        if DB_MODE == 'mysql':
+            cursor.execute('''
+                INSERT INTO users (username, hashed_password, role, disabled)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE disabled=disabled
+            ''', user)
+        else:
+            cursor.execute('''
+                INSERT OR IGNORE INTO users (username, hashed_password, role, disabled)
+                VALUES (?, ?, ?, ?)
+            ''', user)
         
     conn.commit()
+    cursor.close()
     conn.close()
 
 def get_user(username: str):
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-    row = cursor.fetchone()
+    conn = get_db_connection()
+    row = None
+    if DB_MODE == 'mysql':
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        row = cursor.fetchone()
+    else:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        result = cursor.fetchone()
+        if result:
+            row = dict(result)
+    cursor.close()
     conn.close()
-    
-    if row:
-        return dict(row)
-    return None
+    return row

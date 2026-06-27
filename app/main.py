@@ -116,6 +116,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 
 from app.auth_db import init_db, get_user, verify_password
+from app.db import insert_applicant, load_applicants_as_dataframe, get_applicant
 
 # Role Definitions
 ROLES = {
@@ -784,41 +785,15 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         # Calculate confidence
         confidence = risk_score if decision == "Reject" else (1 - risk_score)
         
-        # Write to dataset.csv
+        # Write to database (with SQLite/CSV fallback)
         try:
-            dataset_path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
-            if os.path.exists(dataset_path):
-                # Verify trailing newline
-                has_newline = True
-                if os.path.getsize(dataset_path) > 0:
-                    with open(dataset_path, "rb") as f:
-                        f.seek(-1, os.SEEK_END)
-                        if f.read(1) != b'\n':
-                            has_newline = False
-                
-                # Format: id,name,nationality,income,debtRatio,creditScore,loanAmount,gender,age,riskProbability,decision
-                with open(dataset_path, "a", encoding="utf-8") as f:
-                    if not has_newline:
-                        f.write("\n")
-                    app_id = input_dict.get("id", f"LENDING-{int(datetime.now().timestamp())}")
-                    name = input_dict.get("name", "Anonymous")
-                    # Quote the name to match CSV format: "John Doe"
-                    name_quoted = f'"{name}"' if not name.startswith('"') else name
-                    nationality = input_dict.get("nationality", "Unknown")
-                    income = input_dict.get("income", 0)
-                    debt_ratio = f"{input_dict.get('debtRatio', 0):.4f}"
-                    credit_score = input_dict.get("creditScore", 0)
-                    loan_amount = input_dict.get("loanAmount", 0)
-                    gender = input_dict.get("gender", "Male")
-                    age = input_dict.get("age", 30)
-                    risk_prob = f"{risk_score:.4f}"
-                    # Decision needs to be title case "Approve" or "Reject"
-                    fmt_decision = decision.capitalize()
-                    
-                    csv_row = f"{app_id},{name_quoted},{nationality},{income},{debt_ratio},{credit_score},{loan_amount},{gender},{age},{risk_prob},{fmt_decision}\n"
-                    f.write(csv_row)
+            db_entry = input_dict.copy()
+            db_entry['id'] = input_dict.get("id", f"LENDING-{int(datetime.now().timestamp())}")
+            db_entry['riskProbability'] = risk_score
+            db_entry['decision'] = decision.capitalize()
+            insert_applicant(db_entry)
         except Exception as e:
-            print(f"Failed to write to dataset.csv: {e}")
+            logging.error(f"Failed to save applicant prediction: {e}")
         
         # Generate Reason
         reason = generate_decision_reason(decision, explanations)
@@ -903,13 +878,12 @@ async def get_drift(background_tasks: BackgroundTasks, _ = Depends(require_permi
     actual_approve = 1.0 - actual_reject
     
     expected_reject = 0.35
-    dataset_path = "dataset.csv"
-    if os.path.exists(dataset_path):
-        try:
-            base_df = pd.read_csv(dataset_path, usecols=["decision"])
+    try:
+        base_df = load_applicants_as_dataframe()
+        if 'decision' in base_df.columns:
             expected_reject = float(base_df['decision'].value_counts(normalize=True).get('Reject', 0.35))
-        except Exception:
-            pass
+    except Exception as e:
+        logging.error(f"Failed to calculate expected reject rate: {e}")
     expected_approve = 1.0 - expected_reject
     
     epsilon = 1e-6
@@ -1185,20 +1159,10 @@ async def explain_decision(applicant_id: str, _ = Depends(require_permissions("m
         if not re.match(r"^[a-zA-Z0-9_-]+$", applicant_id) or len(applicant_id) > 50:
             raise HTTPException(status_code=400, detail="Invalid applicant ID format or length")
 
-        import os
-        import pandas as pd
-        dataset_path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
-        if not os.path.exists(dataset_path):
-            raise HTTPException(status_code=404, detail="Dataset persistence layer not found.")
-            
-        df = pd.read_csv(dataset_path, on_bad_lines='skip')
-        applicant = df[df['id'] == applicant_id]
+        data = get_applicant(applicant_id)
         
-        if applicant.empty:
+        if not data:
             raise HTTPException(status_code=404, detail="Applicant not found in persistence layer.")
-            
-        # Convert row to dict
-        data = applicant.iloc[0].to_dict()
         
         # Run explainability
         engine = ExplainabilityEngine()
@@ -1283,10 +1247,21 @@ app.include_router(api_router)
 # --- Serve Data & Static Files ---
 @app.get("/dataset.csv")
 async def get_dataset(_ = Depends(require_permissions("monitor")), _limiter = Depends(general_limiter)):
-    path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
-    if os.path.exists(path):
-        return FileResponse(path)
-    return FileResponse(os.path.join(os.path.dirname(__file__), '..', 'dataset_processed.csv')) if os.path.exists(os.path.join(os.path.dirname(__file__), '..', 'dataset_processed.csv')) else HTTPException(status_code=404, detail="Dataset not found")
+    try:
+        from fastapi.responses import Response
+        df = load_applicants_as_dataframe()
+        csv_data = df.to_csv(index=False)
+        return Response(
+            content=csv_data,
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=dataset.csv"}
+        )
+    except Exception as e:
+        logging.error(f"Failed to generate dataset.csv response: {e}")
+        path = os.path.join(os.path.dirname(__file__), '..', 'dataset.csv')
+        if os.path.exists(path):
+            return FileResponse(path)
+        return FileResponse(os.path.join(os.path.dirname(__file__), '..', 'dataset_processed.csv')) if os.path.exists(os.path.join(os.path.dirname(__file__), '..', 'dataset_processed.csv')) else HTTPException(status_code=404, detail="Dataset not found")
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():

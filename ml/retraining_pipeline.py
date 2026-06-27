@@ -1,11 +1,16 @@
 import pandas as pd
 import joblib
 import os
+import sys
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 import json
 from datetime import datetime
+
+# Add parent path to allow app.db import
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from app.db import load_applicants_as_dataframe, DB_MODE
 
 # Paths
 DATA_PATH = "dataset.csv"
@@ -20,13 +25,13 @@ METRICS_PATH = os.path.join(MODELS_DIR, "model_metrics_prod.json")
 def run_retraining():
     print(f"[{datetime.now().isoformat()}] Starting automated retraining pipeline...")
     
-    if not os.path.exists(DATA_PROCESSED_PATH):
+    if DB_MODE == 'sqlite' and not os.path.exists(DATA_PROCESSED_PATH):
         print("Processed data not found. Retraining aborted.")
         return False
     
     try:
         # 1. Load Data
-        df = pd.read_csv(DATA_PATH)
+        df = load_applicants_as_dataframe()
         from data_processor import DataProcessor
         processor = DataProcessor()
         X, _ = processor.get_features(df)

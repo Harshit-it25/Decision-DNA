@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: decision-dna-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: decision_dna_2024
+      MYSQL_DATABASE: DecisionDNADB
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
   prediction-api:
     build: .
     ports:
@@ -12,3 +24,10 @@ services:
       - .env
     environment:
       - ENV=production
+      - MYSQL_HOST=mysql-db
+    depends_on:
+      - mysql-db
+
+volumes:
+  mysql_data:
+

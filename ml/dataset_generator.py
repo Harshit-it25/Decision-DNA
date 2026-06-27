@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 
-def generate_large_dataset(n_samples=100000, output_path='dataset_large.csv'):
+def generate_large_dataset(n_samples=100000, output_path='dataset.csv'):
     print(f"Generating {n_samples} samples...")
     
     np.random.seed(42)
@@ -80,9 +80,7 @@ def generate_large_dataset(n_samples=100000, output_path='dataset_large.csv'):
     
     df.to_csv(output_path, index=False)
     print(f"Dataset saved to {output_path}")
-    df.to_csv('dataset.csv', index=False)
-    print("Dataset also saved to dataset.csv")
 
 if __name__ == "__main__":
     os.makedirs('ml', exist_ok=True)
-    generate_large_dataset(100000, 'dataset_large.csv')
+    generate_large_dataset(100000, 'dataset.csv')

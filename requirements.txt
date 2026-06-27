@@ -26,3 +26,4 @@ seaborn
 # Utility
 aiofiles
 python-dotenv
+mysql-connector-python

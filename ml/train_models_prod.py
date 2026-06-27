@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from data_processor import DataProcessor
 
-def train_production_models(data_path='dataset_large.csv'):
+def train_production_models(data_path='dataset.csv'):
     # Ensure models directory exists
     os.makedirs('models', exist_ok=True)
     
@@ -121,4 +121,4 @@ def train_production_models(data_path='dataset_large.csv'):
     print("Saved confusion_matrix.png to models/")
 
 if __name__ == "__main__":
-    train_production_models('dataset_large.csv')
+    train_production_models('dataset.csv')
