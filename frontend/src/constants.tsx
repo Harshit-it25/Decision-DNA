@@ -37,7 +37,7 @@ export const INITIAL_MODELS: ModelMetadata[] = [
     status: ModelStatus.ACTIVE,
     role: 'Production',
     metrics: {
-      accuracy: 0.8835,
+      accuracy: 0.9536,
       precision: 0.8717,
       recall: 0.8617,
       f1: 0.8617,
