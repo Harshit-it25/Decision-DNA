@@ -76,7 +76,7 @@ const MonitoringCenter: React.FC<MonitoringCenterProps> = ({ metrics, security, 
                     <p className="text-[10px] text-neutral-secondary font-mono">{app.id}</p>
                   </td>
                   <td className="px-6 py-4 text-sm text-neutral-text">{app.creditScore}</td>
-                  <td className="px-6 py-4 text-sm text-neutral-text">${app.income.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-sm text-neutral-text">INR {app.income.toLocaleString()}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 bg-neutral-border rounded-full overflow-hidden">

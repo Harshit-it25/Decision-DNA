@@ -31,7 +31,7 @@ def kafka_consumer_simulator():
     
     for app_data in producer:
         try:
-            print(f"\n[Stream] Received application: Income=${app_data['income']:.0f}, Credit={app_data['creditScore']}")
+            print(f"\n[Stream] Received application: Income=INR {app_data['income']:.0f}, Credit={app_data['creditScore']}")
             
             # Forward to Prediction API
             response = requests.post(API_URL, json=app_data)

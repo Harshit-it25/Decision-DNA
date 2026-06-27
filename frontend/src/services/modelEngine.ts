@@ -24,7 +24,7 @@ export const simulatePrediction = (applicant: Applicant, model: ModelMetadata): 
   // Normalize credit score (300-850)
   const normCredit = (applicant.creditScore - 300) / 550;
   
-  // Normalize income (clamp at $250,000 for calculation)
+  // Normalize income (clamp at INR 250,000 for calculation)
   const normIncome = Math.min(1, applicant.income / 250000);
   
   // Debt-to-income ratio based on loan amount vs income (clip at 2.0)

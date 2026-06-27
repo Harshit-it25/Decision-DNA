@@ -163,7 +163,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, appli
               color="bg-danger"
             />
             <ReasonBar 
-              label="Insufficient Income (< $30k)" 
+              label="Insufficient Income (< INR 30k)" 
               count={reportData.reasons.insufficientIncome} 
               total={reportData.rejected} 
               color="bg-gold"

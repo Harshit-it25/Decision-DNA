@@ -362,18 +362,15 @@ class ApplicantDetails(BaseModel):
         assets = values.get("totalAssets")
         liabilities = values.get("totalLiabilities")
 
-        if income is not None and income <= 0:
-            raise ValueError("Income must be a positive number.")
         if loan_amount is not None and loan_amount < 5000:
-            raise ValueError("Minimum allowed loan amount is $5,000.")
+            raise ValueError("Minimum allowed loan amount is INR 5,000.")
         if loan_amount is not None and income is not None and loan_amount > income * 20:
             raise ValueError("Loan amount cannot exceed 20x the annual income.")
         
-        # Unrealistic combinations: e.g. Young age (under 21) with extreme income but low assets
         if age is not None and age <= 21:
             if income is not None and income > 250000:
                 if assets is not None and assets < 50000:
-                    raise ValueError("Unrealistic profile: High income under 21 years old requires verified asset reserves of at least $50,000.")
+                    raise ValueError("Unrealistic profile: High income under 21 years old requires verified asset reserves of at least INR 50,000.")
         
         # High income but virtually zero assets
         if income is not None and income > 500000:
@@ -383,7 +380,7 @@ class ApplicantDetails(BaseModel):
         # Loan to asset consistency
         if loan_amount is not None and assets is not None:
             if loan_amount > 1000000 and assets < 50000:
-                raise ValueError("Unrealistic profile: A loan amount exceeding $1,000,000 requires verified assets of at least $50,000.")
+                raise ValueError("Unrealistic profile: A loan amount exceeding INR 1,000,000 requires verified assets of at least INR 50,000.")
                 
         return values
 

@@ -376,12 +376,12 @@ export const downloadCompliancePDF = (
         </thead>
         <tbody>
           <tr>
-            <td>$${applicant.income.toLocaleString()}</td>
-            <td>$${applicant.loanAmount.toLocaleString()}</td>
-            <td>$${financial.totalAssets.toLocaleString()}</td>
-            <td>$${financial.totalLiabilities.toLocaleString()}</td>
+            <td>INR {applicant.income.toLocaleString()}</td>
+            <td>INR {applicant.loanAmount.toLocaleString()}</td>
+            <td>INR {financial.totalAssets.toLocaleString()}</td>
+            <td>INR {financial.totalLiabilities.toLocaleString()}</td>
             <td style="font-weight: bold; color: ${financial.netWorth >= 0 ? '#2E7D32' : '#DC2626'}">
-              $${financial.netWorth.toLocaleString()}
+              INR {financial.netWorth.toLocaleString()}
             </td>
             <td style="font-weight: bold;">${financial.assetLiabilityRatio.toFixed(2)}x</td>
           </tr>

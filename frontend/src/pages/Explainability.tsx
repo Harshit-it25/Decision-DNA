@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   Terminal, Search, Info, PlusCircle, 
   ChevronRight, BarChart4, Cpu, Zap, Users, ArrowUpRight, ArrowDownRight,
-  FileText, CheckCircle2, XCircle, AlertCircle, Landmark, Scale, ShieldCheck, Mail, Globe, Briefcase, TrendingUp, DollarSign, Fingerprint
+  FileText, CheckCircle2, XCircle, AlertCircle, Landmark, Scale, ShieldCheck, Mail, Globe, Briefcase, TrendingUp, Fingerprint
 } from 'lucide-react';
 import { generateCounterfactuals } from '../services/modelEngine';
 import { getDecisionExplanation } from '../api/modelApi';
@@ -289,7 +289,7 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
                       <div className="p-3.5 bg-neutral-bg border border-neutral-border rounded-xl">
                         <span className="text-[8px] font-bold text-neutral-secondary uppercase">Net Worth</span>
                         <span className={`block text-md font-black mt-1 ${financials.netWorth >= 0 ? 'text-success' : 'text-danger'}`}>
-                          ${financials.netWorth.toLocaleString()}
+                          INR {financials.netWorth.toLocaleString()}
                         </span>
                       </div>
                       <div className="p-3.5 bg-neutral-bg border border-neutral-border rounded-xl">
@@ -419,11 +419,11 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
                     <div className="space-y-1.5 text-xs text-neutral-text pt-2">
                       <div className="flex justify-between border-b border-neutral-border pb-1">
                         <span className="text-neutral-secondary">Annual Income</span>
-                        <span className="font-bold">${selectedApp.income.toLocaleString()}</span>
+                        <span className="font-bold">INR {selectedApp.income.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between border-b border-neutral-border pb-1">
                         <span className="text-neutral-secondary">Loan Amount</span>
-                        <span className="font-bold">${selectedApp.loanAmount.toLocaleString()}</span>
+                        <span className="font-bold">INR {selectedApp.loanAmount.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between border-b border-neutral-border pb-1">
                         <span className="text-neutral-secondary">Debt Ratio</span>
@@ -431,11 +431,11 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
                       </div>
                       <div className="flex justify-between border-b border-neutral-border pb-1">
                         <span className="text-neutral-secondary">Total Assets</span>
-                        <span className="font-bold">${financials.totalAssets.toLocaleString()}</span>
+                        <span className="font-bold">INR {financials.totalAssets.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-neutral-secondary">Total Liabilities</span>
-                        <span className="font-bold">${financials.totalLiabilities.toLocaleString()}</span>
+                        <span className="font-bold">INR {financials.totalLiabilities.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -473,7 +473,7 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
                       <div className="flex justify-between">
                         <span className="text-neutral-secondary">Net Worth</span>
                         <span className={`font-bold ${financials.netWorth >= 0 ? 'text-success' : 'text-danger'}`}>
-                          ${financials.netWorth.toLocaleString()}
+                          INR {financials.netWorth.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -628,7 +628,7 @@ const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants
 
 const FeatureBar = ({ label, value, max, weight, inverse }: any) => {
   const percentage = Math.min(100, (value / max) * 100);
-  const displayValue = label.includes('Ratio') ? value.toFixed(2) : (label.includes('Income') ? `$${value.toLocaleString()}` : value);
+  const displayValue = label.includes('Ratio') ? value.toFixed(2) : ((label.includes('Income') || label.includes('Amount') || label.includes('Assets') || label.includes('Liabilities') || label.includes('Worth')) ? `INR ${value.toLocaleString()}` : value);
   
   return (
     <div className="space-y-2">

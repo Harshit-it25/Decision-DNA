@@ -6,7 +6,7 @@ import {
   ArrowRight, CheckCircle2, XCircle, Info, ChevronRight,
   TrendingUp, BarChart4, Lock, Terminal, AlertCircle, RefreshCw,
   Eye, ShieldAlert, Zap, Globe, PlusCircle, X, Server, Sparkles, Key,
-  Briefcase, DollarSign, Fingerprint, Users
+  Briefcase, Fingerprint, Users
 } from 'lucide-react';
 import { 
   ModelMetadata, ModelStatus, ModelType, DriftMetrics, 

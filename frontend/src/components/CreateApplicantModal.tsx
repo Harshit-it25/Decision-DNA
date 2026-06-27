@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusCircle, X, Fingerprint, Globe, DollarSign, Activity, TrendingUp, Briefcase, Users, Info, Mail, Scale, Landmark, ShieldCheck } from 'lucide-react';
+import { PlusCircle, X, Fingerprint, Globe, IndianRupee, Activity, TrendingUp, Briefcase, Users, Info, Mail, Scale, Landmark, ShieldCheck } from 'lucide-react';
 import { Applicant } from '../types';
 import { getFinancialIndicators } from '../services/governanceUtils';
 
@@ -171,8 +171,8 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           </div>
 
           <InputField 
-            label="Annual Income ($)" 
-            icon={<DollarSign size={12}/>} 
+            label="Annual Income (INR)" 
+            icon={<IndianRupee size={12}/>} 
             name="income" 
             errors={errors}
             type="number" 
@@ -202,7 +202,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           />
 
           <InputField 
-            label="Loan Amount Requested ($)" 
+            label="Loan Amount Requested (INR)" 
             icon={<Briefcase size={12}/>} 
             name="loanAmount" 
             errors={errors}
@@ -244,8 +244,8 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           </div>
 
           <InputField 
-            label="Total Assets ($)" 
-            icon={<DollarSign size={12}/>} 
+            label="Total Assets (INR)" 
+            icon={<IndianRupee size={12}/>} 
             name="totalAssets" 
             errors={errors}
             type="number" 
@@ -257,8 +257,8 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
           />
 
           <InputField 
-            label="Total Liabilities ($)" 
-            icon={<DollarSign size={12}/>} 
+            label="Total Liabilities (INR)" 
+            icon={<IndianRupee size={12}/>} 
             name="totalLiabilities" 
             errors={errors}
             type="number" 
@@ -282,7 +282,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
               <div className="flex flex-col">
                 <span className="text-[8px] font-bold text-neutral-secondary uppercase">Net Worth</span>
                 <span className={`text-sm font-black mt-0.5 ${currentFinancials.netWorth >= 0 ? 'text-success' : 'text-danger'}`}>
-                  ${currentFinancials.netWorth.toLocaleString()}
+                  INR {currentFinancials.netWorth.toLocaleString()}
                 </span>
               </div>
               <div className="flex flex-col">

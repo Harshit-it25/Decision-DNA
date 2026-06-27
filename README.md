@@ -9,6 +9,7 @@ pinned: false
 ---
 
 <h1 align="center">🧬 Decision DNA</h1>
+<h1 align="center">Decision Dynamics, Navigation & Assurance</h1>
 <p align="center"><strong>Production-Grade AI Governance & Monitoring Platform for Credit Risk Models</strong></p>
 
 <p align="center">
