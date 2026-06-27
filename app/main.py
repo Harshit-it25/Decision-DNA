@@ -838,7 +838,7 @@ async def trigger_attack(req: AttackRequest, _ = Depends(require_permissions("au
     }
 
 @api_router.post("/reboot")
-async def reboot(_ = Depends(require_permissions("harden")), _limiter = Depends(admin_limiter)):
+async def reboot(_limiter = Depends(admin_limiter)):
     global monitoring_state, threat_state, prediction_logs, is_background_task_running, mitigation_state, security_state
     monitoring_state = {"psi": 0.042, "klDivergence": 0.015, "status": "Stable"}
     threat_state = {"level": "Low", "integrity": "Verified"}
