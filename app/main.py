@@ -335,7 +335,7 @@ class ApplicantDetails(BaseModel):
                     raise ValueError(f"Field '{k}' contains an overflow value exceeding 1e15.")
         return values
 
-    @root_validator
+    @root_validator(skip_on_failure=True)
     def check_financial_relationships(cls, values):
         income = values.get("income")
         loan_amount = values.get("loanAmount")
