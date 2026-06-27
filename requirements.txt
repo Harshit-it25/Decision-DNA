@@ -6,7 +6,7 @@ python-multipart
 prometheus-fastapi-instrumentator
 
 # Machine Learning & Data
-scikit-learn
+scikit-learn==1.8.0
 pandas
 numpy
 joblib
