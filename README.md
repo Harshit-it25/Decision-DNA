@@ -335,7 +335,7 @@ OAuth2 password flow. Returns a JWT access token (30-minute expiry).
 ### Example — Credit Risk Prediction
 
 ```bash
-curl -X POST http://localhost:8008/api/predict \
+curl -X POST https://harshit18930-decision-dna.hf.space/api/predict \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
