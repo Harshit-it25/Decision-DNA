@@ -128,9 +128,19 @@ export const downloadCompliancePDF = (
     { label: `Authorization Check: RBAC & JWT cryptographically validated`, passed: true }
   ];
 
-  const printWindow = window.open('', '_blank');
-  if (!printWindow) {
-    alert('Please allow popups to download the PDF report.');
+  // Create a hidden print iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow?.document || iframe.contentDocument;
+  if (!doc) {
+    alert('Failed to initialize print frame.');
     return;
   }
 
@@ -548,9 +558,18 @@ export const downloadCompliancePDF = (
     </html>
   `;
 
-  printWindow.document.open();
-  printWindow.document.write(htmlContent);
-  printWindow.document.close();
+  doc.open();
+  doc.write(htmlContent);
+  doc.close();
+
+  // Wait for the iframe content to render, then trigger print
+  setTimeout(() => {
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+    }, 1000);
+  }, 500);
 };
 
 function sha256Hash(str: string): string {
