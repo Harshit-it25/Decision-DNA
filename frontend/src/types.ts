@@ -91,6 +91,15 @@ export interface Applicant {
   decision: 'Approve' | 'Reject';
   reason?: string;
   timestamp?: number;
+  totalAssets?: number;
+  totalLiabilities?: number;
+  netWorth?: number;
+  assetLiabilityRatio?: number;
+  financialStrength?: string;
+  debtBurden?: string;
+  assetCoverage?: string;
+  overallPosition?: string;
+  businessInterpretation?: string;
 }
 
 export interface DriftHistoryEntry {

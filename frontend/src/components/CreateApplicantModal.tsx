@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { PlusCircle, X, Fingerprint, Globe, DollarSign, Activity, TrendingUp, Briefcase, Users, Info, Mail } from 'lucide-react';
+import { PlusCircle, X, Fingerprint, Globe, DollarSign, Activity, TrendingUp, Briefcase, Users, Info, Mail, Scale, Landmark, ShieldCheck } from 'lucide-react';
 import { Applicant } from '../types';
+import { getFinancialIndicators } from '../services/governanceUtils';
 
 interface CreateApplicantModalProps {
   onClose: () => void;
@@ -34,8 +35,13 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
     creditScore: 700, 
     loanAmount: 150000,
     gender: 'Male' as 'Male' | 'Female' | 'Other',
-    age: 30
+    age: 30,
+    totalAssets: 337500, 
+    totalLiabilities: 109500
   });
+
+  const [hasManuallyEditedAssets, setHasManuallyEditedAssets] = useState(false);
+  const [hasManuallyEditedLiabilities, setHasManuallyEditedLiabilities] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const countries = ['United States', 'United Kingdom', 'Canada', 'Germany', 'France', 'Japan', 'India', 'Brazil', 'Australia', 'Singapore', 'Netherlands', 'Sweden', 'Switzerland', 'Spain', 'Italy', 'South Korea', 'Mexico', 'United Arab Emirates', 'Norway', 'Denmark'];
@@ -51,15 +57,29 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
     }
     
     if (formData.income <= 0) newErrors.income = 'Income must be a positive number';
-    
     if (formData.creditScore < 300 || formData.creditScore > 850) newErrors.creditScore = 'Credit score must be between 300 and 850';
-    
     if (formData.debtRatio < 0 || formData.debtRatio > 1) newErrors.debtRatio = 'Debt ratio must be between 0.0 and 1.0';
-    
     if (formData.loanAmount <= 0) newErrors.loanAmount = 'Loan amount must be positive';
+    
+    if (formData.totalAssets < 0) newErrors.totalAssets = 'Assets cannot be negative';
+    if (formData.totalLiabilities < 0) newErrors.totalLiabilities = 'Liabilities cannot be negative';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleFieldChange = (name: string, value: any) => {
+    setFormData(prev => {
+      const next = { ...prev, [name]: value };
+      
+      if (['income', 'creditScore', 'loanAmount'].includes(name) && !hasManuallyEditedAssets) {
+        next.totalAssets = Math.round(next.income * (4.2 + (next.creditScore - 600) / 80) + next.loanAmount * 0.25);
+      }
+      if (['income', 'debtRatio', 'loanAmount'].includes(name) && !hasManuallyEditedLiabilities) {
+        next.totalLiabilities = Math.round(next.income * next.debtRatio * 2.8 + next.loanAmount * 0.45);
+      }
+      return next;
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,6 +88,9 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
       const normalizedScore = (formData.creditScore - 300) / 550;
       const normalizedDebt = 1 - formData.debtRatio;
       const scoreFactor = (normalizedScore * 0.6) + (normalizedDebt * 0.4);
+      
+      const financial = getFinancialIndicators(formData as any);
+      
       const newApp: Applicant = { 
         ...formData, 
         id: `app-user-${Date.now()}`, 
@@ -75,10 +98,28 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
         age: formData.age,
         riskProbability: Math.max(0, Math.min(1, 1 - scoreFactor)), 
         decision: (formData.creditScore > 657 && formData.debtRatio < 0.41) || (formData.creditScore > 717 && formData.debtRatio < 0.51) ? 'Approve' : 'Reject',
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        totalAssets: formData.totalAssets,
+        totalLiabilities: formData.totalLiabilities,
+        netWorth: financial.netWorth,
+        assetLiabilityRatio: financial.assetLiabilityRatio,
+        financialStrength: financial.financialStrength,
+        debtBurden: financial.debtBurden,
+        assetCoverage: financial.assetCoverage,
+        overallPosition: financial.overallPosition
       };
       onSubmit(newApp);
     }
+  };
+
+  // Live indicators computed on the fly
+  const currentFinancials = getFinancialIndicators(formData as any);
+
+  // Status color helper for financial preview
+  const getStatusColor = (val: string) => {
+    if (['High', 'Low-Risk', 'Strong', 'Low'].includes(val)) return 'text-success bg-success/5 border border-success/15';
+    if (['Medium', 'Stable', 'Moderate'].includes(val)) return 'text-gold bg-gold/5 border border-gold/15';
+    return 'text-danger bg-danger/5 border border-danger/15';
   };
 
   return (
@@ -100,7 +141,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
               name="name" 
               errors={errors}
               value={formData.name} 
-              onChange={(e: any) => setFormData({...formData, name: e.target.value})} 
+              onChange={(e: any) => handleFieldChange('name', e.target.value)} 
             />
           </div>
 
@@ -112,7 +153,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
               errors={errors}
               type="email"
               value={formData.email} 
-              onChange={(e: any) => setFormData({...formData, email: e.target.value})} 
+              onChange={(e: any) => handleFieldChange('email', e.target.value)} 
             />
           </div>
           
@@ -122,7 +163,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             </label>
             <select 
               value={formData.nationality} 
-              onChange={(e: any) => setFormData({...formData, nationality: e.target.value})}
+              onChange={(e: any) => handleFieldChange('nationality', e.target.value)}
               className="w-full bg-white border border-neutral-border rounded-xl px-4 py-3 text-sm text-neutral-text outline-none focus:border-burgundy/50 shadow-sm"
             >
               {countries.map(c => <option key={c} value={c}>{c}</option>)}
@@ -136,7 +177,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             errors={errors}
             type="number" 
             value={formData.income} 
-            onChange={(e: any) => setFormData({...formData, income: Number(e.target.value)})} 
+            onChange={(e: any) => handleFieldChange('income', Number(e.target.value))} 
           />
 
           <InputField 
@@ -146,7 +187,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             errors={errors}
             type="number" 
             value={formData.creditScore} 
-            onChange={(e: any) => setFormData({...formData, creditScore: Number(e.target.value)})} 
+            onChange={(e: any) => handleFieldChange('creditScore', Number(e.target.value))} 
           />
 
           <InputField 
@@ -157,7 +198,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             type="number" 
             step="0.01"
             value={formData.debtRatio} 
-            onChange={(e: any) => setFormData({...formData, debtRatio: Number(e.target.value)})} 
+            onChange={(e: any) => handleFieldChange('debtRatio', Number(e.target.value))} 
           />
 
           <InputField 
@@ -167,7 +208,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             errors={errors}
             type="number" 
             value={formData.loanAmount} 
-            onChange={(e: any) => setFormData({...formData, loanAmount: Number(e.target.value)})} 
+            onChange={(e: any) => handleFieldChange('loanAmount', Number(e.target.value))} 
           />
 
           <div className="space-y-1.5 flex flex-col">
@@ -176,7 +217,7 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             </label>
             <select 
               value={formData.gender} 
-              onChange={(e: any) => setFormData({...formData, gender: e.target.value as any})}
+              onChange={(e: any) => handleFieldChange('gender', e.target.value)}
               className="w-full bg-white border border-neutral-border rounded-xl px-4 py-3 text-sm text-neutral-text outline-none focus:border-burgundy/50 shadow-sm"
             >
               <option value="Male">Male</option>
@@ -192,11 +233,93 @@ export const CreateApplicantModal: React.FC<CreateApplicantModalProps> = ({ onCl
             errors={errors}
             type="number" 
             value={formData.age} 
-            onChange={(e: any) => setFormData({...formData, age: Number(e.target.value)})} 
+            onChange={(e: any) => handleFieldChange('age', Number(e.target.value))} 
           />
 
-          <div className="md:col-span-2">
-            <button type="submit" className="w-full py-4 bg-burgundy hover:bg-burgundy-hover text-white font-bold rounded-xl transition-all shadow-sm">
+          {/* Financial Assessment Divider */}
+          <div className="md:col-span-2 border-t border-neutral-border pt-4 mt-2">
+            <h4 className="text-xs font-bold text-burgundy uppercase tracking-widest mb-4 flex items-center gap-2">
+              <Landmark size={14} /> Financial Portfolio Assessment
+            </h4>
+          </div>
+
+          <InputField 
+            label="Total Assets ($)" 
+            icon={<DollarSign size={12}/>} 
+            name="totalAssets" 
+            errors={errors}
+            type="number" 
+            value={formData.totalAssets} 
+            onChange={(e: any) => {
+              setHasManuallyEditedAssets(true);
+              handleFieldChange('totalAssets', Number(e.target.value));
+            }} 
+          />
+
+          <InputField 
+            label="Total Liabilities ($)" 
+            icon={<DollarSign size={12}/>} 
+            name="totalLiabilities" 
+            errors={errors}
+            type="number" 
+            value={formData.totalLiabilities} 
+            onChange={(e: any) => {
+              setHasManuallyEditedLiabilities(true);
+              handleFieldChange('totalLiabilities', Number(e.target.value));
+            }} 
+          />
+
+          {/* Expanded 3x2 Financial Health Summary Live Preview Panel */}
+          <div className="md:col-span-2 bg-neutral-bg p-6 rounded-2xl border border-neutral-border space-y-4">
+            <div className="flex justify-between items-center border-b border-neutral-border pb-2">
+              <span className="text-[10px] font-black text-neutral-text uppercase tracking-widest flex items-center gap-1.5">
+                <Scale size={12} className="text-burgundy" /> Financial Health Summary (Live)
+              </span>
+              <span className="text-[9px] font-bold text-neutral-secondary font-mono">Calculated Real-Time</span>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="flex flex-col">
+                <span className="text-[8px] font-bold text-neutral-secondary uppercase">Net Worth</span>
+                <span className={`text-sm font-black mt-0.5 ${currentFinancials.netWorth >= 0 ? 'text-success' : 'text-danger'}`}>
+                  ${currentFinancials.netWorth.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[8px] font-bold text-neutral-secondary uppercase">Asset/Liability Ratio</span>
+                <span className="text-sm font-black text-neutral-text mt-0.5">
+                  {currentFinancials.assetLiabilityRatio.toFixed(2)}x
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[8px] font-bold text-neutral-secondary uppercase">Financial Strength</span>
+                <span className={`text-[10px] font-bold mt-1 px-2 py-0.5 rounded text-center w-fit ${getStatusColor(currentFinancials.financialStrength)}`}>
+                  {currentFinancials.financialStrength.toUpperCase()}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[8px] font-bold text-neutral-secondary uppercase">Debt Burden</span>
+                <span className={`text-[10px] font-bold mt-1 px-2 py-0.5 rounded text-center w-fit ${getStatusColor(currentFinancials.debtBurden)}`}>
+                  {currentFinancials.debtBurden.toUpperCase()}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[8px] font-bold text-neutral-secondary uppercase">Asset Coverage</span>
+                <span className={`text-[10px] font-bold mt-1 px-2 py-0.5 rounded text-center w-fit ${getStatusColor(currentFinancials.assetCoverage)}`}>
+                  {currentFinancials.assetCoverage.toUpperCase()}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[8px] font-bold text-neutral-secondary uppercase">Overall Position</span>
+                <span className={`text-[10px] font-bold mt-1 px-2 py-0.5 rounded text-center w-fit ${getStatusColor(currentFinancials.overallPosition)}`}>
+                  {currentFinancials.overallPosition.toUpperCase()}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="md:col-span-2 mt-4">
+            <button type="submit" className="w-full py-4 bg-burgundy hover:bg-burgundy-hover text-white font-bold rounded-xl transition-all shadow-sm active:scale-[0.98]">
               Ingest Application
             </button>
           </div>
