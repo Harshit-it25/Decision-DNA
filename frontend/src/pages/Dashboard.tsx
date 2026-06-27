@@ -39,11 +39,11 @@ const Dashboard: React.FC<DashboardProps> = ({ activeModel, metrics, security, a
 
   const rfAccuracy = (typeof realMetrics?.random_forest_accuracy === 'number' && !isNaN(realMetrics.random_forest_accuracy)) 
     ? realMetrics.random_forest_accuracy 
-    : 0.9418;
+    : 0.8835;
 
   const lrAccuracy = (typeof realMetrics?.logistic_regression_accuracy === 'number' && !isNaN(realMetrics.logistic_regression_accuracy)) 
     ? realMetrics.logistic_regression_accuracy 
-    : 0.9252;
+    : 0.8777;
 
   const version = metadata?.version ?? "1.0.0";
   const productionModel = metadata?.production_model === 'random_forest' ? 'Random Forest' : activeModel.type;

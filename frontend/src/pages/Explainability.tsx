@@ -19,7 +19,7 @@ interface ExplainabilityProps {
 }
 
 const Explainability: React.FC<ExplainabilityProps> = ({ activeModel, applicants, aiTier, onAddApplicant, onTrain }) => {
-  const rfAccuracy = 0.9418;
+  const rfAccuracy = activeModel.metrics.accuracy;
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Approve' | 'Reject'>('All');
   const [selectedId, setSelectedId] = useState<string | null>(applicants[0]?.id || null);

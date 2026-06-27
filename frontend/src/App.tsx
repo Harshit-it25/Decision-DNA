@@ -26,7 +26,8 @@ import {
   rebootSystem as apiRebootSystem,
   logout as apiLogout,
   getCurrentUserInfo,
-  verifyWatermark
+  verifyWatermark,
+  getModels
 } from './api/modelApi';
 import Login from './pages/Login';
 
@@ -162,10 +163,23 @@ const App: React.FC = () => {
         let dbModels = await db.models.toArray();
         
         // Auto-sync local cache with updated INITIAL_MODELS precision
-        if (dbModels.length > 0 && dbModels[0].metrics.accuracy === 0.92) {
+        if (dbModels.length > 0 && (dbModels[0].metrics.accuracy === 0.92 || dbModels[0].metrics.accuracy === 0.9252)) {
           await db.models.clear();
           await db.models.bulkAdd(INITIAL_MODELS);
           dbModels = INITIAL_MODELS;
+        }
+        
+        // Sync with real backend models
+        try {
+          const apiModelsRes = await getModels();
+          if (apiModelsRes && apiModelsRes.status === 'success' && apiModelsRes.data) {
+            for (const apiModel of apiModelsRes.data) {
+              await db.models.put(apiModel);
+            }
+            dbModels = await db.models.toArray();
+          }
+        } catch (error) {
+          console.warn("Failed to sync models from backend", error);
         }
         
         const dbLogs = await db.auditLogs.reverse().limit(50).toArray();

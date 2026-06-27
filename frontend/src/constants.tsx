@@ -9,11 +9,11 @@ export const INITIAL_MODELS: ModelMetadata[] = [
     status: ModelStatus.STABLE_BASELINE,
     role: 'Monitoring',
     metrics: {
-      accuracy: 0.9252,
-      precision: 0.91,
-      recall: 0.89,
-      f1: 0.90,
-      rocAuc: 0.95
+      accuracy: 0.8777,
+      precision: 0.8625,
+      recall: 0.8425,
+      f1: 0.8525,
+      rocAuc: 0.9025
     },
     fingerprint: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
     createdAt: Date.now() - 86400000 * 7,
@@ -37,11 +37,11 @@ export const INITIAL_MODELS: ModelMetadata[] = [
     status: ModelStatus.ACTIVE,
     role: 'Production',
     metrics: {
-      accuracy: 0.9418,
-      precision: 0.93,
-      recall: 0.92,
-      f1: 0.92,
-      rocAuc: 0.97
+      accuracy: 0.8835,
+      precision: 0.8717,
+      recall: 0.8617,
+      f1: 0.8617,
+      rocAuc: 0.9117
     },
     fingerprint: 'ac5169992323e2a7e7542d45a982992497046e7f97542d45a982992497046e7f',
     createdAt: Date.now() - 86400000 * 2,
