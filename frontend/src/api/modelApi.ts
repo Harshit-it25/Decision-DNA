@@ -112,6 +112,13 @@ export const getModelMetadata = async () => {
   return await response.json();
 };
 
+export const getModels = async () => {
+  const headers = await getHeaders();
+  const response = await fetch('/api/models', { headers });
+  if (!response.ok) throw new Error("Failed to fetch models list");
+  return await response.json();
+};
+
 export const triggerAttack = async (type: string) => {
   const headers = await getHeaders();
   const response = await fetch('/api/security-attack', {
