@@ -98,10 +98,10 @@ try:
     from explainability_engine import ExplainabilityEngine
     # Optional module
     try:
-        from app.encryption_layer import PQCSimulator
+        from app.encryption_layer import AESEncryptionLayer
     except ImportError:
-        PQCSimulator = None
-        logging.warning("Encryption layer (PQCSimulator) not found. Security features will be limited.")
+        AESEncryptionLayer = None
+        logging.warning("Encryption layer (AESEncryptionLayer) not found. Security features will be limited.")
 except ImportError as e:
     logging.error(f"Critical ML modules missing: {e}")
     print("Warning: Essential ML modules not found in path. Ensure CWD is correct.")
@@ -147,8 +147,26 @@ baseline_stats = None
 models = {}
 processor = None
 explainer = None 
-pqc_simulator = None # Global PQC encryption instance
+aes_encryption_layer = None # Global symmetric encryption instance
 historical_income_means = [] # Temporal drift buffer tracking
+
+# --- SHAP Value Cache ---
+shap_cache = {}
+
+def get_shap_values_cached(explainer_instance, X_scaled):
+    # Convert scaled input values (rounded to 3 decimal places) to a tuple for hashable cache key
+    key = tuple(round(float(x), 3) for x in X_scaled[0])
+    if key in shap_cache:
+        return shap_cache[key]
+    
+    # Compute SHAP values
+    shap_values = explainer_instance.shap_values(X_scaled)
+    
+    # Cache and limit size (max 5000 entries)
+    if len(shap_cache) > 5000:
+        shap_cache.clear()
+    shap_cache[key] = shap_values
+    return shap_values
 
 # --- Monitoring & Security State (Ported from Node) ---
 monitoring_state = {
@@ -184,8 +202,9 @@ is_background_task_running = False
 
 @app.on_event("startup")
 def startup_event():
-    global models, processor, baseline_stats, explainer
+    global models, processor, baseline_stats, explainer, shap_cache
     init_db()
+    shap_cache.clear() # Invalidate SHAP cache on model reload
     try:
         print("Startup: Loading production models...")
         if not os.path.exists(MODELS_DIR):
@@ -682,17 +701,17 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
         X_unscaled, _ = processor.get_features(input_df)
         
         # --- ENCRYPTION SECURITY LAYER ---
-        global pqc_simulator
-        if pqc_simulator is None:
+        global aes_encryption_layer
+        if aes_encryption_layer is None:
             try:
-                from app.encryption_layer import PQCSimulator
-                pqc_simulator = PQCSimulator(secret_key=os.getenv("PQC_SECRET_KEY", "api_secured_vault_key_2024"))
+                from app.encryption_layer import AESEncryptionLayer
+                aes_encryption_layer = AESEncryptionLayer(secret_key=os.getenv("PQC_SECRET_KEY", "api_secured_vault_key_2024"))
             except ImportError:
-                pqc_simulator = None
+                aes_encryption_layer = None
                 
-        if pqc_simulator:
-            encrypted_name = pqc_simulator.encrypt_field(input_dict.get('name', 'Anonymous'))
-            logging.info(f"🔒 Application securely intercepted. PII encrypted via PQCSimulator: {encrypted_name}")
+        if aes_encryption_layer:
+            encrypted_name = aes_encryption_layer.encrypt_field(input_dict.get('name', 'Anonymous'))
+            logging.info(f"🔒 Application securely intercepted. PII encrypted via AESEncryptionLayer: {encrypted_name}")
             # Conceptually, decryption happens after processing for final reporting if needed
         
         # Prediction
@@ -730,7 +749,7 @@ async def predict_risk(req: PredictRequest, background_tasks: BackgroundTasks, _
                 else:
                     X_processed_for_shap = X_unscaled
                     
-                shap_values = explainer.shap_values(X_processed_for_shap)
+                shap_values = get_shap_values_cached(explainer, X_processed_for_shap)
                 
                 # Handle different SHAP output formats (list for classification, array for regression)
                 if isinstance(shap_values, list):
@@ -882,18 +901,38 @@ async def get_drift(background_tasks: BackgroundTasks, _ = Depends(require_permi
         monitoring_state["status"] = "Drift Detected"
         monitoring_state["psi"] = max(monitoring_state["psi"], 0.15) # Boost PSI visually
     
-    # Original PSI Calculation
-    actual_dist = df['decision'].value_counts(normalize=True).get('Reject', 0)
-    expected_reject_rate = 0.35 
+    # Dynamic categorical PSI & KL-Divergence Calculation (both classes, Approve and Reject)
+    actual_reject = float(df['decision'].value_counts(normalize=True).get('Reject', 0.0))
+    actual_approve = 1.0 - actual_reject
+    
+    expected_reject = 0.35
+    dataset_path = "dataset.csv"
+    if os.path.exists(dataset_path):
+        try:
+            base_df = pd.read_csv(dataset_path, usecols=["decision"])
+            expected_reject = float(base_df['decision'].value_counts(normalize=True).get('Reject', 0.35))
+        except Exception:
+            pass
+    expected_approve = 1.0 - expected_reject
+    
     epsilon = 1e-6
-    psi = (actual_dist - expected_reject_rate) * np.log((actual_dist + epsilon) / (expected_reject_rate + epsilon))
+    
+    # Categorical PSI (summed over both Reject and Approve classes)
+    psi = (actual_reject - expected_reject) * np.log((actual_reject + epsilon) / (expected_reject + epsilon)) + \
+          (actual_approve - expected_approve) * np.log((actual_approve + epsilon) / (expected_approve + epsilon))
+          
+    # Dynamic KL-Divergence (D_KL(Actual || Expected))
+    kl = actual_reject * np.log((actual_reject + epsilon) / (expected_reject + epsilon)) + \
+         actual_approve * np.log((actual_approve + epsilon) / (expected_approve + epsilon))
+    
+    monitoring_state["klDivergence"] = round(float(kl), 4)
     
     # If statistical triggered, keep it high, otherwise use pure PSI
     if monitoring_state["status"] != "Drift Detected":
         monitoring_state["psi"] = round(float(psi), 4)
         if psi > 0.1: 
             monitoring_state["status"] = "Drift Detected"
-            logging.warning("⚠️ Distribution Drift Detected in Rejection Rates.")
+            logging.warning(f"⚠️ Distribution Drift Detected in Rejection Rates (PSI: {psi:.4f}).")
         else: 
             monitoring_state["status"] = "Stable"
             

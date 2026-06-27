@@ -13,6 +13,7 @@ joblib
 shap
 imbalanced-learn
 scipy
+river
 
 # Security & Governance
 PyJWT

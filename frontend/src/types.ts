@@ -65,6 +65,8 @@ export interface SecurityStatus {
   integrity: IntegrityStatus;
   lastAttackType?: string;
   forensicEvidence?: string[]; // Clues to "find the threat"
+  is_watermarked?: boolean;
+  watermark_confidence?: number;
 }
 
 export interface AuditEntry {

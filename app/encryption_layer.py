@@ -3,14 +3,13 @@ import base64
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
-class PQCSimulator:
+class AESEncryptionLayer:
     """
-    Decision DNA Post-Quantum Encryption Wrapper.
-    Currently uses AES-256-GCM as a placeholder for Lattice-based algorithms (Kyber/Dilithium).
-    Structured to allow drop-in replacement of PQC libraries once standardized.
+    Symmetric AES-256-GCM Encryption Layer for applicant PII.
+    Provides quantum-resistant symmetric encryption (standard key size of 256 bits
+    protects against Grover's quantum search algorithm).
     """
     def __init__(self, secret_key: str = None):
-        # In a real system, the key would be derived from a PQC KEM (Key Encapsulation Mechanism)
         if secret_key:
             self.key = secret_key.encode().ljust(32)[:32]
         else:
@@ -18,7 +17,7 @@ class PQCSimulator:
 
     def encrypt_field(self, data: str) -> str:
         """
-        Simulates PQC-hardened field encryption.
+        Encrypts a sensitive PII field using AES-256-GCM.
         """
         if not data: return data
         iv = os.urandom(12) # GCM recommended IV size
@@ -35,7 +34,7 @@ class PQCSimulator:
 
     def decrypt_field(self, encrypted_data: str) -> str:
         """
-        Simulates PQC-hardened field decryption.
+        Decrypts a sensitive PII field using AES-256-GCM.
         """
         if not encrypted_data: return encrypted_data
         try:
@@ -57,15 +56,15 @@ class PQCSimulator:
 
 # --- Integration Example ---
 if __name__ == "__main__":
-    pqc = PQCSimulator(secret_key="quantum_safe_vault_key_2024")
+    aes_enc = AESEncryptionLayer(secret_key="quantum_safe_vault_key_2024")
     
     sensitive_name = "Jane Doe"
-    encrypted = pqc.encrypt_field(sensitive_name)
-    decrypted = pqc.decrypt_field(encrypted)
+    encrypted = aes_enc.encrypt_field(sensitive_name)
+    decrypted = aes_enc.decrypt_field(encrypted)
     
-    print("--- Decision DNA Post-Quantum Protection Prototype ---")
+    print("--- Decision DNA Symmetric Encryption Layer ---")
     print(f"Original:  {sensitive_name}")
     print(f"Encrypted: {encrypted}")
     print(f"Decrypted: {decrypted}")
     print("-----------------------------------------------------")
-    print("Status: Post-Quantum Wrapper Verified (Wait for NIST FIPS 203/204 standard integration)")
+    print("Status: AES-256-GCM Encryption Layer Verified")

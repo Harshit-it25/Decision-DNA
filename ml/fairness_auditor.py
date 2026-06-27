@@ -140,13 +140,18 @@ def get_fairness_metrics(df_path='dataset.csv', model=None, processor=None, samp
     
     # Since decision = "Reject" if risk_score >= threshold else "Approve",
     # raising the rejection threshold decreases rejections (increases approvals).
-    if gender_di < 1.0 and gender_di > 0:
-        recommended_thresholds['Female'] = round(0.50 / gender_di, 2)
+    # We clip the calibrated thresholds to the mathematically valid range [0.10, 0.90] to prevent out-of-bounds thresholds.
+    if gender_di < 1.0 and gender_di > 0.05:
+        recommended_thresholds['Female'] = float(np.clip(round(0.50 / gender_di, 2), 0.10, 0.90))
     elif gender_di > 1.0:
-        recommended_thresholds['Male'] = round(0.50 * gender_di, 2)
+        recommended_thresholds['Male'] = float(np.clip(round(0.50 * gender_di, 2), 0.10, 0.90))
+    elif gender_di <= 0.05:
+        recommended_thresholds['Female'] = 0.90 # Cap at upper boundary for severe bias
         
-    if age_di < 1.0 and age_di > 0:
-        recommended_thresholds['Age 18-25'] = round(0.50 / age_di, 2)
+    if age_di < 1.0 and age_di > 0.05:
+        recommended_thresholds['Age 18-25'] = float(np.clip(round(0.50 / age_di, 2), 0.10, 0.90))
+    elif age_di <= 0.05:
+        recommended_thresholds['Age 18-25'] = 0.90
 
     metrics['recommended_thresholds'] = recommended_thresholds
 

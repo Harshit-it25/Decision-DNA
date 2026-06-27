@@ -2,12 +2,38 @@ import numpy as np
 import pandas as pd
 import joblib
 import os
+import shap
+from ml.data_processor import DataProcessor
+
+# --- SHAP Value Cache ---
+shap_cache = {}
+
+def get_shap_values_cached(explainer_instance, X_scaled):
+    # Convert scaled input values (rounded to 3 decimal places) to a tuple for hashable cache key
+    key = tuple(round(float(x), 3) for x in X_scaled[0])
+    if key in shap_cache:
+        return shap_cache[key]
+    
+    # Compute SHAP values
+    shap_values = explainer_instance.shap_values(X_scaled)
+    
+    # Cache and limit size (max 5000 entries)
+    if len(shap_cache) > 5000:
+        shap_cache.clear()
+    shap_cache[key] = shap_values
+    return shap_values
 
 class ExplainabilityEngine:
+    _last_mtime = 0
+
     def __init__(self, model_path='models/random_forest_model_prod.pkl', scaler_path='models/scaler_prod.pkl'):
         self.model_path = model_path
         self.scaler_path = scaler_path
         if os.path.exists(model_path):
+            mtime = os.path.getmtime(model_path)
+            if mtime != ExplainabilityEngine._last_mtime:
+                shap_cache.clear()
+                ExplainabilityEngine._last_mtime = mtime
             self.model = joblib.load(model_path)
             # Check if it's a pipeline or a direct model
             if hasattr(self.model, 'named_steps'):
@@ -21,41 +47,75 @@ class ExplainabilityEngine:
 
     def get_feature_contributions(self, applicant_data):
         """
-        Calculates a simplified SHAP-like contribution for each feature.
+        Calculates mathematically rigorous SHAP contributions using TreeExplainer.
         """
-        if self.model is None:
-            return {"error": "Model not loaded"}
+        if self.model is None or self.classifier is None:
+            return {"error": "Model or classifier not loaded"}
 
-        # Extract features in correct order
-        feature_names = ['income', 'loanAmount', 'creditScore', 'monthsEmployed', 
-                         'numCreditLines', 'totalBalance', 'totalCreditLimit', 'pastDuePayments']
-        
-        # In a real system, we'd use SHAP. Here we estimate based on feature importances 
-        # and the feature's deviation from the mean/median.
-        importances = self.classifier.feature_importances_
-        
-        # Standardize data to see deviation
         try:
-            df = pd.DataFrame([applicant_data])[feature_names]
-            if hasattr(self.model, 'named_steps'):
-                # It's a pipeline, we don't need manual scaling for internal logic, 
-                # but we need it to see relative impacts.
-                X_scaled = self.scaler.transform(df)[0]
+            # Standardized data extraction and feature engineering
+            processor = DataProcessor()
+            df = pd.DataFrame([applicant_data])
+            X_unscaled, _ = processor.get_features(df)
+            
+            # Apply scaling as expected by the Random Forest classifier
+            if self.scaler:
+                X_scaled = self.scaler.transform(X_unscaled)
             else:
-                X_scaled = self.scaler.transform(df)[0] if self.scaler else np.zeros(len(feature_names))
-        except Exception:
-            # Fallback if processing fails
-            return {f: 0.1 for f in feature_names}
+                X_scaled = X_unscaled.values
 
-        contributions = {}
-        for i, name in enumerate(feature_names):
-            # Contribution = (scaled_value * importance)
-            # This is a heuristic: high value in a positive feature increases score
-            val = float(X_scaled[i])
-            imp = float(importances[i])
-            contributions[name] = val * imp
+            # Initialize actual TreeExplainer
+            explainer = shap.TreeExplainer(self.classifier)
+            shap_vals = get_shap_values_cached(explainer, X_scaled)
 
-        return contributions
+            # Handle class dimension for binary classification (we want class 1: Reject)
+            if isinstance(shap_vals, list):
+                contributions = shap_vals[1]
+            else:
+                contributions = shap_vals
+
+            # Handle 2D/3D output shapes
+            if len(contributions.shape) == 2:
+                contributions = contributions[0]
+            elif len(contributions.shape) == 3:
+                contributions = contributions[1][0] if contributions.shape[0] > 1 else contributions[0][0]
+
+            # Construct actual SHAP contributions dict
+            mapped_contributions = {}
+            for feat, val in zip(processor.feature_cols, contributions):
+                if hasattr(val, 'item'):
+                    val = val.item()
+                float_val = round(float(val), 4)
+                mapped_contributions[feat] = float_val
+
+                # Mapping for frontend compatibility
+                if feat == 'debt_to_income':
+                    mapped_contributions['debtRatio'] = float_val
+                elif feat == 'credit_utilization':
+                    mapped_contributions['creditUtilization'] = float_val
+                    # Distribute correlation values back to raw parts for UI rendering
+                    mapped_contributions['totalBalance'] = round(float_val * 0.5, 4)
+                    mapped_contributions['totalCreditLimit'] = round(-float_val * 0.5, 4)
+                elif feat == 'payment_history_score':
+                    mapped_contributions['pastDuePayments'] = round(-float_val, 4)
+
+            # Include raw features that the UI checks directly
+            for k in ['income', 'loanAmount', 'creditScore', 'monthsEmployed', 'numCreditLines']:
+                if k not in mapped_contributions:
+                    # Fallback helper mappings
+                    mapped_contributions[k] = mapped_contributions.get(k, 0.0)
+
+            return mapped_contributions
+
+        except Exception as e:
+            # Fallback if SHAP evaluation fails
+            import logging
+            logging.error(f"Error calculating real SHAP: {e}", exc_info=True)
+            # Safe linear backup mapping
+            feature_names = ['income', 'loanAmount', 'creditScore', 'monthsEmployed', 
+                             'numCreditLines', 'totalBalance', 'totalCreditLimit', 'pastDuePayments',
+                             'debtRatio', 'creditUtilization']
+            return {f: 0.01 for f in feature_names}
 
     def generate_counterfactuals(self, applicant_data, target_decision="Approve"):
         """

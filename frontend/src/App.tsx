@@ -27,7 +27,8 @@ import {
   logout as apiLogout,
   getCurrentUserInfo,
   verifyWatermark,
-  getModels
+  getModels,
+  getSecurityStatus as apiGetSecurityStatus
 } from './api/modelApi';
 import Login from './pages/Login';
 
@@ -87,7 +88,20 @@ const App: React.FC = () => {
 
   const handleDriftCheck = useCallback(async () => {
     try {
-      const serverMetrics = await apiGetMonitoringDrift();
+      const [serverMetrics, secStatus] = await Promise.all([
+        apiGetMonitoringDrift(),
+        apiGetSecurityStatus().catch(() => null)
+      ]);
+      
+      if (secStatus) {
+        setSecurity({
+          threatLevel: secStatus.threat_level as ThreatLevel,
+          integrity: secStatus.integrity as IntegrityStatus,
+          forensicEvidence: secStatus.forensicEvidence || [],
+          is_watermarked: secStatus.is_watermarked,
+          watermark_confidence: secStatus.watermark_confidence
+        } as any);
+      }
       
       // Merge server metrics with local check
       const allApplicants = await db.applicants.toArray();
@@ -148,6 +162,22 @@ const App: React.FC = () => {
       try {
         // Ensure seed has a chance to run if tables are empty
         await db.seed();
+        
+        // Sync security status from backend on startup
+        try {
+          const secStatus = await apiGetSecurityStatus();
+          if (secStatus) {
+            setSecurity({
+              threatLevel: secStatus.threat_level as ThreatLevel,
+              integrity: secStatus.integrity as IntegrityStatus,
+              forensicEvidence: secStatus.forensicEvidence || [],
+              is_watermarked: secStatus.is_watermarked,
+              watermark_confidence: secStatus.watermark_confidence
+            } as any);
+          }
+        } catch (error) {
+          console.warn("Failed to fetch initial security status from backend", error);
+        }
         
         // Auto-invalidate old cached dataset when updated in backend
         const currentVersion = "v_71k_approve_v6";

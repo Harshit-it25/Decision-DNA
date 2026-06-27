@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { ModelMetadata, DriftMetrics, SecurityStatus, AuditEntry, ThreatLevel, Applicant } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { getModelMetrics, getModelMetadata } from '../api/modelApi';
+import { getModelMetrics, getModelMetadata, getFairnessMetrics, getSecurityStatus } from '../api/modelApi';
 
 interface DashboardProps {
   activeModel: ModelMetadata;
@@ -20,16 +20,22 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ activeModel, metrics, security, auditLogs, insight, aiTier, applicants = [] }) => {
   const [realMetrics, setRealMetrics] = useState<any>(null);
   const [metadata, setMetadata] = useState<any>(null);
+  const [fairnessMetrics, setFairnessMetrics] = useState<any>(null);
+  const [securityStatus, setSecurityStatus] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [metricsData, metaData] = await Promise.all([
+        const [metricsData, metaData, fairnessData, securityData] = await Promise.all([
           getModelMetrics(),
-          getModelMetadata()
+          getModelMetadata(),
+          getFairnessMetrics().catch(() => null),
+          getSecurityStatus().catch(() => null)
         ]);
         setRealMetrics(metricsData);
         setMetadata(metaData);
+        setFairnessMetrics(fairnessData);
+        setSecurityStatus(securityData);
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
       }
@@ -119,13 +125,13 @@ const Dashboard: React.FC<DashboardProps> = ({ activeModel, metrics, security, a
     const flipRatePct = (metrics.flipRate * 100);
     const flipBadge = flipRatePct < 5.0 ? '🟢 Healthy' : '🟡 Warning';
 
-    const robustScore = security.threatLevel === ThreatLevel.LOW ? 0.94 : security.threatLevel === ThreatLevel.MEDIUM ? 0.81 : 0.58;
+    const robustScore = securityStatus?.robustness_score ?? (security.threatLevel === ThreatLevel.LOW ? 0.94 : security.threatLevel === ThreatLevel.MEDIUM ? 0.81 : 0.58);
     const robustBadge = robustScore >= 0.90 ? '🟢 Healthy' : robustScore >= 0.75 ? '🟡 Warning' : '🔴 Critical';
 
-    const fairnessVal = 0.92; 
+    const fairnessVal = fairnessMetrics?.metrics?.gender?.disparate_impact ?? 0.92; 
     const fairnessBadge = fairnessVal >= 0.80 && fairnessVal <= 1.25 ? '🟢 Healthy' : '🔴 Critical';
 
-    const watermarkMatch = security.threatLevel === ThreatLevel.CRITICAL ? 0.88 : 0.98;
+    const watermarkMatch = securityStatus?.is_watermarked ? (securityStatus?.watermark_confidence ?? 0.98) : (security.threatLevel === ThreatLevel.CRITICAL ? 0.88 : 0.98);
     const watermarkBadge = watermarkMatch >= 0.95 ? '🟢 Healthy' : '🔴 Critical';
 
     const authCheck = security.threatLevel === ThreatLevel.CRITICAL ? 'Compromised' : 'Secured';
@@ -193,7 +199,7 @@ const Dashboard: React.FC<DashboardProps> = ({ activeModel, metrics, security, a
         recommendation: authCheck === 'Secured' ? 'Zero exceptions logged. Rotate token signature keys monthly.' : 'Force system reboot, terminate active JWT sessions, and flag security team.'
       }
     ];
-  }, [metrics, security]);
+  }, [metrics, security, fairnessMetrics, securityStatus]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 font-sans">
