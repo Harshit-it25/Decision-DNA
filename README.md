@@ -530,6 +530,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 <div align="center">
   <p>Built with FastAPI, React, scikit-learn, SHAP, and Google Gemini AI</p>
+  <p><strong>Developed by:</strong> Harshit Ranbhare (B.Tech IT, AIML Engineer)</p>
   <p>
     <a href="https://github.com/Harshit-it25/Decision-DNA/issues">Report Bug</a> ·
     <a href="https://github.com/Harshit-it25/Decision-DNA/issues">Request Feature</a>
