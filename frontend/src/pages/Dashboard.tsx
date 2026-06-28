@@ -43,7 +43,9 @@ const Dashboard: React.FC<DashboardProps> = ({ activeModel, metrics, security, a
     fetchData();
   }, []);
 
-  const rfAccuracy = 0.9536;
+  const rfAccuracy = (typeof realMetrics?.random_forest_accuracy === 'number' && !isNaN(realMetrics.random_forest_accuracy)) 
+    ? realMetrics.random_forest_accuracy 
+    : 0.8835;
 
   const lrAccuracy = (typeof realMetrics?.logistic_regression_accuracy === 'number' && !isNaN(realMetrics.logistic_regression_accuracy)) 
     ? realMetrics.logistic_regression_accuracy 

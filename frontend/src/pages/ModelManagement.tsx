@@ -59,7 +59,7 @@ const ModelManagement: React.FC<ModelManagementProps> = ({
                   </div>
                   <p className="text-xs text-neutral-secondary font-mono mb-4">{model.fingerprint}</p>
                   <div className="flex gap-8">
-                    <Metric label="Accuracy" value={`${((model.type === ModelType.RANDOM_FOREST ? 0.9536 : model.metrics.accuracy) * 100).toFixed(2)}%`} />
+                    <Metric label="Accuracy" value={`${(model.metrics.accuracy * 100).toFixed(2)}%`} />
                     <Metric label="Precision" value={`${(model.metrics.precision * 100).toFixed(2)}%`} />
                     <Metric label="Recall" value={`${(model.metrics.recall * 100).toFixed(2)}%`} />
                   </div>

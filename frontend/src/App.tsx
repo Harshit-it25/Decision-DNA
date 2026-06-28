@@ -335,7 +335,7 @@ const App: React.FC = () => {
         version: `1.1.${models.length}`,
         status: ModelStatus.ACTIVE, // Set to active immediately
         metrics: {
-          accuracy: type === ModelType.RANDOM_FOREST ? 0.9536 : modelMetrics.accuracy,
+          accuracy: modelMetrics.accuracy,
           precision: modelMetrics.precision,
           recall: modelMetrics.recall,
           f1: modelMetrics.f1,
@@ -419,7 +419,7 @@ const App: React.FC = () => {
           version: `1.1.${models.length + (type === ModelType.RANDOM_FOREST ? 1 : 0)}`,
           status: ModelStatus.ACTIVE,
           metrics: {
-            accuracy: type === ModelType.RANDOM_FOREST ? 0.9536 : modelMetrics.accuracy,
+            accuracy: modelMetrics.accuracy,
             precision: modelMetrics.precision,
             recall: modelMetrics.recall,
             f1: modelMetrics.f1,
